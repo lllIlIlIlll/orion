@@ -1,5 +1,5 @@
 # ══════════════════════════════════════════════════════════════════════════════
-#  GenericAgent — taukey.py configuration template (copy to taukey.py and fill in)
+#  TAU — taukey.py configuration template (copy to taukey.py and fill in)
 # ══════════════════════════════════════════════════════════════════════════════
 #
 #  Quick start:

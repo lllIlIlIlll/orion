@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-GenericAgent Web2 Bridge.
+TAU Web2 Bridge.
 
 Clear split:
-1) AgentManager: owns GenericAgent instances, sessions and histories.
+1) AgentManager: owns TAU instances, sessions and histories.
 2) Transport: HTTP is the command/data channel; WebSocket only pushes small
    session-state notifications.
 
@@ -51,8 +51,8 @@ def find_default_ga_root() -> Path:
     candidates = [
         APP_DIR / "..",
         APP_DIR / ".." / "..",
-        APP_DIR / ".." / "GenericAgent",
-        APP_DIR / ".." / ".." / "GenericAgent",
+        APP_DIR / ".." / "tau",
+        APP_DIR / ".." / ".." / "tau",
     ]
     for p in candidates:
         root = p.resolve()
@@ -376,7 +376,7 @@ class AgentManager:
         try:
             os.chdir(sess.cwd or str(root))
             agentmain = importlib.import_module("agentmain")
-            TAU = getattr(agentmain, "GenericAgent")
+            TAU = getattr(agentmain, "Tau")
             agent = TAU()
             agent.inc_out = True
             agent.verbose = True
@@ -678,7 +678,7 @@ class AgentManager:
                 if not full and pieces:
                     full = pieces[-1] if not getattr(agent, "inc_out", False) else "".join(pieces)
             else:
-                full = "GenericAgent object has no put_task method"
+                full = "TAU object has no put_task method"
             if not full:
                 full = "(completed)"
             if sess.cancel_requested:
@@ -1117,7 +1117,7 @@ class ServiceManager:
 
     def read_logs(self, sid: str, tail: int = 200) -> dict:
         if sid == BRIDGE_ID:
-            return {"ok": True, "lines": [f"GenericAgent bridge pid={os.getpid()}"]}
+            return {"ok": True, "lines": [f"TAU bridge pid={os.getpid()}"]}
         if sid not in self._catalog:
             raise KeyError(sid)
         tail = max(1, min(int(tail or 200), 2000))
@@ -1827,5 +1827,5 @@ def create_app():
 if __name__ == "__main__":
     host = os.environ.get("BRIDGE_HOST", "127.0.0.1")
     port = int(os.environ.get("BRIDGE_PORT", "14168"))
-    print(f"GenericAgent Web2 bridge: http://{host}:{port}  ws://{host}:{port}/ws", file=sys.stderr)
+    print(f"TAU Web2 bridge: http://{host}:{port}  ws://{host}:{port}/ws", file=sys.stderr)
     web.run_app(create_app(), host=host, port=port, print=None)

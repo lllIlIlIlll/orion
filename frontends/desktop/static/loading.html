@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<title>GenericAgent</title>
+<title>TAU</title>
 <style>
 :root{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI","Microsoft YaHei UI","Helvetica Neue",Helvetica,Arial,sans-serif;background:#fff;color:#111}
 @media(prefers-color-scheme:dark){:root{background:#1a1a1a;color:#eee}}
@@ -22,7 +22,7 @@ html,body{height:100%;margin:0;display:flex;align-items:center;justify-content:c
 // read the app's saved language; fall back to the system/browser locale.
 var GA_ZH = (navigator.language || '').toLowerCase().indexOf('zh') === 0;
 var GA_MSG = {
-  starting_app: GA_ZH ? '正在启动 GenericAgent…' : 'Starting GenericAgent…',
+  starting_app: GA_ZH ? '正在启动 TAU…' : 'Starting TAU…',
   start:        GA_ZH ? '首次启动，正在准备运行环境…' : 'First run: preparing the runtime…',
   venv:         GA_ZH ? '正在创建运行环境…' : 'Creating the runtime environment…',
   deps:         GA_ZH ? '正在安装依赖…' : 'Installing dependencies…',
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function(){
 <body>
   <div class="card">
     <div class="spinner"></div>
-    <div id="tau-status">正在启动 GenericAgent…</div>
+    <div id="tau-status">正在启动 TAU…</div>
     <div class="bar"><div id="tau-bar"></div></div>
   </div>
 </body>

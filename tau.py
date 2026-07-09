@@ -262,8 +262,8 @@ def consume_file(dr, file):
         os.remove(os.path.join(dr, file))
         return content
 
-class GenericAgentHandler(BaseHandler):
-    '''Generic Agent 工具库，包含多种工具的实现。工具函数自动加上了 do_ 前缀。实际工具名没有前缀。'''
+class TauHandler(BaseHandler):
+    '''TAU 工具库，包含多种工具的实现。工具函数自动加上了 do_ 前缀。实际工具名没有前缀。'''
     def __init__(self, parent, last_history=None, cwd='./temp'):
         self.parent = parent
         self.working = {}

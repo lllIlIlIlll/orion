@@ -8,7 +8,7 @@ SuperGrok Local Proxy - CLI
   python assets/supergrok_proxy.py models
   python assets/supergrok_proxy.py test --model grok-4.5
 
-GenericAgent/taukey 配置示例：
+TAU/taukey 配置示例：
   native_oai_config_supergrok_proxy = {
       'name': 'supergrok',
       'apikey': 'dummy',
@@ -42,7 +42,7 @@ XAI_SCOPE = 'openid profile email offline_access grok-cli:access api:access'
 XAI_CALLBACK_PORT = 56121
 XAI_CALLBACK_URI = f'http://127.0.0.1:{XAI_CALLBACK_PORT}/callback'
 XAI_API_BASE = 'https://api.x.ai/v1'
-DEFAULT_STORE = os.path.join(os.path.expanduser('~'), '.genericagent', 'xai_oauth.json')
+DEFAULT_STORE = os.path.join(os.path.expanduser('~'), '.tau', 'xai_oauth.json')
 DEFAULT_PROXY_PORT = 15433
 REFRESH_MARGIN = 120
 
@@ -229,7 +229,7 @@ def make_proxy_handler(token_mgr: TokenManager):
                 resp = requests.get(target, headers={
                     'Authorization': f'Bearer {token}',
                     'Accept': 'application/json',
-                    'User-Agent': 'GenericAgent-SuperGrok-Proxy/1.0',
+                    'User-Agent': 'TAU-SuperGrok-Proxy/1.0',
                 }, proxies=token_mgr.proxies, timeout=60)
                 content = resp.content
                 self.send_response(resp.status_code)
@@ -259,7 +259,7 @@ def make_proxy_handler(token_mgr: TokenManager):
                     'Authorization': f'Bearer {token}',
                     'Content-Type': self.headers.get('Content-Type', 'application/json'),
                     'Accept': 'text/event-stream' if stream else 'application/json',
-                    'User-Agent': 'GenericAgent-SuperGrok-Proxy/1.0',
+                    'User-Agent': 'TAU-SuperGrok-Proxy/1.0',
                     'x-request-id': str(uuid.uuid4()),
                 }, data=raw, proxies=token_mgr.proxies, timeout=180, stream=stream)
 
@@ -324,7 +324,7 @@ def cmd_models(args):
     resp = requests.get(f'{XAI_API_BASE}/models', headers={
         'Authorization': f'Bearer {token}',
         'Accept': 'application/json',
-        'User-Agent': 'GenericAgent-SuperGrok-Proxy/1.0',
+        'User-Agent': 'TAU-SuperGrok-Proxy/1.0',
     }, proxies=mgr.proxies, timeout=60)
     print(resp.status_code)
     print(resp.text)
@@ -339,7 +339,7 @@ def cmd_test(args):
         'Authorization': f'Bearer {token}',
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'User-Agent': 'GenericAgent-SuperGrok-Proxy/1.0',
+        'User-Agent': 'TAU-SuperGrok-Proxy/1.0',
     }, json=payload, proxies=mgr.proxies, timeout=120)
     print(resp.status_code)
     print(resp.text)

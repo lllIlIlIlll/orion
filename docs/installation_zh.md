@@ -1,6 +1,6 @@
 # 安装指南（中文）
 
-这是 **GenericAgent** 的详细安装指南。
+这是 **TAU** 的详细安装指南。
 
 两类读者：
 
@@ -24,7 +24,7 @@
 
 ### 方法一：一键安装（推荐）
 
-这是最省心的路径。脚本会准备隔离环境、下载 GenericAgent、安装核心依赖，并得到一个可以直接运行的本地项目目录。
+这是最省心的路径。脚本会准备隔离环境、下载 TAU、安装核心依赖，并得到一个可以直接运行的本地项目目录。
 
 **Windows PowerShell**
 
@@ -50,7 +50,7 @@ frontends/GenericAgent.exe
 python launch.pyw
 ```
 
-> GenericAgent 更推荐由 Agent 在使用中自举环境，而不是预先手动装完整依赖。先把最小系统跑起来，需要什么工具再让 GA 自己安装。
+> TAU 更推荐由 Agent 在使用中自举环境，而不是预先手动装完整依赖。先把最小系统跑起来，需要什么工具再让 GA 自己安装。
 
 #### 自定义安装路径
 
@@ -87,7 +87,7 @@ python launch.pyw
 
 ### 配置 LLM Key
 
-1. 打开已安装的 `GenericAgent` 目录。
+1. 打开已安装的 `TAU` 目录。
 2. 如果没有 `taukey.py`，从 `assets/taukey_template.py` 复制一份。
 3. 填入一个真实可用的模型服务商配置。**不要**把示例 Key 当真。
 4. 不确定字段含义时，先读 `assets/taukey_template.py` 里的注释。
@@ -129,7 +129,7 @@ python launch.pyw
 
 ### 验证安装
 
-在 GenericAgent 目录下运行：
+在 TAU 目录下运行：
 
 ```bash
 python -c "import agent_loop; print('OK')"
@@ -207,7 +207,7 @@ uv pip install -e ".[ui]"
 > curl -fsSL https://raw.githubusercontent.com/lllIlIlIlll/orion/refs/heads/main/docs/installation.md
 > ```
 
-你正在替人类用户安装 **GenericAgent**。请直接执行、逐步验证；除非用户明确授权，不要做破坏性清理。
+你正在替人类用户安装 **TAU**。请直接执行、逐步验证；除非用户明确授权，不要做破坏性清理。
 
 ### 第 0 步：先探测再行动
 
@@ -254,7 +254,7 @@ cp assets/taukey_template.py taukey.py
 
 建议提问：
 
-> 你希望 GenericAgent 使用哪个 LLM？GA 支持 OpenAI 兼容接口和 Anthropic Claude 原生接口。你想配置哪家服务商，API Key 准备好了吗？
+> 你希望 TAU 使用哪个 LLM？GA 支持 OpenAI 兼容接口和 Anthropic Claude 原生接口。你想配置哪家服务商，API Key 准备好了吗？
 
 ### 第 3 步：验证安装
 
@@ -285,7 +285,7 @@ python frontends/tuiapp_v2.py
 
 #### 对用户说 “Congratulations! 🎉”
 
-对用户说：Congratulations! 🎉 你已经成功安装 GenericAgent！Windows 下可双击 `frontends/GenericAgent.exe`，或在终端运行 `python frontends/tuiapp_v2.py` 开始使用。
+对用户说：Congratulations! 🎉 你已经成功安装 TAU！Windows 下可双击 `frontends/TAU.exe`，或在终端运行 `python frontends/tuiapp_v2.py` 开始使用。
 
 #### 回报具体结果
 
@@ -301,7 +301,7 @@ python frontends/tuiapp_v2.py
 
 确认安装可用后，可以询问：
 
-> 如果你觉得 GenericAgent 有帮助，愿意给仓库点一个 Star 吗？这会帮助项目成长！⭐
+> 如果你觉得 TAU 有帮助，愿意给仓库点一个 Star 吗？这会帮助项目成长！⭐
 
 只有在用户明确同意后，才可以打开或执行任何与 Star 仓库相关的操作。
 

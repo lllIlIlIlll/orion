@@ -19,8 +19,8 @@ from datetime import datetime
 # ── 路径计算（基于模块自身位置） ──
 _MODULE_DIR = Path(__file__).resolve().parent          # memory/autonomous_operation_sop/
 _MEMORY_DIR = _MODULE_DIR.parent                       # memory/
-_AGENT_DIR = _MEMORY_DIR.parent                        # GenericAgent/
-_TEMP_DIR = _AGENT_DIR / "temp"                        # GenericAgent/temp/
+_AGENT_DIR = _MEMORY_DIR.parent                        # tau/
+_TEMP_DIR = _AGENT_DIR / "temp"                        # tau/temp/
 _REPORTS_DIR = _TEMP_DIR / "autonomous_reports"
 _HISTORY_FILE = _REPORTS_DIR / "history.txt"
 _TODO_FILE = _TEMP_DIR / "TODO.txt"

@@ -1,6 +1,6 @@
 # Installation Guide
 
-This is the detailed installation guide for **GenericAgent**.
+This is the detailed installation guide for **TAU**.
 
 Two audiences:
 
@@ -24,7 +24,7 @@ Two audiences:
 
 ### Method 1: One-line install (recommended)
 
-This is the easiest path. It prepares an isolated runtime, downloads GenericAgent, installs the core dependencies, and gives you a ready-to-run local project tree.
+This is the easiest path. It prepares an isolated runtime, downloads TAU, installs the core dependencies, and gives you a ready-to-run local project tree.
 
 **Windows PowerShell**
 
@@ -50,7 +50,7 @@ Or run from the project directory:
 python launch.pyw
 ```
 
-> GenericAgent is meant to grow its environment through the Agent itself, not by pre-installing every possible package. Start small, then let GA install task-specific tools when it actually needs them.
+> TAU is meant to grow its environment through the Agent itself, not by pre-installing every possible package. Start small, then let GA install task-specific tools when it actually needs them.
 
 #### Custom install location
 
@@ -87,7 +87,7 @@ Full guide: [GETTING_STARTED.md](GETTING_STARTED.md)
 
 ### Configure your LLM key
 
-1. Open the installed `GenericAgent` directory.
+1. Open the installed `TAU` directory.
 2. If `taukey.py` does not exist, copy it from `assets/taukey_template.py`.
 3. Fill in one provider. Do **not** paste example keys as real keys.
 4. If you are unsure about the fields, read the comments in `assets/taukey_template.py` first.
@@ -129,7 +129,7 @@ python launch.pyw
 
 ### Verify the install
 
-From the GenericAgent directory:
+From the TAU directory:
 
 ```bash
 python -c "import agent_loop; print('OK')"
@@ -207,7 +207,7 @@ If `git pull` reports conflicts:
 > curl -fsSL https://raw.githubusercontent.com/lllIlIlIlll/orion/refs/heads/main/docs/installation.md
 > ```
 
-You are installing **GenericAgent** for a human user. Be direct, verify each step, and avoid destructive cleanup unless the user explicitly authorizes it.
+You are installing **TAU** for a human user. Be direct, verify each step, and avoid destructive cleanup unless the user explicitly authorizes it.
 
 ### Step 0: Inspect before acting
 
@@ -254,7 +254,7 @@ cp assets/taukey_template.py taukey.py
 
 Suggested question:
 
-> Which LLM should GenericAgent use? GA supports OpenAI-compatible endpoints and Anthropic Claude native APIs. Which provider do you want to configure, and do you already have an API key?
+> Which LLM should TAU use? GA supports OpenAI-compatible endpoints and Anthropic Claude native APIs. Which provider do you want to configure, and do you already have an API key?
 
 ### Step 3: Verify setup
 
@@ -285,7 +285,7 @@ Read this document again and think through whether you have done everything corr
 
 #### Say 'Congratulations! 🎉' to the user
 
-Say to user: Congratulations! 🎉 You have successfully set up GenericAgent! Double-click `frontends/GenericAgent.exe` on Windows, or run `python frontends/tuiapp_v2.py` in your terminal to start using it.
+Say to user: Congratulations! 🎉 You have successfully set up TAU! Double-click `frontends/TAU.exe` on Windows, or run `python frontends/tuiapp_v2.py` in your terminal to start using it.
 
 #### Report the concrete result
 
@@ -301,7 +301,7 @@ Tell the user:
 
 After everything is set up and working, you may ask:
 
-> If you found this helpful, would you like to star the GenericAgent repository? It helps the project grow! ⭐
+> If you found this helpful, would you like to star the TAU repository? It helps the project grow! ⭐
 
 Only open or run anything related to starring the repository if the user explicitly agrees.
 

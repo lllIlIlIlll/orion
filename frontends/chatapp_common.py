@@ -345,7 +345,7 @@ class AgentChatMixin:
             self.user_tasks.pop(chat_id, None)
 
 
-from agentmain import GeneraticAgent as _GA
+from agentmain import Tau as _GA
 from continue_cmd import handle_frontend_command as _handle_continue_frontend, install as _install_continue, reset_conversation as _reset_conversation
 _install_continue(_GA)
 from btw_cmd import handle_frontend_command as _handle_btw_frontend, install as _install_btw; _install_btw(_GA)

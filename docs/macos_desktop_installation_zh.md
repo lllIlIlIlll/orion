@@ -1,12 +1,12 @@
-# GenericAgent 桌面版安装指南
+# TAU 桌面版安装指南
 
 ## 📦 安装步骤
 
 ### 第一步：打开安装包
 
-双击下载的 `GenericAgent_x.x.x_aarch64.dmg` 文件，会弹出一个安装窗口。
+双击下载的 `TAU_x.x.x_aarch64.dmg` 文件，会弹出一个安装窗口。
 
-将左边的 **GenericAgent** 图标拖到右边的 **Applications** 文件夹图标上，等待拷贝完成。
+将左边的 **TAU** 图标拖到右边的 **Applications** 文件夹图标上，等待拷贝完成。
 
 拷贝完成后，可以右键点击桌面上的 DMG 图标，选择「推出」来关闭安装包。
 
@@ -32,7 +32,7 @@
 在终端窗口中，复制粘贴以下这行命令（整行复制，一个字都不要漏��：
 
 ```
-xattr -cr /Applications/GenericAgent.app
+xattr -cr /Applications/TAU.app
 ```
 
 粘贴方法：在终端窗口里按 `Command(⌘) + V`
@@ -43,12 +43,12 @@ xattr -cr /Applications/GenericAgent.app
 
 执行完毕后，终端不会有任何提示，这代表成功了。
 
-#### 3. 打开 GenericAgent
+#### 3. 打开 TAU
 
 现在可以正常打开应用了：
 
 - 打开 Finder → 侧边栏点击「应用程序」
-- 找到 **GenericAgent**，双击打开
+- 找到 **TAU**，双击打开
 
 首次打开可能还会弹出一个确认框，点击「打开」即可。之后就不会再弹出了。
 
@@ -56,7 +56,7 @@ xattr -cr /Applications/GenericAgent.app
 
 ## ❓ 常见问题
 
-### Q: 提示「GenericAgent 已损坏，无法打开」怎么办？
+### Q: 提示「TAU 已损坏，无法打开」怎么办？
 
 这不是真的损坏，是 macOS 的安全机制。请回到第二步，确保在终端中执行了 `xattr -cr` 命令。
 
@@ -64,7 +64,7 @@ xattr -cr /Applications/GenericAgent.app
 
 方法一（推荐）：执行第二步的终端命令。
 
-方法二：右键点击 GenericAgent.app → 选择「打开」→ 在弹出的对话框中点击「打开」。
+方法二：右键点击 TAU.app → 选择「打开」→ 在弹出的对话框中点击「打开」。
 
 ### Q: 我的 Mac 是 Intel 芯片的，能用吗？
 

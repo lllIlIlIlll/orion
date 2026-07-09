@@ -33,7 +33,7 @@
            └─ memory/code_review_principles.md         ← 15 条好代码原则
 ```
 
-- `review_cmd.py:install()` —— monkey-patch `GenericAgent._handle_slash_cmd`,统一接管 `/review`
+- `review_cmd.py:install()` —— monkey-patch `TAU._handle_slash_cmd`,统一接管 `/review`
 - `review_cmd.py:_render_prompt()` —— 加载 prompt 模板,注入 `{user_request}` + `{ga_root}`
 
 ---

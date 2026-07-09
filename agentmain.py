@@ -11,7 +11,7 @@ from agent_loop import agent_runner_loop
 try:
     from plugins.hooks import discover_and_load; discover_and_load()
 except Exception: pass
-from tau import GenericAgentHandler, smart_format, get_global_memory, format_error, consume_file
+from tau import TauHandler, smart_format, get_global_memory, format_error, consume_file
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 BANNED_TOOLS = (['ask_user', 'start_long_term_update'] if '--no-user-tools' in sys.argv else [])
@@ -48,7 +48,7 @@ def get_system_prompt():
 # agent = GenericAgent(); threading.Thread(target=agent.run, daemon=True).start()
 # output1_queue = agent.put_task(prompt1)
 # output2_queue = agent.put_task(prompt2)
-class GenericAgent:
+class Tau:
     def __init__(self):
         os.makedirs(os.path.join(script_dir, 'temp'), exist_ok=True)
         self.lock = threading.Lock()
@@ -152,7 +152,7 @@ class GenericAgent:
             self.history.append(f"[USER]: {rquery}")
             sys_prompt = get_system_prompt() + '\n'.join(self.extra_sys_prompts) + getattr(self.llmclient.backend, 'extra_sys_prompt', '')
             if self.peer_hint: sys_prompt += f"\n[Peer] 用户提及其他会话/后台任务状态时: temp/model_responses/ (只找近期修改的文件尾部)\n"
-            handler = GenericAgentHandler(self, self.history, os.path.join(script_dir, 'temp'))
+            handler = TauHandler(self, self.history, os.path.join(script_dir, 'temp'))
             if getattr(self, 'no_print', False): handler.print = lambda *a, **k: None
             if self.handler and 'key_info' in self.handler.working: 
                 ki = re.sub(r'\n\[SYSTEM\] 此为.*?工作记忆[。\n]*', '', self.handler.working['key_info'])  # 去旧
@@ -192,7 +192,7 @@ class GenericAgent:
                 self.task_queue.task_done()
                 if self.handler is not None: self.handler.code_stop_signal.append(1)
 
-GeneraticAgent = GenericAgent
+TauAlias = Tau
 
 if __name__ == '__main__':
     import argparse
@@ -224,7 +224,7 @@ if __name__ == '__main__':
             stdout=out, stderr=err)
         print('PID:', p.pid); sys.exit(0)
 
-    agent = GenericAgent()
+    agent = Tau()
     if args.nolog: agent.log_path = False
     agent.next_llm(args.llm_no)
     agent.verbose = args.verbose
@@ -306,7 +306,7 @@ if __name__ == '__main__':
             try: model = agent.get_llm_name(model=True) or '?'
             except Exception: model = '?'
             try:
-                sys.stdout.write(f'\x1b[92m✦\x1b[0m \x1b[1mGenericAgent\x1b[0m '
+                sys.stdout.write(f'\x1b[92m✦\x1b[0m \x1b[1mTAU\x1b[0m '
                                  f'\x1b[90m· cli · model:\x1b[0m {model}\n')
                 sys.stdout.flush()
             except Exception: pass

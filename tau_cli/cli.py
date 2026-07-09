@@ -1,5 +1,5 @@
 """
-ga_cli/cli.py - GenericAgent 命令行分发系统
+tau_cli/cli.py - TAU 命令行分发系统
 
 通过 python -m ga_cli <命令> 或 tau <命令> 调用
 """
@@ -82,7 +82,7 @@ COMMANDS = {
     },
     "status": {
         "help": "检查运行状态",
-        "desc": "检查当前是否已有 GenericAgent 进程在运行",
+        "desc": "检查当前是否已有 TAU 进程在运行",
         "cmd": None,
         "internal": True,
     },
@@ -127,7 +127,7 @@ def cmd_status():
         for p in running:
             print(f"   PID {p.info['pid']} — {' '.join(p.info['cmdline'][:3])}")
     else:
-        print("⚫ GenericAgent 进程未运行")
+        print("⚫ TAU 进程未运行")
 
 
 def cmd_update():
@@ -149,7 +149,7 @@ def cmd_update():
 def main():
     parser = argparse.ArgumentParser(
         prog="tau",
-        description="GenericAgent 全局命令入口",
+        description="TAU 全局命令入口",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent("""\
             示例:
@@ -170,7 +170,7 @@ def main():
     args, unknown = parser.parse_known_args()
 
     if args.version:
-        print("GenericAgent v0.1.0")
+        print("TAU v0.1.0")
         return
 
     cmd = args.command

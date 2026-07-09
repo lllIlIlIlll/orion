@@ -2,7 +2,7 @@
 # minimal core first; missing packages can be installed on demand.
 
 [project]
-name = "genericagent"
+name = "tau"
 version = "0.1.0"
 description = "Minimalist self-evolving autonomous agent framework"
 readme = "README.md"

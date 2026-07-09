@@ -5,7 +5,7 @@ import requests, qrcode
 from Crypto.Cipher import AES
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 _TEMP_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'temp')
-from agentmain import GeneraticAgent
+from agentmain import Tau as GeneraticAgent
 
 # ── AuthExpired (errcode -14 from getUpdates) ──
 class AuthExpired(Exception):

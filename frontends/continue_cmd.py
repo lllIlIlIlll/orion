@@ -9,7 +9,7 @@ _BLOCK_RE = re.compile(r'^=== (Prompt|Response) ===.*?\n(.*?)(?=^=== (?:Prompt|R
                        re.DOTALL | re.MULTILINE)
 _SUMMARY_RE = re.compile(r'<summary>\s*(.*?)\s*</summary>', re.DOTALL)
 _ROUND_HEADER_RE = re.compile(rb'^=== (Prompt|Response) ===', re.MULTILINE)
-_ROUNDS_CACHE_PATH = os.path.join(os.path.expanduser('~'), '.genericagent', 'continue_rounds_cache.json')
+_ROUNDS_CACHE_PATH = os.path.join(os.path.expanduser('~'), '.tau', 'continue_rounds_cache.json')
 _ROUNDS_CACHE_VERSION = 1
 _rounds_cache = None
 _rounds_cache_dirty = False

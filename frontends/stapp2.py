@@ -16,7 +16,7 @@ except (ImportError, AttributeError):
     from streamlit.components.v1 import html as _embed_html  # ≤1.55
 import time, json, re, threading, queue
 from datetime import datetime
-from agentmain import GeneraticAgent
+from agentmain import Tau as GeneraticAgent
 
 st.set_page_config(page_title="Cowork", layout="wide")
 
@@ -945,7 +945,7 @@ agent = init()
 
 def init_session_state():
     for key, value in {
-        'agent_name': 'GenericAgent', 'streaming': False, 'stopping': False, 'display_queue': None,
+        'agent_name': 'TAU', 'streaming': False, 'stopping': False, 'display_queue': None,
         'partial_response': '', 'reply_ts': '', 'current_prompt': '', 'selected_llm_idx': agent.llm_no,
         'autonomous_enabled': False, 'messages': [],
     }.items(): st.session_state.setdefault(key, value)
@@ -961,7 +961,7 @@ _embed_html(build_header_agent_badge_script(), height=0, width=0)
 st.session_state.agent_name = 'Generic Agent'
 with st.chat_message("assistant"):
     st.markdown(f'<div class="msg-timestamp">{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}</div>', unsafe_allow_html=True)
-    st.write("欢迎使用GenericAgent~")
+    st.write("欢迎使用TAU~")
 
 
 @st.fragment

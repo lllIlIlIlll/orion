@@ -1,8 +1,8 @@
-# Contributing to GenericAgent
+# Contributing to TAU
 
 ## Why This File Is Short
 
-GenericAgent's core is ~3K lines. Every file in this repo will be read by AI agents — potentially thousands of times. Extra words cost real tokens and push useful context out of the window, increasing hallucinations. This document practices what it preaches: **say only what matters.**
+TAU's core is ~3K lines. Every file in this repo will be read by AI agents — potentially thousands of times. Extra words cost real tokens and push useful context out of the window, increasing hallucinations. This document practices what it preaches: **say only what matters.**
 
 ## Before You Contribute
 
@@ -23,7 +23,7 @@ All PRs go through a strict automated code review skill. Key expectations:
 
 ## Skill Contributions
 
-GenericAgent evolves through skills. Not all skills belong in the core repo:
+TAU evolves through skills. Not all skills belong in the core repo:
 
 | Type | Where it goes | Example |
 |---|---|---|

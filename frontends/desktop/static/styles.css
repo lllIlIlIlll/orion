@@ -1,4 +1,4 @@
-/* GenericAgent 桌面版 — 界面骨架 mockup
+/* TAU 桌面版 — 界面骨架 mockup
    仅布局与视觉占位。所有颜色均走 CSS 变量，主题可整体切换（无硬编码颜色）。 */
 
 * { box-sizing: border-box; margin: 0; padding: 0; }

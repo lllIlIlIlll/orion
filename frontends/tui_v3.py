@@ -1,4 +1,4 @@
-"""tui_v3 — scrollback-first TUI for GenericAgent, consolidated.
+"""tui_v3 — scrollback-first TUI for TAU, consolidated.
 
 Merged from frontends/tui/ (cjk, clipboard, renderer, protocol, core/sb)
 into a single file so the v3 frontend ships as one drop-in module.
@@ -21,7 +21,7 @@ for _p in (_proj_root, _front_dir):
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
-from agentmain import GeneraticAgent
+from agentmain import Tau as GeneraticAgent
 from dataclasses import dataclass
 from dataclasses import dataclass, field
 from functools import lru_cache
@@ -1005,7 +1005,7 @@ def _rich_version() -> str:
 
 log = logging.getLogger(__name__)
 
-_TEMP_DIR = os.path.join(tempfile.gettempdir(), 'genericagent_tui')
+_TEMP_DIR = os.path.join(tempfile.gettempdir(), 'tau_tui')
 _platform = sys.platform
 _HAS_WAYLAND = bool(os.environ.get('WAYLAND_DISPLAY'))
 
@@ -1364,10 +1364,10 @@ def _extract_ask_user(ctx: dict | None) -> AskUserEvent | None:
 
 
 class AgentBridge:
-    """Wraps GenericAgent for the TUI. One bridge per session."""
+    """Wraps TAU for the TUI. One bridge per session."""
 
     def __init__(self, llm_no: int = 0):
-        self.agent = GeneraticAgent()
+        self.agent = Tau()
         self.agent.llm_no = llm_no
         if llm_no and hasattr(self.agent, 'llmclients') and self.agent.llmclients:
             self.agent.llmclient = self.agent.llmclients[llm_no % len(self.agent.llmclients)]
@@ -3982,7 +3982,7 @@ class SB:
         lbl_sess = _t('banner.label.session')
         sess_val = self._session_name or _t('banner.session.single')
         llm_hint = _t('banner.llm_hint')
-        rows = [(_ACCENT + '>_' + _RST + ' GenericAgent', '>_ GenericAgent'),
+        rows = [(_ACCENT + '>_' + _RST + ' TAU', '>_ TAU'),
                 ('', ''),
                 (f'{d}{lbl_model}{r}       {name}   {d}{llm_hint}{r}',
                  f'{lbl_model}       {name}   {llm_hint}'),
@@ -5193,7 +5193,7 @@ class SB:
     def _term_title(self) -> str:
         name = (self._session_name or '').strip()
         head = (_SPIN[self._spin % len(_SPIN)] + ' ') if self._running else ''
-        tail = f'{name} · GenericAgent' if name else 'GenericAgent'
+        tail = f'{name} · TAU' if name else 'TAU'
         return f'{head}{tail}'
 
     def _poll_ask(self, grace: float = 0.0) -> AskUserEvent | None:
@@ -6008,7 +6008,7 @@ class SB:
         except KeyboardInterrupt:
             pass
         finally:
-            _set_term_title('GenericAgent')
+            _set_term_title('TAU')
 
 
 # sb.py's original `main()` and __main__ guard intentionally dropped — the

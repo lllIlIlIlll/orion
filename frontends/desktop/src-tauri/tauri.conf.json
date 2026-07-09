@@ -1,7 +1,7 @@
 {
-  "productName": "GenericAgent",
+  "productName": "TAU",
   "version": "0.1.0",
-  "identifier": "com.genericagent.app",
+  "identifier": "com.tau.app",
   "build": {
     "frontendDist": "../static"
   },
@@ -12,7 +12,7 @@
     },
     "windows": [
       {
-        "title": "GenericAgent",
+        "title": "TAU",
         "label": "main",
         "width": 1280,
         "height": 800,
@@ -22,7 +22,7 @@
         "url": "loading.html"
       },
       {
-        "title": "GenericAgent — Setup",
+        "title": "TAU — Setup",
         "label": "setup",
         "width": 600,
         "height": 580,

@@ -1,4 +1,4 @@
-// GenericAgent Web2 browser bridge adapter.
+// TAU Web2 browser bridge adapter.
 // HTTP is the command/data channel. WebSocket only carries small state events.
 (() => {
   'use strict';

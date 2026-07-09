@@ -11,7 +11,7 @@ from pydantic import BaseModel
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if ROOT not in sys.path: sys.path.insert(0, ROOT)
 
-from agentmain import GenericAgent
+from agentmain import Tau
 
 HOST = "127.0.0.1"
 PORT = 8900
@@ -31,7 +31,7 @@ def _desktop_llm_no() -> Optional[int]:
         return None
 
 
-def _apply_desktop_model(agent: "GenericAgent") -> None:
+def _apply_desktop_model(agent: "Tau") -> None:
     """Switch a freshly built agent to the desktop-selected model (if any)."""
     no = _desktop_llm_no()
     if no is None:
@@ -74,7 +74,7 @@ class SubagentActionIn(BaseModel):
 @dataclass
 class SubAgentState:
     id: str
-    agent: GenericAgent
+    agent: Tau
     prompt: str
     thread: Optional[threading.Thread] = None
     reply: str = ""
@@ -148,7 +148,7 @@ def add_chat(msg: str, role: str = "conductor", files: list = None, images: list
     schedule_broadcast({"type": "chat", "item": item})
     return item
 
-def start_agent_runner(agent: GenericAgent, name: str):
+def start_agent_runner(agent: Tau, name: str):
     t = threading.Thread(target=agent.run, name=name, daemon=True)
     t.start(); return t
 
@@ -217,7 +217,7 @@ class SubagentPool:
             if to_abort: push_cards()
     def start_subagent(self, prompt: str) -> dict:
         sid = short_id()
-        agent = GenericAgent()
+        agent = Tau()
         agent.inc_out = True
         agent.verbose = False
         agent.no_print = True
@@ -296,7 +296,7 @@ class Conductor:
 
     def __init__(self):
         self.inbox: "queue.Queue[dict]" = queue.Queue()   # 收件箱：唯一对外接口
-        self.agent: Optional[GenericAgent] = None
+        self.agent: Optional[Tau] = None
         self.started = False
         self.log: list = []   
 
@@ -355,7 +355,7 @@ API: {base}；requests，GET /readme查用法，GET /chat读未读对话，GET /
                 return
 
     def _run(self):
-        self.agent = GenericAgent()
+        self.agent = Tau()
         self.agent.inc_out = True
         start_agent_runner(self.agent, "conductor-agent")
         self.started = True

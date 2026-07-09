@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-GenericAgent — 交互式初始化向导 (configure.py)
+TAU — 交互式初始化向导 (configure.py)
 一键配置 LLM 模型 + 消息平台，自动生成 taukey.py
 
 用法:
@@ -582,7 +582,7 @@ def banner():
     print('\033[2J\033[H', end='')  # ANSI 清屏，跨平台
     print(f"{C['cyan']}{C['bold']}")
     print("  ╔═══════════════════════════════════════════════════════════╗")
-    print("  ║        GenericAgent — 交互式初始化向导 v1.2              ║")
+    print("  ║             TAU — 交互式初始化向导 v1.2                   ║")
     print("  ║   一键配置 LLM 模型 + 消息平台，自动生成 taukey.py        ║")
     print("  ╚═══════════════════════════════════════════════════════════╝")
     print(f"{C['reset']}")
@@ -680,10 +680,10 @@ def probe_models(provider, apikey, apibase=None):
 
     if ptype == 'native_claude':
         url = f"{base}/v1/models"
-        headers = {'x-api-key': apikey, 'anthropic-version': '2023-06-01', 'User-Agent': 'GenericAgent/1.0'}
+        headers = {'x-api-key': apikey, 'anthropic-version': '2023-06-01', 'User-Agent': 'TAU/1.0'}
     else:
         url = f"{base}/models"
-        headers = {'Authorization': f'Bearer {apikey}', 'User-Agent': 'GenericAgent/1.0'}
+        headers = {'Authorization': f'Bearer {apikey}', 'User-Agent': 'TAU/1.0'}
 
     print(f"\n  {C['dim']}🔍 正在探测可用模型 ({base}/models)...{C['reset']}", end='', flush=True)
     if ptype == 'native_claude':
@@ -1046,7 +1046,7 @@ def generate_taukey(llm_cfgs, platform_configs):
     """生成 taukey.py 内容"""
     lines = []
     lines.append("# ══════════════════════════════════════════════════════════════════════════════")
-    lines.append(f"#  GenericAgent — taukey.py (由 configure.py 自动生成 @ {datetime.now().strftime('%Y-%m-%d %H:%M')})")
+    lines.append(f"#  TAU — taukey.py (由 configure.py 自动生成 @ {datetime.now().strftime('%Y-%m-%d %H:%M')})")
     lines.append("# ══════════════════════════════════════════════════════════════════════════════")
     lines.append("")
     lines.append("# ── 停止符 ──────────────────────────────────────────────────────────────────")

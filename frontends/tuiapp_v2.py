@@ -1,4 +1,4 @@
-"""GenericAgent TUI v2 — Textual app with refined visual style.
+"""TAU TUI v2 — Textual app with refined visual style.
 
 Run from project root:
     python frontends/tuiapp_v2.py
@@ -2053,9 +2053,9 @@ class AgentSession:
 
 
 def default_agent_factory() -> Any:
-    from agentmain import GenericAgent
+    from agentmain import Tau
     from frontends.slash_cmds import COMMIT_SIGNATURE_PROMPT
-    agent = GenericAgent()
+    agent = Tau()
     agent.inc_out = True
     agent.extra_sys_prompts.append(COMMIT_SIGNATURE_PROMPT)
     return agent
@@ -2743,7 +2743,7 @@ def _grab_clipboard_file() -> Optional[tuple[str, bool]]:
         return None
     if isinstance(data, Image.Image):
         try:
-            out_dir = os.path.join(tempfile.gettempdir(), "genericagent_tui_clipboard")
+            out_dir = os.path.join(tempfile.gettempdir(), "tau_tui_clipboard")
             os.makedirs(out_dir, exist_ok=True)
             path = os.path.join(out_dir, f"clipboard_{int(time.time() * 1000)}.png")
             data.save(path, "PNG")
@@ -3210,7 +3210,7 @@ def _gerund_color(elapsed: int, tokens: int) -> str:
 
 
 def render_status_chip(busy: bool, elapsed: int = 0) -> Text:
-    """`✦ GenericAgent` identity chip. Brightens green when any session is busy.
+    """`✦ TAU` identity chip. Brightens green when any session is busy.
 
     The `elapsed` kwarg is kept for API stability but intentionally unrendered:
     the per-session dot now carries the elapsed counter, which is more accurate
@@ -3218,7 +3218,7 @@ def render_status_chip(busy: bool, elapsed: int = 0) -> Text:
     """
     chip = Text()
     chip.append("✦ ", style=C_GREEN if busy else C_DIM)
-    chip.append("GenericAgent", style=f"bold {C_GREEN}" if busy else f"bold {C_FG}")
+    chip.append("TAU", style=f"bold {C_GREEN}" if busy else f"bold {C_FG}")
     return chip
 
 
@@ -3231,7 +3231,7 @@ def render_topbar(session_name: str, status: str, model: str, tasks_running: int
     # + tasks CENTERED; clock RIGHT. The 2:2:1 ratio keeps the centered model
     # chip visually anchored even when the left column has the long status pill.
     # The OS terminal tab title carries the session name separately — see
-    # GenericAgentTUI._update_terminal_title.
+    # TauTUI._update_terminal_title.
     t = Table.grid(expand=True)
     # Equal column widths so the middle column's geometric center sits at the
     # window center. Uneven ratios shift the centered band off-axis.
@@ -3536,7 +3536,7 @@ C_LAVENDER = C_PURPLE      # lane 配色 → 跟主题紫
 C_RED      = "#e5534b"     # diff 删除行(固定语义色)
 
 
-class GenericAgentTUI(App[None]):
+class TauTUI(App[None]):
 
     CSS = _MAIN_CSS
 
@@ -3630,9 +3630,9 @@ class GenericAgentTUI(App[None]):
             import cost_tracker; cost_tracker.install()
         except Exception:
             pass
-        # Patch GenericAgent for /review in case chatapp_common didn't wire it.
+        # Patch TAU for /review in case chatapp_common didn't wire it.
         try:
-            from agentmain import GenericAgent as _GA
+            from agentmain import Tau as _GA
             import review_cmd; review_cmd.install(_GA)
         except Exception:
             pass
@@ -3713,7 +3713,7 @@ class GenericAgentTUI(App[None]):
         except Exception: pass
         get_index(os.path.join(ROOT_DIR, "temp")).warm()   # @ 补全：预热未绑时的默认根（temp）
         self.add_session("main")
-        self._system(f"Welcome to GenericAgent TUI. 按 / 唤起命令面板，{fmt_key('ctrl+n')} 新建会话。")
+        self._system(f"Welcome to TAU TUI. 按 / 唤起命令面板，{fmt_key('ctrl+n')} 新建会话。")
 
         # CSS `#planbar-scroll { display: none }` keeps it hidden by default —
         # the renderer adds `-visible` once plan items materialize.
@@ -3834,7 +3834,7 @@ class GenericAgentTUI(App[None]):
         sess = AgentSession(agent_id=agent_id, name=name or f"agent-{agent_id}", agent=agent)
         # Rewind 后端:每 session 一个 checkpoint 树 + blob 库,key 对齐 agent.log_path
         # (TAU 稳定会话身份)。cwd = temp(与 TAU handler 解析相对路径的基准一致,
-        # 见 agentmain GenericAgentHandler(..., temp))。store 挂到 agent 上供全局
+        # 见 agentmain TauHandler(..., temp))。store 挂到 agent 上供全局
         # tool_before 钩子按 agent 路由。
         try:
             temp_dir = os.path.normpath(os.path.join(FRONTENDS_DIR, '..', 'temp'))
@@ -3910,7 +3910,7 @@ class GenericAgentTUI(App[None]):
         no need to parse the newline-mangled pretty JSON. Content-addressed, so it
         survives re-renders and pairs each block with its exact call. The registry
         is process-global, so install at most once."""
-        if GenericAgentTUI._write_snapshot_hook_installed:
+        if TauTUI._write_snapshot_hook_installed:
             return
         try:
             from plugins import hooks as _ph
@@ -4006,7 +4006,7 @@ class GenericAgentTUI(App[None]):
 
             _ph.register("tool_before")(_snap)
             _ph.register("tool_after")(_snap_after)
-            GenericAgentTUI._write_snapshot_hook_installed = True
+            TauTUI._write_snapshot_hook_installed = True
         except Exception:
             pass
 
@@ -4018,9 +4018,9 @@ class GenericAgentTUI(App[None]):
         真写盘**之前**,把目标文件的「改前内容」存进对应 session 的 store(track_pre_edit)。
 
         注册表是全局的(非 per-session),回调对所有 agent 触发 → 靠 ctx 的
-        `self.parent`(GenericAgent)上挂的 `_rw_store` 路由到正确 session。
+        `self.parent`(TAU)上挂的 `_rw_store` 路由到正确 session。
         回调跑在 agent 线程;每 agent 独占自己的 store,无跨线程竞争。"""
-        if GenericAgentTUI._rw_tool_hook_installed:
+        if TauTUI._rw_tool_hook_installed:
             return
         try:
             from plugins import hooks as _ph
@@ -4040,7 +4040,7 @@ class GenericAgentTUI(App[None]):
                 return ctx
 
             _ph.register("tool_before")(_rw_tool_before)
-            GenericAgentTUI._rw_tool_hook_installed = True
+            TauTUI._rw_tool_hook_installed = True
         except Exception:
             pass
 
@@ -4141,7 +4141,7 @@ class GenericAgentTUI(App[None]):
         multi-line strings don't leak into the picker.
 
         tau.turn_end_callback reads hooks from `self.parent._turn_end_hooks`
-        where `parent` is the GenericAgent — so the dict lives on the agent.
+        where `parent` is the TAU — so the dict lives on the agent.
         """
         agent = sess.agent
         try:
@@ -5043,7 +5043,7 @@ class GenericAgentTUI(App[None]):
                 self._system(f"❌ 名称已被会话 #{sid} 占用，请换一个"); return
         # Registry collision: another log already owns this name on disk.
         # `agent.log_path` is the microsecond-stamped file the agent actually
-        # writes to (see agentmain.GenericAgent.__init__); exclude its basename
+        # writes to (see agentmain.Tau.__init__); exclude its basename
         # so renaming yourself isn't reported as a collision.
         log_path = getattr(self.current.agent, "log_path", "") or ""
         own_key = os.path.basename(log_path)
@@ -7107,9 +7107,9 @@ class GenericAgentTUI(App[None]):
         name = (sess.name or "session").strip() or "session"
         if busy:
             glyph = _TITLE_SPINNER_FRAMES[self._title_frame % len(_TITLE_SPINNER_FRAMES)]
-            title = f"{glyph} {name} · GenericAgent"
+            title = f"{glyph} {name} · TAU"
         else:
-            title = f"{name} · GenericAgent"
+            title = f"{name} · TAU"
         if title == self._last_title: return
         self._last_title = title
         # Serialize through the driver — see _term_write for the race this avoids.
@@ -7841,7 +7841,7 @@ class GenericAgentTUI(App[None]):
 
 # ---------- CLI ----------
 def build_arg_parser() -> argparse.ArgumentParser:
-    return argparse.ArgumentParser(description="GenericAgent TUI v2 (refined visual style)")
+    return argparse.ArgumentParser(description="TAU TUI v2 (refined visual style)")
 
 
 def _warn_mintty():
@@ -8589,7 +8589,7 @@ class RewindTreeScreen(ModalScreen):
 def main(argv: Optional[list[str]] = None) -> int:
     build_arg_parser().parse_args(argv)
     _warn_mintty()
-    GenericAgentTUI().run()
+    TauTUI().run()
     return 0
 
 

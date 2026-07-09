@@ -1,4 +1,4 @@
-# launcher.pyw - GenericAgent 服务启动器
+# launcher.pyw - TAU 服务启动器
 # 纯 tkinter + 标准库，零第三方依赖，跨平台
 import os, sys, socket, subprocess, threading
 import tkinter as tk
@@ -87,7 +87,7 @@ class ServiceManager:
 class LauncherApp:
     def __init__(self, root):
         self.root = root
-        self.root.title('GenericAgent Launcher')
+        self.root.title('TAU Launcher')
         self.root.geometry('720x740')
         self.root.protocol('WM_DELETE_WINDOW', self.on_close)
 

@@ -1,7 +1,7 @@
 """
-tau_cli - GenericAgent CLI 命令包
+tau_cli - TAU CLI 命令包
 
-作为包导入时，自动从根 tau.py 加载核心类（GenericAgentHandler 等）
+作为包导入时，自动从根 tau.py 加载核心类（TauHandler 等）
 以 python -m tau_cli 运行时，进入 CLI 命令模式
 """
 import importlib.util, sys, os
@@ -20,7 +20,7 @@ if os.path.exists(_root_ga):
     _spec.loader.exec_module(_mod)
     # 公开导出
     _EXPORT_NAMES = [
-        'GenericAgentHandler', 'smart_format', 'get_global_memory',
+        'TauHandler', 'smart_format', 'get_global_memory',
         'format_error', 'consume_file', 'code_run', 'script_dir',
         'BaseHandler', 'StepOutcome',
     ]

@@ -2,7 +2,7 @@ import threading, sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from fastapi import FastAPI, Header, HTTPException, Query, Depends; from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
-from agentmain import GenericAgent as TAU
+from agentmain import Tau as TAU
 
 PORT, API_KEY = int(sys.argv[1]), sys.argv[2]
 app, agent, lock = FastAPI(), TAU(), threading.Lock()

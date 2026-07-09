@@ -28,7 +28,7 @@ from PySide6.QtGui import (
 )
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from agentmain import GeneraticAgent
+from agentmain import Tau as GeneraticAgent
 from chatapp_common import FILE_HINT, HELP_TEXT, clean_reply, build_done_text, format_restore
 
 
@@ -2411,7 +2411,7 @@ def main():
     )
     app = QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(False)
-    app.setApplicationName("GenericAgent")
+    app.setApplicationName("TAU")
 
     # Font
     font = QFont()
@@ -2444,7 +2444,7 @@ def main():
     panel.show()
 
     scr = QApplication.primaryScreen().availableGeometry()
-    print(f"[GenericAgent] 启动成功")
+    print(f"[TAU] 启动成功")
     print(f"  屏幕分辨率: {scr.width()}x{scr.height()}")
     print(f"  悬浮按钮: ({button.x()}, {button.y()})")
     print(f"  聊天面板: ({panel.x()}, {panel.y()})")

@@ -45,7 +45,7 @@ def _active_project(ctx=None):
     """返回当前激活的项目名；未激活返回 None。
 
     兼容策略:
-      - 新 TUI 多会话可在当前 GenericAgent 实例上设置 _ga_project_mode_name。
+      - 新 TUI 多会话可在当前 TAU 实例上设置 _tau_project_mode_name。
         只要该属性存在,就以它为准;值为 None/空串表示该 agent 普通模式。
       - 其它 UI / 旧 SOP 不设置该属性,继续读取 pid 键控文件锚。
     异常不在此捕获——hooks.trigger 统一捕获并打印，保持可观测。"""
@@ -53,8 +53,8 @@ def _active_project(ctx=None):
     if isinstance(ctx, dict):
         handler = ctx.get('handler')
         parent = getattr(handler, 'parent', None)
-    if parent is not None and hasattr(parent, '_ga_project_mode_name'):
-        return getattr(parent, '_ga_project_mode_name', None) or None
+    if parent is not None and hasattr(parent, '_tau_project_mode_name'):
+        return getattr(parent, '_tau_project_mode_name', None) or None
     if not os.path.isfile(_ANCHOR):
         return None
     return open(_ANCHOR, encoding='utf-8').read().strip() or None

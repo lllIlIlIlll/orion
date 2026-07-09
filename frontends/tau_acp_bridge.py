@@ -47,7 +47,7 @@ import uuid
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
-from agentmain import GeneraticAgent
+from agentmain import Tau as GeneraticAgent
 
 
 JSONRPC_VERSION = "2.0"
@@ -135,7 +135,7 @@ class SessionState:
     prompt_lock: threading.Lock = field(default_factory=threading.Lock)
 
 
-class GenericAgentAcpBridge:
+class TauAcpBridge:
     def __init__(self, llm_no: int = 0):
         self.llm_no = llm_no
         self._json_out = _acp_stdout
@@ -179,8 +179,8 @@ class GenericAgentAcpBridge:
                 "sessionCapabilities": {},
             },
             "agentInfo": {
-                "name": "genericagent-acp",
-                "title": "GenericAgent",
+                "name": "tau-acp",
+                "title": "TAU",
                 "version": "0.1.0",
             },
             "authMethods": [],
@@ -250,7 +250,7 @@ class GenericAgentAcpBridge:
                         },
                     )
                 )
-                eprint("[GenericAgent ACP] prompt thread failed:", traceback.format_exc())
+                eprint("[TAU ACP] prompt thread failed:", traceback.format_exc())
             finally:
                 with session.prompt_lock:
                     finished_req_id = session.current_prompt_id
@@ -343,14 +343,14 @@ class GenericAgentAcpBridge:
                 if req_id is not None:
                     self.write_message(jsonrpc_error(-32601, f"method not found: {method}", req_id))
         except Exception as exc:
-            eprint("[GenericAgent ACP] request handler failed:", traceback.format_exc())
+            eprint("[TAU ACP] request handler failed:", traceback.format_exc())
             if req_id is not None:
                 self.write_message(
                     jsonrpc_error(-32603, f"internal error: {type(exc).__name__}: {exc}", req_id)
                 )
 
     def serve(self) -> None:
-        eprint("[GenericAgent ACP] bridge started")
+        eprint("[TAU ACP] bridge started")
         stdin = io.TextIOWrapper(sys.stdin.buffer, encoding="utf-8", errors="replace") if hasattr(sys.stdin, 'buffer') else sys.stdin
         for raw_line in stdin:
             msg = parse_jsonrpc_line(raw_line)
@@ -359,14 +359,14 @@ class GenericAgentAcpBridge:
             self.handle_message(msg)
             if self._shutdown:
                 break
-        eprint("[GenericAgent ACP] bridge stopped")
+        eprint("[TAU ACP] bridge stopped")
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="GenericAgent ACP bridge over stdio")
-    parser.add_argument("--llm-no", type=int, default=0, help="LLM index for GenericAgent")
+    parser = argparse.ArgumentParser(description="TAU ACP bridge over stdio")
+    parser.add_argument("--llm-no", type=int, default=0, help="LLM index for TAU")
     args = parser.parse_args()
-    bridge = GenericAgentAcpBridge(llm_no=args.llm_no)
+    bridge = TauAcpBridge(llm_no=args.llm_no)
     bridge.serve()
     return 0
 

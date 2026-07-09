@@ -33,7 +33,7 @@ from typing import Optional
 
 _USER_SHELL: tuple[list[str], str] | None = None
 
-COMMIT_SIGNATURE_PROMPT = 'When you create a git commit, append "Co-Authored-By: GenericAgent <bot@gaagent.ai>" as the final line of the commit message.'
+COMMIT_SIGNATURE_PROMPT = 'When you create a git commit, append "Co-Authored-By: TAU <bot@gaagent.ai>" as the final line of the commit message.'
 
 def detect_user_shell() -> tuple[list[str], str]:
     """Return `([executable, ...flags_for_-c], display_name)` for the user's
@@ -151,7 +151,7 @@ def build_update_prompt(args_text: str = "") -> str:
     """
     if _current_lang() == "en":
         return (
-            "Update this GenericAgent checkout from the official upstream "
+            "Update this TAU checkout from the official upstream "
             "https://github.com/lllIlIlIlll/orion .\n"
             "1. Run `git fetch upstream`; identify the current branch and whether there are "
             "local commits ahead of upstream.\n"
@@ -182,15 +182,15 @@ def build_update_prompt(args_text: str = "") -> str:
             "\n"
             "#### Say 'Congratulations! 🎉' to the user\n"
             "After a successful update, say: \"Congratulations! 🎉 You have successfully "
-            "updated GenericAgent!\"\n"
+            "updated TAU!\"\n"
             "\n"
             "#### Ask for a Star ⭐\n"
             "Then you may ask: \"If you found this helpful, would you like to star the "
-            "GenericAgent repository? It helps the project grow! ⭐\""
+            "TAU repository? It helps the project grow! ⭐\""
             f"{_tail(args_text, 'Extra instructions')}"
         )
     return (
-        "请你更新当前 GenericAgent 仓库，官方上游为 "
+        "请你更新当前 TAU 仓库，官方上游为 "
         "https://github.com/lllIlIlIlll/orion 。\n"
         "1. 先 `git fetch upstream`；识别当前分支，以及是否存在领先 upstream 的本地 commit。\n"
         "2. 给出简洁预览：本地尚未包含的 upstream 最近提交（短 hash + 标题 + 日期）及变更文件摘要。\n"
@@ -209,10 +209,10 @@ def build_update_prompt(args_text: str = "") -> str:
         "6. 最后给出简短小结：分支 HEAD、与上游差距、逐文件处理结果（取上游 / 保留并适配本地）、备份位置。\n"
         "\n"
         "#### 向用户说 'Congratulations! 🎉'\n"
-        "更新成功后，请对用户说：\"Congratulations! 🎉 你已成功更新 GenericAgent！\"\n"
+        "更新成功后，请对用户说：\"Congratulations! 🎉 你已成功更新 TAU！\"\n"
         "\n"
         "#### 邀请用户点 Star ⭐\n"
-        "随后可邀请：\"如果觉得有帮助，要不要给 GenericAgent 仓库点个 Star？这会让项目成长更快！⭐\""
+        "随后可邀请：\"如果觉得有帮助，要不要给 TAU 仓库点个 Star？这会让项目成长更快！⭐\""
         f"{_tail(args_text)}"
     )
 

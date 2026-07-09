@@ -1,4 +1,4 @@
-// GenericAgent 桌面版 —— bridge 适配 + 业务 UI（HTTP 命令 / WS 状态 / i18n）。
+// TAU 桌面版 —— bridge 适配 + 业务 UI（HTTP 命令 / WS 状态 / i18n）。
 // 文案全部走 i18n：静态用 data-i18n / data-i18n-ph / data-i18n-title，
 // 动态用 t(key)。dev 标注层与发给 agent 的预设 prompt 不进 UI 字典。
 'use strict';
@@ -304,11 +304,11 @@ let bridgeUiOffline = false;
 /* ═══════════════ i18n ═══════════════ */
 const I18N = {
   zh: {
-    'app.title': 'GenericAgent 桌面版',
+    'app.title': 'TAU 桌面版',
     'brand.sub': '桌面终端',
     'nav.chat': '聊天', 'nav.services': '后台服务', 'nav.channels': '消息通道', 'nav.status': '状态面板',
     'nav.collab': '指挥家', 'nav.token': '用量',
-    'foot.settings': '配置', 'foot.ver': 'GenericAgent · 桌面版',
+    'foot.settings': '配置', 'foot.ver': 'TAU · 桌面版',
     'chat.startTitle': '开始对话', 'chat.startSub': '直接输入，或点预设功能一键启动',
     'preset.butler.t': '指挥家', 'preset.butler.d': '复杂任务自动拆解，只需查看进度和简报',
     'preset.plan.t': 'Plan 模式', 'preset.plan.d': '加载 Plan SOP，按探索→规划→执行→验证流程',
@@ -333,7 +333,7 @@ const I18N = {
     'customPreset.editTitle': '编辑',
     'builtinPreset.restoreBtn': '恢复默认预设',
     'set.appearance': '外观', 'set.plainUi': '素色', 'set.fontSize': '聊天字号', 'set.lang': '语言', 'set.model': '模型', 'set.addModel': '添加模型', 'set.features': '功能', 'set.importTaukey': '导入已有模型配置（taukey.py）', 'set.exportTaukey': '导出当前模型配置', 'set.serviceManager': '后台服务管理',
-    'shortcut.askConfirm': '是否在桌面创建 GenericAgent 快捷方式？',
+    'shortcut.askConfirm': '是否在桌面创建 TAU 快捷方式？',
     'appearance.light': '浅色', 'appearance.dark': '深色',
     'set.noModels': '暂无模型，点击下方添加',
     'lang.zh': '简体中文', 'lang.en': 'English',
@@ -477,11 +477,11 @@ const I18N = {
     'ask.placeholderOpen': '在此输入你的回答… (Enter 发送)',
   },
   en: {
-    'app.title': 'GenericAgent Desktop',
+    'app.title': 'TAU Desktop',
     'brand.sub': 'Desktop terminal',
     'nav.chat': 'Chat', 'nav.services': 'Services', 'nav.channels': 'Channels', 'nav.status': 'Status',
     'nav.collab': 'Conductor', 'nav.token': 'Usage',
-    'foot.settings': 'Settings', 'foot.ver': 'GenericAgent · Desktop',
+    'foot.settings': 'Settings', 'foot.ver': 'TAU · Desktop',
     'chat.startTitle': 'Start a conversation', 'chat.startSub': 'Type a message, or pick a preset',
     'preset.butler.t': 'Conductor', 'preset.butler.d': 'Auto-decompose complex tasks; just check progress and briefings',
     'preset.plan.t': 'Plan mode', 'preset.plan.d': 'Load Plan SOP — explore→plan→execute→verify',
@@ -506,7 +506,7 @@ const I18N = {
     'customPreset.editTitle': 'Edit',
     'builtinPreset.restoreBtn': 'Restore defaults',
     'set.appearance': 'Appearance', 'set.plainUi': 'Plain', 'set.fontSize': 'Chat font size', 'set.lang': 'Language', 'set.model': 'Model', 'set.addModel': 'Add model', 'set.features': 'Features', 'set.importTaukey': 'Import model config (taukey.py)', 'set.exportTaukey': 'Export current model config', 'set.serviceManager': 'Service manager',
-    'shortcut.askConfirm': 'Create a desktop shortcut for GenericAgent?',
+    'shortcut.askConfirm': 'Create a desktop shortcut for TAU?',
     'appearance.light': 'Light', 'appearance.dark': 'Dark',
     'set.noModels': 'No models yet — add one below',
     'lang.zh': '简体中文', 'lang.en': 'English',
@@ -1390,7 +1390,7 @@ function extractAskUserToolJson(content) {
 // renderTurnFold(body, turnIndex) : 单轮原文 → 旧轮的<details>折叠壳（内部下标0起，标题显示1起+summary副标题）
 // 结构化 turn_segs 渲染使用的纯函数：折叠工具块、ask_user 与轮摘要。
 // ============================================================================
-// 去除 GenericAgent 轮次分隔标记；turn_segs 已结构化，不应展示原始 marker
+// 去除 TAU 轮次分隔标记；turn_segs 已结构化，不应展示原始 marker
 function stripTurnMarker(body) {
   return String(body || '')
     .replace(/^\s*\**LLM Running \(Turn \d+\) \.\.\.\**\s*/i, '');

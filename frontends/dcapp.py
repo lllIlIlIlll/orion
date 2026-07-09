@@ -1,4 +1,4 @@
-# Discord Bot Frontend for GenericAgent
+# Discord Bot Frontend for TAU
 # ⚠️ 需要在 Discord Developer Portal 开启 "Message Content Intent"
 #   Bot → Privileged Gateway Intents → MESSAGE CONTENT INTENT → 打开
 # pip install discord.py
@@ -7,7 +7,7 @@ import asyncio, json, os, queue as Q, re, sys, threading, time
 from collections import OrderedDict
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from agentmain import GeneraticAgent
+from agentmain import Tau as GeneraticAgent
 from chatapp_common import (
     AgentChatMixin, build_done_text, ensure_single_instance, extract_files,
     public_access, redirect_log, require_runtime, split_text, strip_files, clean_reply,
