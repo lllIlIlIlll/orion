@@ -79,7 +79,7 @@ git clone https://github.com/lllIlIlIlll/orion.git GenericAgent
 cd GenericAgent
 uv venv
 uv pip install -e ".[ui]"        # 核心 + UI 依赖
-cp mykey_template.py mykey.py     # 填入你的 LLM API Key
+cp assets/mykey_template.py mykey.py     # 填入你的 LLM API Key
 python launch.pyw
 ```
 
@@ -88,9 +88,9 @@ python launch.pyw
 ### 配置 LLM Key
 
 1. 打开已安装的 `GenericAgent` 目录。
-2. 如果没有 `mykey.py`，从 `mykey_template.py` 复制一份。
+2. 如果没有 `mykey.py`，从 `assets/mykey_template.py` 复制一份。
 3. 填入一个真实可用的模型服务商配置。**不要**把示例 Key 当真。
-4. 不确定字段含义时，先读 `mykey_template.py` 里的注释。
+4. 不确定字段含义时，先读 `assets/mykey_template.py` 里的注释。
 
 GA 支持：
 
@@ -242,12 +242,12 @@ git clone https://github.com/lllIlIlIlll/orion.git GenericAgent
 cd GenericAgent
 uv venv
 uv pip install -e ".[ui]"
-cp mykey_template.py mykey.py
+cp assets/mykey_template.py mykey.py
 ```
 
 ### 第 2 步：安全配置 Key
 
-- 编辑 `mykey.py` 前先读 `mykey_template.py`。
+- 编辑 `mykey.py` 前先读 `assets/mykey_template.py`。
 - 只配置用户真实提供的 Key。
 - 不要把完整 Key 打印回给用户。
 - 用户不确定时，运行 `python assets/configure_mykey.py`，或询问要使用哪家模型服务商。

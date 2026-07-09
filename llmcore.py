@@ -16,7 +16,7 @@ def _load_mykeys():
     except SyntaxError as e:
         raise Exception(f'[ERROR] mykey.py has syntax error: {e}') from e
     p = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'mykey.json')
-    if not os.path.exists(p): raise Exception('[ERROR] mykey.py not found in sys.path and mykey.json not found. Run "python configure_mykey.py" or copy mykey_template.py to mykey.py and fill in your keys.')
+    if not os.path.exists(p): raise Exception('[ERROR] mykey.py not found in sys.path and mykey.json not found. Run "python configure_mykey.py" or copy assets/mykey_template.py to mykey.py and fill in your keys.')
     with open(_mykey_path := p, encoding='utf-8') as f: mk = json.load(f)
     if isinstance(mk, dict) and 'remote_url' in mk: return requests.get(mk['remote_url'], timeout=10).json()
     return mk

@@ -3597,7 +3597,7 @@ function setModelApikeyMode(isAdd) {
 
 /* ═══════════════ 官方模型快速接入（DeepSeek / 通义千问）═══════════════ */
 // 预填 API 地址 / 协议 / 模型，用户只需粘贴 API Key。apibase 末尾的 /v1 会被
-// 后端自动补成 /v1/chat/completions（见 mykey_template.py 的拼接规则）。
+// 后端自动补成 /v1/chat/completions（见 assets/mykey_template.py 的拼接规则）。
 const PROVIDER_PRESETS = {
   deepseek: {
     label: 'DeepSeek', descKey: 'pq.deepseekDesc',

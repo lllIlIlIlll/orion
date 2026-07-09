@@ -511,13 +511,13 @@ $MykeyDst = Join-Path $GaDir "mykey.py"
 
 if ($GlobalMode -and !(Test-Path $MykeyDst)) {
 
-    $MykeyTpl = Join-Path $GaDir "mykey_template_en.py"
+    $MykeyTpl = Join-Path $GaDir "assets\mykey_template_en.py"
 
     if (Test-Path $MykeyTpl) {
 
         Copy-Item $MykeyTpl $MykeyDst
 
-        Ok "Copied mykey_template_en.py -> mykey.py"
+        Ok "Copied assets/mykey_template_en.py -> mykey.py"
 
     }
 

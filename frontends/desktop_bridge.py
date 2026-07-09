@@ -186,7 +186,7 @@ class AgentManager:
     def _mykey_file(self) -> Path:
         p = Path(self.ga_root) / "mykey.py"
         if not p.exists():
-            tpl = Path(self.ga_root) / "mykey_template.py"
+            tpl = Path(self.ga_root) / "assets" / "mykey_template.py"
             p.write_text(tpl.read_text(encoding="utf-8") if tpl.exists() else "", encoding="utf-8")
         return p
 
@@ -1398,10 +1398,10 @@ async def path_open_handler(request):
     if kind == "mykey":
         target = Path(manager.ga_root) / "mykey.py"
         if not target.exists():
-            template = Path(manager.ga_root) / "mykey_template.py"
+            template = Path(manager.ga_root) / "assets" / "mykey_template.py"
             target = template if template.exists() else target
     elif kind == "mykeyTemplate":
-        target = Path(manager.ga_root) / "mykey_template.py"
+        target = Path(manager.ga_root) / "assets" / "mykey_template.py"
     elif kind == "upload":
         raw = Path(data.get("path") or "")
         try:
@@ -1618,7 +1618,7 @@ def _mykey_file() -> Path:
     root = Path(manager.ga_root)
     target = root / "mykey.py"
     if not target.is_file():
-        template = root / "mykey_template.py"
+        template = root / "assets" / "mykey_template.py"
         if template.is_file():
             target.write_text(template.read_text(encoding="utf-8"), encoding="utf-8")
     return target

@@ -255,10 +255,10 @@ if [[ -n "$GIT_EXE" ]]; then "$GIT_EXE" --version; fi
 # Copy mykey template if mykey.py does not exist (GLOBAL mode only)
 MYKEY_DST="$GA_DIR/mykey.py"
 if [[ "$GLOBAL" == "1" && ! -f "$MYKEY_DST" ]]; then
-  MYKEY_TPL="$GA_DIR/mykey_template_en.py"
+  MYKEY_TPL="$GA_DIR/assets/mykey_template_en.py"
   if [[ -f "$MYKEY_TPL" ]]; then
     cp "$MYKEY_TPL" "$MYKEY_DST"
-    ok "Copied mykey_template_en.py -> mykey.py"
+    ok "Copied assets/mykey_template_en.py -> mykey.py"
   fi
 fi
 

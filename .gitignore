@@ -28,5 +28,5 @@ build/
 # Claude Code local settings (personal, not shared)
 .claude/settings.local.json
 
-# Real API key file (keep templates: mykey_template*.py, ignore real mykey.py)
+# Real API key file (keep templates: assets/mykey_template*.py, ignore real mykey.py)
 mykey.py

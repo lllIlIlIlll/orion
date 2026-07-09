@@ -79,7 +79,7 @@ git clone https://github.com/lllIlIlIlll/orion.git GenericAgent
 cd GenericAgent
 uv venv
 uv pip install -e ".[ui]"        # Core + UI dependencies
-cp mykey_template.py mykey.py     # Fill in your LLM API key
+cp assets/mykey_template.py mykey.py     # Fill in your LLM API key
 python launch.pyw
 ```
 
@@ -88,9 +88,9 @@ Full guide: [GETTING_STARTED.md](GETTING_STARTED.md)
 ### Configure your LLM key
 
 1. Open the installed `GenericAgent` directory.
-2. If `mykey.py` does not exist, copy it from `mykey_template.py`.
+2. If `mykey.py` does not exist, copy it from `assets/mykey_template.py`.
 3. Fill in one provider. Do **not** paste example keys as real keys.
-4. If you are unsure about the fields, read the comments in `mykey_template.py` first.
+4. If you are unsure about the fields, read the comments in `assets/mykey_template.py` first.
 
 GA supports:
 
@@ -242,12 +242,12 @@ git clone https://github.com/lllIlIlIlll/orion.git GenericAgent
 cd GenericAgent
 uv venv
 uv pip install -e ".[ui]"
-cp mykey_template.py mykey.py
+cp assets/mykey_template.py mykey.py
 ```
 
 ### Step 2: Configure keys safely
 
-- Read `mykey_template.py` before editing `mykey.py`.
+- Read `assets/mykey_template.py` before editing `mykey.py`.
 - Configure only keys the user actually provides.
 - Never print the full key back to the user.
 - If the user is unsure, run `python assets/configure_mykey.py` or ask which provider they want to use.
