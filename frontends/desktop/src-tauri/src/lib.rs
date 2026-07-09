@@ -712,9 +712,9 @@ fn get_config() -> (String, String) {
 }
 
 #[tauri::command]
-fn export_mykey(content: String) -> Result<Option<String>, String> {
+fn export_taukey(content: String) -> Result<Option<String>, String> {
     let path = rfd::FileDialog::new()
-        .set_file_name("mykey.py")
+        .set_file_name("taukey.py")
         .add_filter("Python", &["py"])
         .save_file();
     match path {
@@ -767,7 +767,7 @@ pub fn run() {
                 let _ = w.set_focus();
             }
         }))
-        .invoke_handler(tauri::generate_handler![start_bridge_with_config, start_bridge, get_config, export_mykey, shortcut_should_ask, shortcut_decide])
+        .invoke_handler(tauri::generate_handler![start_bridge_with_config, start_bridge, get_config, export_taukey, shortcut_should_ask, shortcut_decide])
         .setup(move |app| {
             // Show the loading window immediately so the first-run prepare isn't a blank screen.
             // The window starts on loading.html (a local page), so no "connection refused" flash.

@@ -6,7 +6,7 @@ if sys.stderr is None: sys.stderr = open(os.devnull, "w")
 elif hasattr(sys.stderr, 'reconfigure'): sys.stderr.reconfigure(errors='replace')
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from llmcore import reload_mykeys, ToolClient, MixinSession, NativeToolClient, NativeClaudeSession, NativeOAISession, resolve_client
+from llmcore import reload_taukeys, ToolClient, MixinSession, NativeToolClient, NativeClaudeSession, NativeOAISession, resolve_client
 from agent_loop import agent_runner_loop
 try:
     from plugins.hooks import discover_and_load; discover_and_load()
@@ -66,12 +66,12 @@ class GenericAgent:
         self.intervene = self.extrakeyinfo = None
 
     def load_llm_sessions(self):
-        mykeys, changed = reload_mykeys()
+        taukeys, changed = reload_taukeys()
         if not changed and hasattr(self, 'llmclients'): return
         try: oldhistory = self.llmclient.backend.history
         except: oldhistory = None
         llm_sessions = []
-        for k, cfg in mykeys.items():
+        for k, cfg in taukeys.items():
             if not any(x in k for x in ['api', 'config', 'cookie']): continue
             try:
                 if 'mixin' in k: llm_sessions += [{'mixin_cfg': cfg}]
@@ -94,7 +94,7 @@ class GenericAgent:
         lastc = self.llmclient
         self.llmclient = self.llmclients[self.llm_no]
         try: self.llmclient.backend.history = lastc.backend.history
-        except: raise Exception('[ERROR] BAD Mixin config: Check your mykey.py')
+        except: raise Exception('[ERROR] BAD Mixin config: Check your taukey.py')
         self.llmclient.last_tools = ''
         name = self.get_llm_name(model=True)
         if 'glm' in name or 'minimax' in name or 'kimi' in name: load_tool_schema('_cn')

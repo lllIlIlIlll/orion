@@ -505,19 +505,19 @@ Write-Host ""
 
 
 
-# Copy mykey template if mykey.py does not exist (GLOBAL mode only)
+# Copy taukey template if taukey.py does not exist (GLOBAL mode only)
 
-$MykeyDst = Join-Path $GaDir "mykey.py"
+$TaukeyDst = Join-Path $GaDir "taukey.py"
 
-if ($GlobalMode -and !(Test-Path $MykeyDst)) {
+if ($GlobalMode -and !(Test-Path $TaukeyDst)) {
 
-    $MykeyTpl = Join-Path $GaDir "assets\mykey_template_en.py"
+    $TaukeyTpl = Join-Path $GaDir "assets\taukey_template_en.py"
 
-    if (Test-Path $MykeyTpl) {
+    if (Test-Path $TaukeyTpl) {
 
-        Copy-Item $MykeyTpl $MykeyDst
+        Copy-Item $TaukeyTpl $TaukeyDst
 
-        Ok "Copied assets/mykey_template_en.py -> mykey.py"
+        Ok "Copied assets/taukey_template_en.py -> taukey.py"
 
     }
 
@@ -541,7 +541,7 @@ if ($GlobalMode) {
 
 ║  📁 Location: $GaDir
 
-║  🔑 Config: edit mykey.py (copied from template)
+║  🔑 Config: edit taukey.py (copied from template)
 
 ║  🚀 Launch: ga tui / ga launch / ga hub
 

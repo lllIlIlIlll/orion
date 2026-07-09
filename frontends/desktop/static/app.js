@@ -214,8 +214,8 @@ let bridgeUiOffline = false;
       }
       case 'services/panel': return http('/services/panel');
       case 'services/bridge/exit': return http('/services/bridge/exit', { method: 'POST' });
-      case 'services/mykey/get': return http('/services/mykey');
-      case 'services/mykey/save': return http('/services/mykey', { method: 'POST', body: params || {} });
+      case 'services/taukey/get': return http('/services/taukey');
+      case 'services/taukey/save': return http('/services/taukey', { method: 'POST', body: params || {} });
       case 'app/path/selectGaRoot': return http('/config');
       case 'list_continuable_sessions': return { sessions: [] };
       case 'restore_session': throw new Error('restore_session is not implemented in web2 bridge');
@@ -274,14 +274,14 @@ let bridgeUiOffline = false;
     saveConfig: (cfg) => rpc('app/config/save', cfg || {}),
     getModelProfiles: () => rpc('get/model-profiles', {}),
     selectGaRoot: () => rpc('app/path/selectGaRoot', {}),
-    openMykeyTemplate: () => rpc('app/path/open', { kind: 'mykeyTemplate' }),
-    openMykey: () => rpc('app/path/open', { kind: 'mykey' }),
+    openTaukeyTemplate: () => rpc('app/path/open', { kind: 'taukeyTemplate' }),
+    openTaukey: () => rpc('app/path/open', { kind: 'taukey' }),
     startService,
     stopService,
     getServiceLogs: (id, tail = 200) => rpc('services/logs', { id, tail }),
     getServicePanel: () => rpc('services/panel', {}),
-    getMykeyContent: () => rpc('services/mykey/get', {}),
-    saveMykeyContent: (content) => rpc('services/mykey/save', { content }),
+    getTaukeyContent: () => rpc('services/taukey/get', {}),
+    saveTaukeyContent: (content) => rpc('services/taukey/save', { content }),
     tauriInvoke,
     setBridgeUiOffline: (offline) => { bridgeUiOffline = !!offline; },
     pollSession: (sessionId, afterId = 0) => rpc('session/poll', { sessionId, afterId }),
@@ -332,7 +332,7 @@ const I18N = {
     'customPreset.removeTitle': '删除',
     'customPreset.editTitle': '编辑',
     'builtinPreset.restoreBtn': '恢复默认预设',
-    'set.appearance': '外观', 'set.plainUi': '素色', 'set.fontSize': '聊天字号', 'set.lang': '语言', 'set.model': '模型', 'set.addModel': '添加模型', 'set.features': '功能', 'set.importMykey': '导入已有模型配置（mykey.py）', 'set.exportMykey': '导出当前模型配置', 'set.serviceManager': '后台服务管理',
+    'set.appearance': '外观', 'set.plainUi': '素色', 'set.fontSize': '聊天字号', 'set.lang': '语言', 'set.model': '模型', 'set.addModel': '添加模型', 'set.features': '功能', 'set.importTaukey': '导入已有模型配置（taukey.py）', 'set.exportTaukey': '导出当前模型配置', 'set.serviceManager': '后台服务管理',
     'shortcut.askConfirm': '是否在桌面创建 GenericAgent 快捷方式？',
     'appearance.light': '浅色', 'appearance.dark': '深色',
     'set.noModels': '暂无模型，点击下方添加',
@@ -444,15 +444,15 @@ const I18N = {
     'ch.loading': '加载中…', 'ch.empty': '未发现 IM 进程脚本',
     'ch.logEmpty': '暂无日志',
     'err.channelLoad': '加载失败', 'err.channelStart': '启动失败', 'err.channelStop': '停止失败',
-    'err.mykeyImport': '导入模型配置失败',
-    'err.mykeyExport': '导出模型配置失败',
-    'err.channelNotConfigured': '请先在 mykey.py 中配置该平台',
+    'err.taukeyImport': '导入模型配置失败',
+    'err.taukeyExport': '导出模型配置失败',
+    'err.channelNotConfigured': '请先在 taukey.py 中配置该平台',
     'sys.channelStarted': '已启动', 'sys.channelStopped': '已停止',
     'modal.channelLogs': '进程日志',
-    'modal.mykeyConfig': 'mykey.py 配置',
+    'modal.taukeyConfig': 'taukey.py 配置',
     'sys.configSaved': '配置已保存',
-    'sys.mykeyImported': '模型配置已导入',
-    'sys.mykeyExported': '模型配置已导出',
+    'sys.taukeyImported': '模型配置已导入',
+    'sys.taukeyExported': '模型配置已导出',
     'st.starting': '启动中…', 'st.stopping': '停止中…', 'st.online': '在线', 'st.offline': '离线', 'st.error': '错误', 'st.running': '运行', 'st.abnormal': '异常',
     'act.configure': '配置', 'act.logs': '日志', 'act.restart': '重启', 'act.stop': '停止', 'act.start': '启动', 'act.exit': '退出',
     'act.copy': '复制', 'act.copied': '已复制', 'act.copyTex': 'TeX', 'act.send': '发送',
@@ -505,7 +505,7 @@ const I18N = {
     'customPreset.removeTitle': 'Delete',
     'customPreset.editTitle': 'Edit',
     'builtinPreset.restoreBtn': 'Restore defaults',
-    'set.appearance': 'Appearance', 'set.plainUi': 'Plain', 'set.fontSize': 'Chat font size', 'set.lang': 'Language', 'set.model': 'Model', 'set.addModel': 'Add model', 'set.features': 'Features', 'set.importMykey': 'Import model config (mykey.py)', 'set.exportMykey': 'Export current model config', 'set.serviceManager': 'Service manager',
+    'set.appearance': 'Appearance', 'set.plainUi': 'Plain', 'set.fontSize': 'Chat font size', 'set.lang': 'Language', 'set.model': 'Model', 'set.addModel': 'Add model', 'set.features': 'Features', 'set.importTaukey': 'Import model config (taukey.py)', 'set.exportTaukey': 'Export current model config', 'set.serviceManager': 'Service manager',
     'shortcut.askConfirm': 'Create a desktop shortcut for GenericAgent?',
     'appearance.light': 'Light', 'appearance.dark': 'Dark',
     'set.noModels': 'No models yet — add one below',
@@ -617,15 +617,15 @@ const I18N = {
     'ch.loading': 'Loading…', 'ch.empty': 'No IM process scripts found',
     'ch.logEmpty': 'No log output yet',
     'err.channelLoad': 'Failed to load', 'err.channelStart': 'Start failed', 'err.channelStop': 'Stop failed',
-    'err.mykeyImport': 'Failed to import model config',
-    'err.mykeyExport': 'Failed to export model config',
-    'err.channelNotConfigured': 'Configure this platform in mykey.py first',
+    'err.taukeyImport': 'Failed to import model config',
+    'err.taukeyExport': 'Failed to export model config',
+    'err.channelNotConfigured': 'Configure this platform in taukey.py first',
     'sys.channelStarted': 'Started', 'sys.channelStopped': 'Stopped',
     'modal.channelLogs': 'Process logs',
-    'modal.mykeyConfig': 'mykey.py',
+    'modal.taukeyConfig': 'taukey.py',
     'sys.configSaved': 'Configuration saved',
-    'sys.mykeyImported': 'Model config imported',
-    'sys.mykeyExported': 'Model config exported',
+    'sys.taukeyImported': 'Model config imported',
+    'sys.taukeyExported': 'Model config exported',
     'st.starting': 'Starting…', 'st.stopping': 'Stopping…', 'st.online': 'Online', 'st.offline': 'Offline', 'st.error': 'Error', 'st.running': 'Running', 'st.abnormal': 'Error',
     'act.configure': 'Configure', 'act.logs': 'Logs', 'act.restart': 'Restart', 'act.stop': 'Stop', 'act.start': 'Start', 'act.exit': 'Exit',
     'act.copy': 'Copy', 'act.copied': 'Copied', 'act.copyTex': 'TeX', 'act.send': 'Send',
@@ -937,70 +937,70 @@ bindClick('add-model-btn', (e) => {
 bindClick('settings-btn',  (e) => { e.stopPropagation(); openSettings(); });
 bindClick('settings-services-btn', (e) => { e.stopPropagation(); openServiceManagerFromSettings(); });
 
-const importMykeyInput = document.getElementById('import-mykey-input');
-async function importMykeyFromFile(file) {
+const importTaukeyInput = document.getElementById('import-taukey-input');
+async function importTaukeyFromFile(file) {
   if (!file) return;
   const text = await file.text();
-  if (!text.trim()) throw new Error(t('err.mykeyImport'));
-  await window.ga.saveMykeyContent(text);
+  if (!text.trim()) throw new Error(t('err.taukeyImport'));
+  await window.ga.saveTaukeyContent(text);
   await loadModelProfiles();
 }
-bindClick('import-mykey-btn', (e) => {
+bindClick('import-taukey-btn', (e) => {
   e.stopPropagation();
-  if (importMykeyInput) importMykeyInput.click();
+  if (importTaukeyInput) importTaukeyInput.click();
 });
-if (importMykeyInput) {
-  importMykeyInput.addEventListener('change', async () => {
-    const file = importMykeyInput.files && importMykeyInput.files[0];
-    importMykeyInput.value = '';
+if (importTaukeyInput) {
+  importTaukeyInput.addEventListener('change', async () => {
+    const file = importTaukeyInput.files && importTaukeyInput.files[0];
+    importTaukeyInput.value = '';
     if (!file) return;
     try {
-      await importMykeyFromFile(file);
-      showChanToast(t('sys.mykeyImported'), '', 'ok');
+      await importTaukeyFromFile(file);
+      showChanToast(t('sys.taukeyImported'), '', 'ok');
     } catch (err) {
-      showChanToast(t('err.mykeyImport'), err.message || String(err), 'err');
+      showChanToast(t('err.taukeyImport'), err.message || String(err), 'err');
     }
   });
 }
-async function exportMykeyToDir() {
-  const res = await window.ga.getMykeyContent();
+async function exportTaukeyToDir() {
+  const res = await window.ga.getTaukeyContent();
   const content = (res && res.content) ? String(res.content) : '';
-  if (!content.trim()) throw new Error(t('err.mykeyExport'));
+  if (!content.trim()) throw new Error(t('err.taukeyExport'));
   // WebView2：独立缓存 + 无目录选择/下载；走 Tauri 原生另存为
   if (window.__TAURI__?.core?.invoke) {
-    const path = await window.ga.tauriInvoke('export_mykey', { content });
+    const path = await window.ga.tauriInvoke('export_taukey', { content });
     if (!path) return;
-    showChanToast(t('sys.mykeyExported'), path, 'ok');
+    showChanToast(t('sys.taukeyExported'), path, 'ok');
     return;
   }
   if (typeof window.showDirectoryPicker === 'function') {
     const dir = await window.showDirectoryPicker();
-    const handle = await dir.getFileHandle('mykey.py', { create: true });
+    const handle = await dir.getFileHandle('taukey.py', { create: true });
     const writable = await handle.createWritable();
     await writable.write(content);
     await writable.close();
-    showChanToast(t('sys.mykeyExported'), '', 'ok');
+    showChanToast(t('sys.taukeyExported'), '', 'ok');
     return;
   }
   const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'mykey.py';
+  a.download = 'taukey.py';
   a.rel = 'noopener';
   document.body.appendChild(a);
   a.click();
   a.remove();
   URL.revokeObjectURL(url);
-  showChanToast(t('sys.mykeyExported'), '', 'ok');
+  showChanToast(t('sys.taukeyExported'), '', 'ok');
 }
-bindClick('export-mykey-btn', async (e) => {
+bindClick('export-taukey-btn', async (e) => {
   e.stopPropagation();
   try {
-    await exportMykeyToDir();
+    await exportTaukeyToDir();
   } catch (err) {
     if (err && (err.name === 'AbortError' || err.code === 20)) return;
-    showChanToast(t('err.mykeyExport'), err.message || String(err), 'err');
+    showChanToast(t('err.taukeyExport'), err.message || String(err), 'err');
   }
 });
 // 侧边栏「快速接入」：点击官方模型按钮 → 打开预填好的添加模型表单
@@ -3597,7 +3597,7 @@ function setModelApikeyMode(isAdd) {
 
 /* ═══════════════ 官方模型快速接入（DeepSeek / 通义千问）═══════════════ */
 // 预填 API 地址 / 协议 / 模型，用户只需粘贴 API Key。apibase 末尾的 /v1 会被
-// 后端自动补成 /v1/chat/completions（见 assets/mykey_template.py 的拼接规则）。
+// 后端自动补成 /v1/chat/completions（见 assets/taukey_template.py 的拼接规则）。
 const PROVIDER_PRESETS = {
   deepseek: {
     label: 'DeepSeek', descKey: 'pq.deepseekDesc',
@@ -5191,8 +5191,8 @@ function showChanToast(title, detail, kind) {
 
     // Toast targets (standard inputs/textareas with maxLength)
     const searchInput = document.querySelector('.search input');
-    const mykeyEditor = document.getElementById('chan-config-editor');
-    [searchInput, mykeyEditor].forEach(bindToastLimit);
+    const taukeyEditor = document.getElementById('chan-config-editor');
+    [searchInput, taukeyEditor].forEach(bindToastLimit);
 
     // Model form: per-field inline hints
     const form = document.getElementById('add-model-form');
@@ -5331,18 +5331,18 @@ async function openChannelLogs(id) {
     chanLogPre.textContent = t('err.channelLoad') + ': ' + (e.message || e);
   }
 }
-async function openChannelMykey(channelId) {
+async function openChannelTaukey(channelId) {
   if (!chanConfigModal || !chanConfigEditor) return;
   const ch = gaServiceStore.get(channelId) || { id: channelId };
   if (chanConfigTitle) {
-    chanConfigTitle.textContent = t('modal.mykeyConfig') + (channelId ? ' · ' + channelDisplayName(ch) : '');
+    chanConfigTitle.textContent = t('modal.taukeyConfig') + (channelId ? ' · ' + channelDisplayName(ch) : '');
   }
   chanConfigEditor.value = t('ch.loading');
   chanConfigEditor.disabled = true;
   if (chanConfigSave) chanConfigSave.disabled = true;
   openModal('chan-config-modal');
   try {
-    const res = await window.ga.getMykeyContent();
+    const res = await window.ga.getTaukeyContent();
     chanConfigEditor.value = res.content || '';
   } catch (e) {
     chanConfigEditor.value = t('err.channelLoad') + ': ' + (e.message || e);
@@ -5352,11 +5352,11 @@ async function openChannelMykey(channelId) {
     chanConfigEditor.focus();
   }
 }
-async function saveChannelMykey() {
+async function saveChannelTaukey() {
   if (!chanConfigEditor || !chanConfigSave) return;
   chanConfigSave.disabled = true;
   try {
-    await window.ga.saveMykeyContent(chanConfigEditor.value);
+    await window.ga.saveTaukeyContent(chanConfigEditor.value);
     showChanToast(t('sys.configSaved'), '', 'ok');
     chanConfigModal.hidden = true;
   } catch (e) {
@@ -5366,7 +5366,7 @@ async function saveChannelMykey() {
   }
 }
 if (chanConfigSave) {
-  chanConfigSave.addEventListener('click', saveChannelMykey);
+  chanConfigSave.addEventListener('click', saveChannelTaukey);
 }
 
 /* ═══════════════ 状态面板（复用 ServiceManager + 启停/日志） ═══════════════ */
@@ -5595,7 +5595,7 @@ if (chanListEl) {
       return;
     }
     if (act === 'configure') {
-      openChannelMykey(id);
+      openChannelTaukey(id);
       return;
     }
     if (act === 'toggle') {

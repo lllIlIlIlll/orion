@@ -252,13 +252,13 @@ ok "Verification:"
 if [[ -n "$GIT_EXE" ]]; then "$GIT_EXE" --version; fi
 "$PYTHON_EXE" -c "import requests, bs4, bottle; print('deps ok')"
 
-# Copy mykey template if mykey.py does not exist (GLOBAL mode only)
-MYKEY_DST="$GA_DIR/mykey.py"
-if [[ "$GLOBAL" == "1" && ! -f "$MYKEY_DST" ]]; then
-  MYKEY_TPL="$GA_DIR/assets/mykey_template_en.py"
-  if [[ -f "$MYKEY_TPL" ]]; then
-    cp "$MYKEY_TPL" "$MYKEY_DST"
-    ok "Copied assets/mykey_template_en.py -> mykey.py"
+# Copy taukey template if taukey.py does not exist (GLOBAL mode only)
+TAUKEY_DST="$GA_DIR/taukey.py"
+if [[ "$GLOBAL" == "1" && ! -f "$TAUKEY_DST" ]]; then
+  TAUKEY_TPL="$GA_DIR/assets/taukey_template_en.py"
+  if [[ -f "$TAUKEY_TPL" ]]; then
+    cp "$TAUKEY_TPL" "$TAUKEY_DST"
+    ok "Copied assets/taukey_template_en.py -> taukey.py"
   fi
 fi
 
@@ -270,7 +270,7 @@ if [[ "$GLOBAL" == "1" ]]; then
 ║  ✅ GenericAgent installed successfully!       ║
 ╠═══════════════════════════════════════════════╣
 ║  📁 Location: $GA_DIR
-║  🔑 Config: edit mykey.py (copied from template)
+║  🔑 Config: edit taukey.py (copied from template)
 ║  🚀 Launch: ga tui / ga launch / ga hub
 ╚═══════════════════════════════════════════════╝
 EOF

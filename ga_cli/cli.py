@@ -51,9 +51,9 @@ COMMANDS = {
         "cmd": ["python", "{FRONTENDS}/qtapp.py"],
     },
     "configure": {
-        "help": "运行初始配置向导 (configure_mykey.py)",
+        "help": "运行初始配置向导 (configure_taukey.py)",
         "desc": "首次安装后配置 API Key、模型参数等基础设置",
-        "cmd": ["python", "{PROJECT_DIR}/assets/configure_mykey.py"],
+        "cmd": ["python", "{PROJECT_DIR}/assets/configure_taukey.py"],
     },
     "hub": {
         "help": "启动 Hub 管理器 (launcher)",

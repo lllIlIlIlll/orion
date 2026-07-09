@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 GenericAgent — 交互式初始化向导 (configure.py)
-一键配置 LLM 模型 + 消息平台，自动生成 mykey.py
+一键配置 LLM 模型 + 消息平台，自动生成 taukey.py
 
 用法:
     python configure.py
@@ -24,7 +24,7 @@ C = {
 }
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MYKPY_PATH = os.path.join(PROJECT_ROOT, 'mykey.py')
+MYKPY_PATH = os.path.join(PROJECT_ROOT, 'taukey.py')
 
 # ── 模型厂商定义 ───────────────────────────────────────────────────────────
 
@@ -580,7 +580,7 @@ def banner():
     print(f"{C['cyan']}{C['bold']}")
     print("  ╔═══════════════════════════════════════════════════════════╗")
     print("  ║        GenericAgent — 交互式初始化向导 v1.2              ║")
-    print("  ║   一键配置 LLM 模型 + 消息平台，自动生成 mykey.py        ║")
+    print("  ║   一键配置 LLM 模型 + 消息平台，自动生成 taukey.py        ║")
     print("  ╚═══════════════════════════════════════════════════════════╝")
     print(f"{C['reset']}")
     print(f"{C['dim']}  项目目录: {PROJECT_ROOT}{C['reset']}")
@@ -1023,7 +1023,7 @@ def _wechat_scan():
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-#  生成 mykey.py
+#  生成 taukey.py
 # ═══════════════════════════════════════════════════════════════════════════
 
 def _var_type_info(cfg):
@@ -1039,11 +1039,11 @@ def _var_type_info(cfg):
         return 'native_oai_config', 'NativeOAISession'
 
 
-def generate_mykey(llm_cfgs, platform_configs):
-    """生成 mykey.py 内容"""
+def generate_taukey(llm_cfgs, platform_configs):
+    """生成 taukey.py 内容"""
     lines = []
     lines.append("# ══════════════════════════════════════════════════════════════════════════════")
-    lines.append(f"#  GenericAgent — mykey.py (由 configure.py 自动生成 @ {datetime.now().strftime('%Y-%m-%d %H:%M')})")
+    lines.append(f"#  GenericAgent — taukey.py (由 configure.py 自动生成 @ {datetime.now().strftime('%Y-%m-%d %H:%M')})")
     lines.append("# ══════════════════════════════════════════════════════════════════════════════")
     lines.append("")
     lines.append("# ── 停止符 ──────────────────────────────────────────────────────────────────")
@@ -1138,8 +1138,8 @@ def _write_platform_value(lines, key, val):
         lines.append(f"{key} = {repr(val)}")
 
 
-def _parse_existing_mykey():
-    """解析已有 mykey.py，返回 (model_names, platform_infos)
+def _parse_existing_taukey():
+    """解析已有 taukey.py，返回 (model_names, platform_infos)
 
     model_names: [str]  — 模型名列表
     platform_infos: [{'id': str, 'vars': [{'key': str, 'val': ...}]}]  — 平台信息
@@ -1197,7 +1197,7 @@ def _parse_existing_mykey():
 
 
 def _parse_existing_llm_cfgs():
-    """解析已有 mykey.py，返回完整 LLM 配置字典列表 [{name, apikey, ...}]
+    """解析已有 taukey.py，返回完整 LLM 配置字典列表 [{name, apikey, ...}]
     解析失败时返回 []
     """
     if not os.path.exists(MYKPY_PATH):
@@ -1233,8 +1233,8 @@ def _parse_existing_llm_cfgs():
 
 
 def _backup_with_name(model_names, platform_ids):
-    """按 mykey+模型名+机器人名 格式备份旧 mykey.py"""
-    parts = ['mykey']
+    """按 taukey+模型名+机器人名 格式备份旧 taukey.py"""
+    parts = ['taukey']
     for m in model_names[:3]:
         parts.append(m.replace('/', '-').replace('\\', '-'))
     for pid in platform_ids:
@@ -1242,8 +1242,8 @@ def _backup_with_name(model_names, platform_ids):
         if pid_clean not in parts:
             parts.append(pid_clean)
     safe_name = '_'.join(parts)
-    if safe_name == 'mykey':
-        safe_name = 'mykey_backup'  # 避免和源文件同名
+    if safe_name == 'taukey':
+        safe_name = 'taukey_backup'  # 避免和源文件同名
     if len(safe_name) > 100:
         safe_name = safe_name[:100]
     backup_path = os.path.join(PROJECT_ROOT, f'{safe_name}.py')
@@ -1275,16 +1275,16 @@ def main():
     is_new = False
 
     if os.path.exists(MYKPY_PATH):
-        model_names, platform_infos = _parse_existing_mykey()
+        model_names, platform_infos = _parse_existing_taukey()
         cur_models = ', '.join(model_names) if model_names else '(未知)'
         cur_platforms = ', '.join(p['id'] for p in platform_infos) if platform_infos else '(无)'
         print(f"  {C['dim']}  当前: 模型=[{cur_models}], 平台=[{cur_platforms}]{C['reset']}")
 
         mode = ask_choice(
-            "检测到已有 mykey.py，请选择操作",
+            "检测到已有 taukey.py，请选择操作",
             [
                 {'id': 'modify', 'name': '修改现有配置', 'desc': '保留未改部分，只重新配置选定项'},
-                {'id': 'new', 'name': '新建配置（备份旧文件）', 'desc': '备份为 mykey+模型+平台.py，然后全新配置'},
+                {'id': 'new', 'name': '新建配置（备份旧文件）', 'desc': '备份为 taukey+模型+平台.py，然后全新配置'},
             ],
             default=None,
         )
@@ -1358,12 +1358,12 @@ def main():
                     llm_cfgs = old_cfgs
                     print(f"\n  {C['green']}✓ 已保留备份中的 LLM 配置: {', '.join(c['name'] for c in old_cfgs)}{C['reset']}")
 
-    # ── 生成 mykey.py ──
+    # ── 生成 taukey.py ──
     if not llm_cfgs and not platform_configs:
         print(f"\n  {C['yellow']}⚠ 没有配置任何内容，退出。{C['reset']}")
         sys.exit(0)
 
-    content = generate_mykey(llm_cfgs, platform_configs)
+    content = generate_taukey(llm_cfgs, platform_configs)
 
     # 备份旧文件（修改模式不备份，直接在原文件修改）
     if os.path.exists(MYKPY_PATH) and not is_modify and not is_new:
@@ -1373,7 +1373,7 @@ def main():
     # 写入
     with open(MYKPY_PATH, 'w', encoding='utf-8') as f:
         f.write(content)
-    print(f"\n  {C['green']}✓ mykey.py 已生成!{C['reset']}")
+    print(f"\n  {C['green']}✓ taukey.py 已生成!{C['reset']}")
 
     # ── 完成提示 ──
     print(f"\n{C['bold']}{C['green']}╔══════════════════════════════════════╗")

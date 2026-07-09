@@ -23,8 +23,8 @@ HTTP API:
   POST   /services/stop         body: {"id":"frontends/qqapp.py"}
   GET    /services/logs?id=frontends/qqapp.py&tail=200
   GET    /services/panel
-  GET    /services/mykey
-  POST   /services/mykey       body: {"content":"..."}
+  GET    /services/taukey
+  POST   /services/taukey       body: {"content":"..."}
   POST   /services/stop-extras   stop conductor + scheduler (127.0.0.1 only)
   POST   /services/start-extras  start conductor + scheduler (127.0.0.1 only)
   POST   /services/bridge/exit    stop managed services, then exit bridge (127.0.0.1 only)
@@ -131,8 +131,8 @@ class AgentManager:
         self._load_sessions()
 
     @property
-    def mykey_path(self) -> str:
-        return str(Path(self.ga_root) / "mykey.py")
+    def taukey_path(self) -> str:
+        return str(Path(self.ga_root) / "taukey.py")
 
     def _persist(self):
         try:
@@ -183,10 +183,10 @@ class AgentManager:
         except Exception as e:
             print(f"[bridge] load sessions failed: {e}", file=sys.stderr)
 
-    def _mykey_file(self) -> Path:
-        p = Path(self.ga_root) / "mykey.py"
+    def _taukey_file(self) -> Path:
+        p = Path(self.ga_root) / "taukey.py"
         if not p.exists():
-            tpl = Path(self.ga_root) / "assets" / "mykey_template.py"
+            tpl = Path(self.ga_root) / "assets" / "taukey_template.py"
             p.write_text(tpl.read_text(encoding="utf-8") if tpl.exists() else "", encoding="utf-8")
         return p
 
@@ -212,17 +212,17 @@ class AgentManager:
         lines = [f"    '{k}': {json.dumps(v, ensure_ascii=False)}," if isinstance(v, str) else f"    '{k}': {v}," for k, v in d.items()]
         return "{\n" + "\n".join(lines) + "\n}"
 
-    def _invalidate_mykey_cache(self) -> None:
+    def _invalidate_taukey_cache(self) -> None:
         self.ensure_ga_import_path()
-        sys.modules.pop("mykey", None)
+        sys.modules.pop("taukey", None)
         with contextlib.suppress(Exception):
             import llmcore
-            llmcore._mykey_mtime = None
+            llmcore._taukey_mtime = None
 
     def _profile_keys(self) -> List[str]:
         self.ensure_ga_import_path()
-        from llmcore import reload_mykeys
-        return [k for k in reload_mykeys()[0] if any(x in k for x in ("api", "config", "cookie"))]
+        from llmcore import reload_taukeys
+        return [k for k in reload_taukeys()[0] if any(x in k for x in ("api", "config", "cookie"))]
 
     def _profile_at(self, profile_id: int) -> tuple[str, dict]:
         keys = self._profile_keys()
@@ -231,8 +231,8 @@ class AgentManager:
         var = keys[profile_id]
         if "mixin" in var:
             raise ValueError("mixin profiles not supported here")
-        from llmcore import reload_mykeys
-        cfg = reload_mykeys()[0].get(var)
+        from llmcore import reload_taukeys
+        cfg = reload_taukeys()[0].get(var)
         if not isinstance(cfg, dict):
             raise ValueError("profile not editable")
         return var, dict(cfg)
@@ -284,7 +284,7 @@ class AgentManager:
         for k in ("max_retries", "connect_timeout", "read_timeout"):
             if data.get(k) is not None and str(data.get(k)).strip() != "":
                 cfg[k] = int(data[k])
-        # 流式开关：默认 True 不写（保持 mykey 干净），仅显式非流式才落 'stream': False
+        # 流式开关：默认 True 不写（保持 taukey 干净），仅显式非流式才落 'stream': False
         if "stream" in data:
             s = data["stream"]
             stream = s if isinstance(s, bool) else str(s).strip().lower() not in ("false", "0", "no", "off")
@@ -294,19 +294,19 @@ class AgentManager:
                 cfg["stream"] = False
         return cfg
 
-    def _save_mykey_text(self, text: str) -> list:
-        self._mykey_file().write_text(text, encoding="utf-8")
-        self._invalidate_mykey_cache()
+    def _save_taukey_text(self, text: str) -> list:
+        self._taukey_file().write_text(text, encoding="utf-8")
+        self._invalidate_taukey_cache()
         self._reload_live_agents()
         return self.list_model_profiles()
 
     def _reload_live_agents(self) -> None:
-        """mykey.py 改动后，强制所有活着的会话 agent 重建 LLM session，让新 key/模型
+        """taukey.py 改动后，强制所有活着的会话 agent 重建 LLM session，让新 key/模型
         立即生效（无需重启）。重建保留对话 history（agentmain 内部用 oldhistory 接回）。
 
         纯 bridge 侧实现，不改 agentmain：每次调 agent.load_llm_sessions() 前，把
-        llmcore 的全局 mtime 标志清空（与 _invalidate_mykey_cache 同一手法），使其内部
-        reload_mykeys() 报告 changed=True、从而真正重建——否则刷新模型列表等路径会先
+        llmcore 的全局 mtime 标志清空（与 _invalidate_taukey_cache 同一手法），使其内部
+        reload_taukeys() 报告 changed=True、从而真正重建——否则刷新模型列表等路径会先
         消费掉变更标志，常驻 agent 的 load_llm_sessions 会因 changed=False 跳过重建。"""
         self.ensure_ga_import_path()
         try:
@@ -320,16 +320,16 @@ class AgentManager:
             if not callable(fn):
                 continue
             try:
-                llmcore._mykey_mtime = None   # 让本次 reload_mykeys() 视为“已变更”，触发真正重建
+                llmcore._taukey_mtime = None   # 让本次 reload_taukeys() 视为“已变更”，触发真正重建
                 fn()
             except Exception as e:
                 print(f"[bridge] reload live agent failed: {e}", file=sys.stderr)
 
     def add_model_profile(self, data: dict) -> dict:
         cfg = self._build_cfg(data)
-        text = self._mykey_file().read_text(encoding="utf-8")
+        text = self._taukey_file().read_text(encoding="utf-8")
         var = self._next_native_var(text, data.get("protocol", ""))
-        profiles = self._save_mykey_text(text.rstrip() + f"\n{var} = {self._format_py_dict(cfg)}\n")
+        profiles = self._save_taukey_text(text.rstrip() + f"\n{var} = {self._format_py_dict(cfg)}\n")
         return {"varName": var, "profileId": profiles[-1]["id"] if profiles else 0, "profiles": profiles}
 
     def get_model_profile(self, profile_id: int) -> dict:
@@ -341,24 +341,24 @@ class AgentManager:
 
     def update_model_profile(self, profile_id: int, data: dict) -> dict:
         var, existing = self._profile_at(profile_id)
-        text = self._mykey_file().read_text(encoding="utf-8")
-        profiles = self._save_mykey_text(self._patch_var_block(text, var, self._build_cfg(data, existing, require_key=False)))
+        text = self._taukey_file().read_text(encoding="utf-8")
+        profiles = self._save_taukey_text(self._patch_var_block(text, var, self._build_cfg(data, existing, require_key=False)))
         return {"varName": var, "profileId": profile_id, "profiles": profiles}
 
     def delete_model_profile(self, profile_id: int) -> dict:
         if len(self._profile_keys()) <= 1:
             raise ValueError("cannot delete the last profile")
         var, cfg = self._profile_at(profile_id)
-        text = self._patch_var_block(self._mykey_file().read_text(encoding="utf-8"), var).rstrip() + "\n"
+        text = self._patch_var_block(self._taukey_file().read_text(encoding="utf-8"), var).rstrip() + "\n"
         # 顺手把它从聚合渠道里摘掉，避免 llm_nos 残留指向已删除的模型（会让 Mixin 构建失败）
         name = str(cfg.get("name") or cfg.get("model") or "").strip()
-        keys, mk = self._mykey_vars()
+        keys, mk = self._taukey_vars()
         mvar, mcfg = self._mixin_entry(keys, mk)
         if mcfg and mvar is not None and name in [str(m) for m in (mcfg.get("llm_nos") or [])]:
             mcfg = {**mcfg, "llm_nos": [str(m) for m in (mcfg.get("llm_nos") or []) if str(m) != name]}
             if self._find_var_block_span(text, mvar):
                 text = self._patch_var_block(text, mvar, mcfg)
-        profiles = self._save_mykey_text(text)
+        profiles = self._save_taukey_text(text)
         return {"profileId": profile_id, "profiles": profiles}
 
     def ensure_ga_import_path(self) -> Path:
@@ -390,15 +390,15 @@ class AgentManager:
         c = cfg or {}
         return str(c.get("name") or c.get("model") or var)
 
-    def _mykey_vars(self):
-        """(keys, mk)：mykey 里的模型变量名（按定义顺序，与 agentmain.llmclients 索引
+    def _taukey_vars(self):
+        """(keys, mk)：taukey 里的模型变量名（按定义顺序，与 agentmain.llmclients 索引
         一一对齐）和原始 dict。过滤规则与 _profile_keys / load_llm_sessions 完全一致，
         因此 id == llmclients 下标，前端选中 llmNo 能正确激活对应 client。"""
-        self._mykey_file()   # 确保 mykey.py 存在（首次从模板生成空配置），否则全新安装时
-                             # reload_mykeys 找不到 mykey 会返回空，空聚合渠道就不显示了
+        self._taukey_file()   # 确保 taukey.py 存在（首次从模板生成空配置），否则全新安装时
+                             # reload_taukeys 找不到 taukey 会返回空，空聚合渠道就不显示了
         self.ensure_ga_import_path()
-        from llmcore import reload_mykeys
-        mk = reload_mykeys()[0]
+        from llmcore import reload_taukeys
+        mk = reload_taukeys()[0]
         keys = [k for k in mk if any(x in k for x in ("api", "config", "cookie"))]
         return keys, mk
 
@@ -410,11 +410,11 @@ class AgentManager:
         return None, None
 
     def list_model_profiles(self):
-        """直接读 mykey.py 结构（不依赖能否成功构建出 client），这样空聚合渠道、
+        """直接读 taukey.py 结构（不依赖能否成功构建出 client），这样空聚合渠道、
         未填 key 的模型也能如实展示。聚合渠道(kind=mixin)带 members；基本模型
         (kind=native)带 inMixin/group。"""
         try:
-            keys, mk = self._mykey_vars()
+            keys, mk = self._taukey_vars()
         except Exception as e:
             print(f"get model profiles failed: {e}", file=sys.stderr)
             return []
@@ -448,7 +448,7 @@ class AgentManager:
         name = str(cfg.get("name") or cfg.get("model") or "").strip()
         if not name:
             raise ValueError("this model needs a name or model before joining the channel")
-        keys, mk = self._mykey_vars()
+        keys, mk = self._taukey_vars()
         mvar, mcfg = self._mixin_entry(keys, mk)
         new_is_native = "native" in var
         name2var = {self._base_display_name(k, mk.get(k) if isinstance(mk.get(k), dict) else {}): k
@@ -458,7 +458,7 @@ class AgentManager:
             mv = name2var.get(m)
             if mv is not None and ("native" in mv) != new_is_native:
                 raise ValueError("aggregation channel requires all-Native or all-non-Native models")
-        text = self._mykey_file().read_text(encoding="utf-8")
+        text = self._taukey_file().read_text(encoding="utf-8")
         if not cfg.get("name"):
             text = self._patch_var_block(text, var, {**cfg, "name": name})
         if mcfg is None:
@@ -470,24 +470,24 @@ class AgentManager:
             text = self._patch_var_block(text, mvar, mcfg)
         else:
             text = text.rstrip() + f"\n{mvar} = {self._format_py_dict(mcfg)}\n"
-        return {"profiles": self._save_mykey_text(text)}
+        return {"profiles": self._save_taukey_text(text)}
 
     def remove_from_mixin(self, profile_id: int) -> dict:
         """把一个基本模型移出主聚合渠道。"""
         var, cfg = self._profile_at(profile_id)
         name = str(cfg.get("name") or cfg.get("model") or "").strip()
-        keys, mk = self._mykey_vars()
+        keys, mk = self._taukey_vars()
         mvar, mcfg = self._mixin_entry(keys, mk)
         if not mcfg or mvar is None:
             return {"profiles": self.list_model_profiles()}
         members = [str(m) for m in (mcfg.get("llm_nos") or []) if str(m) != name]
         mcfg = {**mcfg, "llm_nos": members}
-        text = self._patch_var_block(self._mykey_file().read_text(encoding="utf-8"), mvar, mcfg)
-        return {"profiles": self._save_mykey_text(text)}
+        text = self._patch_var_block(self._taukey_file().read_text(encoding="utf-8"), mvar, mcfg)
+        return {"profiles": self._save_taukey_text(text)}
 
     def reorder_mixin(self, members: list) -> dict:
         """按前端拖拽后的顺序重写主渠道组 llm_nos。只接受当前成员的重排，不增删。"""
-        keys, mk = self._mykey_vars()
+        keys, mk = self._taukey_vars()
         mvar, mcfg = self._mixin_entry(keys, mk)
         if not mcfg or mvar is None:
             raise ValueError("mixin channel not found")
@@ -498,8 +498,8 @@ class AgentManager:
         if new == old:
             return {"profiles": self.list_model_profiles()}
         mcfg = {**mcfg, "llm_nos": new}
-        text = self._patch_var_block(self._mykey_file().read_text(encoding="utf-8"), mvar, mcfg)
-        return {"profiles": self._save_mykey_text(text)}
+        text = self._patch_var_block(self._taukey_file().read_text(encoding="utf-8"), mvar, mcfg)
+        return {"profiles": self._save_taukey_text(text)}
 
     @staticmethod
     def _live_model(sess: Session) -> Optional[dict]:
@@ -873,13 +873,13 @@ _SERVICE_KEYS: Dict[str, tuple] = {
 }
 
 
-def _load_mykeys(ga_root: Path) -> dict:
-    if not (ga_root / "mykey.py").exists():
+def _load_taukeys(ga_root: Path) -> dict:
+    if not (ga_root / "taukey.py").exists():
         return {}
     root = str(ga_root.resolve())
     if root not in sys.path:
         sys.path.insert(0, root)
-    import mykey as mk
+    import taukey as mk
     importlib.reload(mk)
     return {k: v for k, v in vars(mk).items() if not k.startswith("_")}
 
@@ -975,8 +975,8 @@ class ServiceManager:
         keys = _SERVICE_KEYS.get(sid)
         if not keys:
             return True
-        mykeys = _load_mykeys(self.ga_root)
-        return all(str(mykeys.get(k) or "").strip() for k in keys)
+        taukeys = _load_taukeys(self.ga_root)
+        return all(str(taukeys.get(k) or "").strip() for k in keys)
 
     def _log_tail(self, sid: str, n: int = 3) -> str:
         buf = self.buffers.get(sid)
@@ -1062,7 +1062,7 @@ class ServiceManager:
             return {"ok": True, "service": self._state(sid)}
         if not self._is_configured(sid):
             keys = ", ".join(_SERVICE_KEYS.get(sid, ()))
-            err = f"not configured in mykey.py ({keys})"
+            err = f"not configured in taukey.py ({keys})"
             self._notify(sid, err=err)
             return {"ok": False, "error": "not_configured", "service": self._state(sid, err=err)}
         self.buffers[sid] = deque(maxlen=500)
@@ -1086,7 +1086,7 @@ class ServiceManager:
     def autostart_extras(self) -> None:
         """Auto-start non-IM services on bridge boot. Currently:
           - reflect/scheduler.py (drives L4 archive cron every 12h).
-        IM services stay manual (need explicit mykey.py config + user opt-in)."""
+        IM services stay manual (need explicit taukey.py config + user opt-in)."""
         for sid in sorted(set(self._catalog) - set(self._im_catalog)):
             try:
                 res = self.start_service(sid)
@@ -1155,7 +1155,7 @@ async def ws_handler(request):
     await ws.send_str(json.dumps({
         "type": "bridge-ready",
         "gaRoot": manager.ga_root,
-        "mykeyPath": manager.mykey_path,
+        "taukeyPath": manager.taukey_path,
         "http": True,
         "wsEventsOnly": True,
     }, ensure_ascii=False))
@@ -1216,7 +1216,7 @@ async def status_handler(request):
         "running": True,
         "ready": True,
         "gaRoot": manager.ga_root,
-        "mykeyPath": manager.mykey_path,
+        "taukeyPath": manager.taukey_path,
         "sessionCount": len(manager.sessions),
         "activeSessionId": manager.active_session_id,
         "ws": "/ws",
@@ -1243,7 +1243,7 @@ async def get_config_handler(request):
     if "llmNo" not in cfg:
         cfg["llmNo"] = active
     cfg.update(_desktop_ui())
-    return json_ok({"gaRoot": manager.ga_root, "mykeyPath": manager.mykey_path, "config": cfg})
+    return json_ok({"gaRoot": manager.ga_root, "taukeyPath": manager.taukey_path, "config": cfg})
 
 
 async def save_config_handler(request):
@@ -1263,7 +1263,7 @@ async def save_config_handler(request):
             except Exception as e:
                 print(f"[bridge] save ui prefs failed: {e}", file=sys.stderr)
         manager.config.update(cfg)
-    return json_ok({"ok": True, "gaRoot": manager.ga_root, "mykeyPath": manager.mykey_path, "config": manager.config})
+    return json_ok({"ok": True, "gaRoot": manager.ga_root, "taukeyPath": manager.taukey_path, "config": manager.config})
 
 
 async def model_profiles_handler(request):
@@ -1395,13 +1395,13 @@ async def path_open_handler(request):
     data = await read_json(request)
     kind = data.get("kind", "")
     mode = data.get("mode", "open")
-    if kind == "mykey":
-        target = Path(manager.ga_root) / "mykey.py"
+    if kind == "taukey":
+        target = Path(manager.ga_root) / "taukey.py"
         if not target.exists():
-            template = Path(manager.ga_root) / "assets" / "mykey_template.py"
+            template = Path(manager.ga_root) / "assets" / "taukey_template.py"
             target = template if template.exists() else target
-    elif kind == "mykeyTemplate":
-        target = Path(manager.ga_root) / "assets" / "mykey_template.py"
+    elif kind == "taukeyTemplate":
+        target = Path(manager.ga_root) / "assets" / "taukey_template.py"
     elif kind == "upload":
         raw = Path(data.get("path") or "")
         try:
@@ -1422,7 +1422,7 @@ async def path_open_handler(request):
         elif kind == "upload":
             _open_path_default(target)  # 用户文件用系统默认程序(open 动词),避免 edit 动词 fallback 记事本
         else:
-            _open_path_in_editor(target)  # mykey 等配置文件仍用编辑器(edit 动词)
+            _open_path_in_editor(target)  # taukey 等配置文件仍用编辑器(edit 动词)
     except OSError as e:
         return json_ok({"ok": False, "error": str(e), "path": str(target)}, status=500)
     return json_ok({"ok": True, "path": str(target)})
@@ -1614,32 +1614,32 @@ def _open_path_default(target: Path) -> None:
     subprocess.Popen(["xdg-open", path])
 
 
-def _mykey_file() -> Path:
+def _taukey_file() -> Path:
     root = Path(manager.ga_root)
-    target = root / "mykey.py"
+    target = root / "taukey.py"
     if not target.is_file():
-        template = root / "assets" / "mykey_template.py"
+        template = root / "assets" / "taukey_template.py"
         if template.is_file():
             target.write_text(template.read_text(encoding="utf-8"), encoding="utf-8")
     return target
 
 
-async def mykey_get_handler(request):
-    target = _mykey_file()
+async def taukey_get_handler(request):
+    target = _taukey_file()
     content = target.read_text(encoding="utf-8") if target.is_file() else ""
     return json_ok({"content": content, "path": str(target)})
 
 
-async def mykey_save_handler(request):
+async def taukey_save_handler(request):
     data = await read_json(request)
     content = data.get("content")
     if content is None:
         return json_ok({"ok": False, "error": "missing_content"}, status=400)
     try:
-        profiles = manager._save_mykey_text(str(content))
+        profiles = manager._save_taukey_text(str(content))
     except Exception as e:
         return json_ok({"ok": False, "error": str(e)}, status=400)
-    return json_ok({"ok": True, "path": str(manager._mykey_file()), "profiles": profiles})
+    return json_ok({"ok": True, "path": str(manager._taukey_file()), "profiles": profiles})
 
 
 async def service_start_handler(request):
@@ -1792,8 +1792,8 @@ def create_app():
     app.router.add_post("/services/stop", service_stop_handler)
     app.router.add_get("/services/logs", service_logs_handler)
     app.router.add_get("/services/panel", service_panel_handler)
-    app.router.add_get("/services/mykey", mykey_get_handler)
-    app.router.add_post("/services/mykey", mykey_save_handler)
+    app.router.add_get("/services/taukey", taukey_get_handler)
+    app.router.add_post("/services/taukey", taukey_save_handler)
     app.router.add_post("/services/stop-extras", stop_extras_handler)
     app.router.add_post("/services/start-extras", start_extras_handler)
     app.router.add_get("/services/identity", identity_handler)

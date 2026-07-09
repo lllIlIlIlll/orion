@@ -14,9 +14,9 @@ description = "Read saved bridge spawn configuration."
 commands.allow = ["get_config"]
 
 [[permission]]
-identifier = "allow-export-mykey"
-description = "Save mykey.py via native file dialog."
-commands.allow = ["export_mykey"]
+identifier = "allow-export-taukey"
+description = "Save taukey.py via native file dialog."
+commands.allow = ["export_taukey"]
 
 [[permission]]
 identifier = "allow-shortcut-should-ask"

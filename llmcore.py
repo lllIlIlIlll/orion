@@ -5,36 +5,44 @@ _RESP_CACHE_KEY = str(uuid.uuid4()); _RESP_CODEX_KEY = str(uuid.uuid4())
 _ROOT = os.path.dirname(os.path.abspath(__file__))
 if _ROOT not in sys.path: sys.path.append(_ROOT)
 
-def _load_mykeys():
-    global _mykey_path
+def _load_taukeys():
+    global _taukey_path
     try:
-        import mykey; importlib.reload(mykey); _mykey_path = mykey.__file__
-        return {k: v for k, v in vars(mykey).items() if not k.startswith('_')}
+        import taukey; importlib.reload(taukey); _taukey_path = taukey.__file__
+        return {k: v for k, v in vars(taukey).items() if not k.startswith('_')}
     except ImportError as e:
-        if getattr(e, 'name', None) != 'mykey':
-            raise Exception(f'[ERROR] mykey.py found but failed to import: {e}') from e
+        if getattr(e, 'name', None) != 'taukey':
+            raise Exception(f'[ERROR] taukey.py found but failed to import: {e}') from e
     except SyntaxError as e:
-        raise Exception(f'[ERROR] mykey.py has syntax error: {e}') from e
-    p = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'mykey.json')
-    if not os.path.exists(p): raise Exception('[ERROR] mykey.py not found in sys.path and mykey.json not found. Run "python configure_mykey.py" or copy assets/mykey_template.py to mykey.py and fill in your keys.')
-    with open(_mykey_path := p, encoding='utf-8') as f: mk = json.load(f)
+        raise Exception(f'[ERROR] taukey.py has syntax error: {e}') from e
+    # Backward-compat fallback: read legacy mykey.py and emit a one-time migration hint.
+    _legacy = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'mykey.py')
+    if os.path.exists(_legacy):
+        import mykey as _legacy_mod
+        importlib.reload(_legacy_mod)
+        print('[WARN] `mykey.py` is deprecated; please rename it to `taukey.py`. (auto-loading for now)')
+        _taukey_path = _legacy_mod.__file__
+        return {k: v for k, v in vars(_legacy_mod).items() if not k.startswith('_')}
+    p = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'taukey.json')
+    if not os.path.exists(p): raise Exception('[ERROR] taukey.py not found in sys.path and taukey.json not found. Run "python configure_taukey.py" or copy assets/taukey_template.py to taukey.py and fill in your keys.')
+    with open(_taukey_path := p, encoding='utf-8') as f: mk = json.load(f)
     if isinstance(mk, dict) and 'remote_url' in mk: return requests.get(mk['remote_url'], timeout=10).json()
     return mk
 
-_mykey_path = _mykey_mtime = None
-def reload_mykeys():
-    global _mykey_mtime
+_taukey_path = _taukey_mtime = None
+def reload_taukeys():
+    global _taukey_mtime
     try:
-        mt = os.stat(_mykey_path).st_mtime_ns if _mykey_path else -1
-        if mt == _mykey_mtime: return globals().get('mykeys', {}), False
-        mk = _load_mykeys(); _mykey_mtime = os.stat(_mykey_path).st_mtime_ns
-        print(f'[Info] Load mykeys from {_mykey_path}')
-        globals().update(mykeys=mk)
+        mt = os.stat(_taukey_path).st_mtime_ns if _taukey_path else -1
+        if mt == _taukey_mtime: return globals().get('taukeys', {}), False
+        mk = _load_taukeys(); _taukey_mtime = os.stat(_taukey_path).st_mtime_ns
+        print(f'[Info] Load taukeys from {_taukey_path}')
+        globals().update(taukeys=mk)
         return mk, True
-    except: return globals().get('mykeys', {}), False
+    except: return globals().get('taukeys', {}), False
 
 def __getattr__(name):  # once guard in PEP 562
-    if name == 'mykeys': return reload_mykeys()[0]
+    if name == 'taukeys': return reload_taukeys()[0]
     raise AttributeError(f"module 'llmcore' has no attribute {name}")
 
 def compress_history_tags(messages, keep_recent=10, max_len=800, force=False, interval=5):
@@ -1071,8 +1079,8 @@ class NativeToolClient:
         return resp
 
 def resolve_session(cfg_name):
-    cfg = reload_mykeys()[0].get(cfg_name)
-    if not cfg: raise ValueError(f"Config '{cfg_name}' not in mykey")
+    cfg = reload_taukeys()[0].get(cfg_name)
+    if not cfg: raise ValueError(f"Config '{cfg_name}' not in taukey")
     if 'native' in cfg_name: return (NativeClaudeSession if 'claude' in cfg_name else NativeOAISession)(cfg=cfg)
     if 'claude' in cfg_name: return ClaudeSession(cfg=cfg)
     return LLMSession(cfg=cfg) if 'oai' in cfg_name else None

@@ -64,7 +64,7 @@ def T(key): return I18N.get(LANG, I18N['zh']).get(key, key)
 def init():
     agent = GeneraticAgent()
     if agent.llmclient is None:
-        st.error("⚠️ Please set mykey.py!")
+        st.error("⚠️ Please set taukey.py!")
         st.stop()
     else: threading.Thread(target=agent.run, daemon=True).start()
     return agent

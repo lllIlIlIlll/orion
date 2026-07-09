@@ -134,7 +134,7 @@ curl -fsSL https://raw.githubusercontent.com/lllIlIlIlll/orion/refs/heads/main/d
 ```bash
 git clone https://github.com/lllIlIlIlll/orion.git GenericAgent && cd GenericAgent
 uv venv && uv pip install -e ".[ui]"
-cp assets/mykey_template_en.py mykey.py   # fill in your LLM API key
+cp assets/taukey_template_en.py taukey.py   # fill in your LLM API key
 ```
 
 Dependencies are deliberately tiered: the agent core needs only `requests`, plus four lightweight packages (`beautifulsoup4`, `bottle`, `simple-websocket-server`, `aiohttp`) for TMWebdriver's local server. The `[ui]` extra pulls in frontend libraries (Streamlit, `prompt_toolkit`/`rich` for the TUI, …) — install it for the bundled UIs, or skip it entirely and drive the agent headless. No Playwright, no LangChain, no browser binaries to download.
@@ -544,7 +544,7 @@ git clone https://github.com/lllIlIlIlll/orion.git GenericAgent
 cd GenericAgent
 uv venv
 uv pip install -e ".[ui]"          # 核心 + UI 依赖
-cp assets/mykey_template.py mykey.py      # 填入你的 LLM API Key
+cp assets/taukey_template.py taukey.py      # 填入你的 LLM API Key
 python launch.pyw
 ```
 

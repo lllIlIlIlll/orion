@@ -4,7 +4,7 @@ import requests
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from agentmain import GeneraticAgent
 from chatapp_common import AgentChatMixin, ensure_single_instance, public_access, redirect_log, require_runtime, split_text
-from llmcore import mykeys
+from llmcore import taukeys
 
 try:
     from dingtalk_stream import AckMessage, CallbackHandler, Credential, DingTalkStreamClient
@@ -14,9 +14,9 @@ except Exception:
     sys.exit(1)
 
 agent = GeneraticAgent(); agent.verbose = False
-CLIENT_ID = str(mykeys.get("dingtalk_client_id", "") or "").strip()
-CLIENT_SECRET = str(mykeys.get("dingtalk_client_secret", "") or "").strip()
-ALLOWED = {str(x).strip() for x in mykeys.get("dingtalk_allowed_users", []) if str(x).strip()}
+CLIENT_ID = str(taukeys.get("dingtalk_client_id", "") or "").strip()
+CLIENT_SECRET = str(taukeys.get("dingtalk_client_secret", "") or "").strip()
+ALLOWED = {str(x).strip() for x in taukeys.get("dingtalk_allowed_users", []) if str(x).strip()}
 USER_TASKS = {}
 
 

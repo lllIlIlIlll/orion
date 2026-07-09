@@ -2095,7 +2095,7 @@ COMMANDS = [
     ("/cost",     "[all]",            "显示当前会话 token 用量（all = 所有会话）"),
     ("/export",   "clip|<file>|all",  "导出最后回复"),
     ("/restore",  "",                 "恢复上次模型响应日志"),
-    ("/reload-keys", "",              "重新加载mykey.py（不重启）"),
+    ("/reload-keys", "",              "重新加载taukey.py（不重启）"),
     ("/quit",     "",                 "退出"),
 ]
 
@@ -4700,10 +4700,10 @@ class GenericAgentTUI(App[None]):
         self._resize_input(inp)
         if not text:
             return
-        # Pick up mykey.py edits without restart: load_llm_sessions() is a
+        # Pick up taukey.py edits without restart: load_llm_sessions() is a
         # cheap mtime check when nothing changed; on change it rebuilds the
         # llm clients in place, migrating history. Done per submit so a user
-        # who tweaks mykey then sends a message gets the new config.
+        # who tweaks taukey then sends a message gets the new config.
         try:
             sess = self.sessions.get(self.current_id)
             if sess is not None and hasattr(sess, "agent"):
@@ -5437,8 +5437,8 @@ class GenericAgentTUI(App[None]):
         self._refresh_all()
 
     def _cmd_reload_keys(self, args, raw):
-        # Force rebuild of every session's llmclients from a fresh mykey.py.
-        # reload_mykeys() uses a module-level mtime cache, so the first agent
+        # Force rebuild of every session's llmclients from a fresh taukey.py.
+        # reload_taukeys() uses a module-level mtime cache, so the first agent
         # to call it consumes the "changed" signal and subsequent agents see
         # changed=False (and skip rebuild). Invalidate the cache before each
         # agent so every session picks up the new config.
@@ -5452,12 +5452,12 @@ class GenericAgentTUI(App[None]):
             if agent is None:
                 continue
             try:
-                llmcore._mykey_mtime = None
+                llmcore._taukey_mtime = None
                 agent.load_llm_sessions()
                 n_ok += 1
             except Exception:
                 n_fail += 1
-        msg = f"🔑 已重载 mykey.py（{n_ok} 个会话）" + (f"，{n_fail} 个失败" if n_fail else "")
+        msg = f"🔑 已重载 taukey.py（{n_ok} 个会话）" + (f"，{n_fail} 个失败" if n_fail else "")
         self._system(msg)
 
     def _cmd_llm(self, args, raw):

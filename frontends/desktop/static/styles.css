@@ -1061,14 +1061,14 @@ html[data-boot-has-sessions] .chat-start{ display:none !important; }
 .chan-config-body{
   display:flex; flex-direction:column; gap:8px;
 }
-.mykey-editor{
+.taukey-editor{
   flex:1; min-height:420px; width:100%;
   padding:0; margin:0;
   font-family:var(--font-mono); font-variant-numeric:var(--font-num-variant); font-size:13px; line-height:1.55;
   color:var(--txt); background:var(--card);
   border:none; border-radius:0; resize:vertical; outline:none;
 }
-.mykey-editor:focus{ outline:none; }
+.taukey-editor:focus{ outline:none; }
 .chan-config-foot{
   display:flex; justify-content:flex-end;
 }

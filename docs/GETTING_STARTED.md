@@ -81,11 +81,11 @@ uv venv && uv pip install -e ".[ui]"
 
 ### 创建配置文件
 
-进入项目文件夹，把 `assets/mykey_template.py` 复制一份，重命名为 `mykey.py`。
+进入项目文件夹，把 `assets/taukey_template.py` 复制一份，重命名为 `taukey.py`。
 
-用任意文本编辑器打开 `mykey.py`，填入你的 API 信息。**选一种填就行**，不用的配置删掉或留着不管都行。
+用任意文本编辑器打开 `taukey.py`，填入你的 API 信息。**选一种填就行**，不用的配置删掉或留着不管都行。
 
-> 💡 也可以运行交互式向导 `python assets/configure_mykey.py`，按提示选择厂商、填入 Key 即可自动生成 `mykey.py`。
+> 💡 也可以运行交互式向导 `python assets/configure_taukey.py`，按提示选择厂商、填入 Key 即可自动生成 `taukey.py`。
 
 ### 配置示例
 
@@ -125,7 +125,7 @@ mixin_config = {
 }
 ```
 
-> 💡 完整字段说明（`thinking_type` / `reasoning_effort` / `context_win` / `proxy` / Zhipu / MiniMax / Kimi / OpenRouter 等渠道示例）见 `assets/mykey_template.py` 顶部注释。
+> 💡 完整字段说明（`thinking_type` / `reasoning_effort` / `context_win` / `proxy` / Zhipu / MiniMax / Kimi / OpenRouter 等渠道示例）见 `assets/taukey_template.py` 顶部注释。
 
 ### 关键规则
 

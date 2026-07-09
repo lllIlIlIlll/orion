@@ -5,7 +5,7 @@
 ```
 GARoot/*.py
 GARoot/assets/*.txt *.json
-mykey.py
+taukey.py
 GARoot/memory/      
 ```
 memory下大部分文件不适合分发，不要复制 memory 下未被 gitignore 白名单的文件！

@@ -1,4 +1,4 @@
-"""Langfuse tracing via hook system. Self-activates on import if langfuse_config exists in mykey.
+"""Langfuse tracing via hook system. Self-activates on import if langfuse_config exists in taukey.
 
 Replaces old monkey-patch approach with hooks on:
   - agent_before / agent_after  -> agent trace
@@ -10,8 +10,8 @@ Usage tracking (SSE parser wrapping) stays as internal llmcore patch.
 import threading, sys
 
 try:
-    from llmcore import _load_mykeys
-    _cfg = _load_mykeys().get('langfuse_config')
+    from llmcore import _load_taukeys
+    _cfg = _load_taukeys().get('langfuse_config')
     from langfuse import Langfuse
     _lf = Langfuse(**_cfg) if _cfg else None
 except Exception:

@@ -27,12 +27,12 @@ from chatapp_common import (
 from continue_cmd import handle_frontend_command, reset_conversation
 from btw_cmd import handle_frontend_command as handle_btw_frontend_command
 from review_cmd import handle as handle_review_command
-from llmcore import mykeys
+from llmcore import taukeys
 
 agent = GeneraticAgent()
 agent.verbose = False
 agent.inc_out = True
-ALLOWED = set(mykeys.get('tg_allowed_users', []))
+ALLOWED = set(taukeys.get('tg_allowed_users', []))
 
 _DRAFT_HINT = "thinking..."
 _STREAM_SUFFIX = " ⏳"
@@ -1099,13 +1099,13 @@ async def handle_command(update, ctx):
 if __name__ == '__main__':
     _LOCK_SOCK = ensure_single_instance(19527, "Telegram")
     if not ALLOWED: 
-        print('[Telegram] ERROR: tg_allowed_users in mykey.py is empty or missing. Set it to avoid unauthorized access.')
+        print('[Telegram] ERROR: tg_allowed_users in taukey.py is empty or missing. Set it to avoid unauthorized access.')
         sys.exit(1)
-    require_runtime(agent, "Telegram", tg_bot_token=mykeys.get("tg_bot_token"))
+    require_runtime(agent, "Telegram", tg_bot_token=taukeys.get("tg_bot_token"))
     redirect_log(__file__, "tgapp.log", "Telegram", ALLOWED)
     _register_ask_user_hook()
     threading.Thread(target=agent.run, daemon=True).start()
-    proxy = mykeys.get('proxy')
+    proxy = taukeys.get('proxy')
     if proxy:
         print('proxy:', proxy)
     else:
@@ -1122,7 +1122,7 @@ if __name__ == '__main__':
             if proxy:
                 request_kwargs['proxy'] = proxy
             request = HTTPXRequest(**request_kwargs)
-            app = (ApplicationBuilder().token(mykeys['tg_bot_token'])
+            app = (ApplicationBuilder().token(taukeys['tg_bot_token'])
                    .request(request).get_updates_request(request).post_init(_sync_commands).build())
             app.add_handler(CallbackQueryHandler(handle_ask_callback, pattern=r"^ask:"))
             app.add_handler(CallbackQueryHandler(handle_llm_callback, pattern=r"^llm:"))

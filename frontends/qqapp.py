@@ -4,7 +4,7 @@ from collections import deque
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from agentmain import GeneraticAgent
 from chatapp_common import AgentChatMixin, ensure_single_instance, public_access, redirect_log, require_runtime, split_text
-from llmcore import mykeys
+from llmcore import taukeys
 
 try:
     import botpy
@@ -14,9 +14,9 @@ except Exception:
     sys.exit(1)
 
 agent = GeneraticAgent(); agent.verbose = False
-APP_ID = str(mykeys.get("qq_app_id", "") or "").strip()
-APP_SECRET = str(mykeys.get("qq_app_secret", "") or "").strip()
-ALLOWED = {str(x).strip() for x in mykeys.get("qq_allowed_users", []) if str(x).strip()}
+APP_ID = str(taukeys.get("qq_app_id", "") or "").strip()
+APP_SECRET = str(taukeys.get("qq_app_secret", "") or "").strip()
+ALLOWED = {str(x).strip() for x in taukeys.get("qq_allowed_users", []) if str(x).strip()}
 PROCESSED_IDS, USER_TASKS = deque(maxlen=1000), {}
 SEQ_LOCK, MSG_SEQ = threading.Lock(), 1
 

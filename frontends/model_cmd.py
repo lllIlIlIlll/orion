@@ -56,7 +56,7 @@ def fetch_models(agent, sub: Optional[int] = None, timeout: int = 10) -> List[st
 
 
 def set_model(agent, model: str, sub: Optional[int] = None) -> str:
-    """运行时改 model(内存态, mykey 重载/重启后还原)。返回结果描述。"""
+    """运行时改 model(内存态, taukey 重载/重启后还原)。返回结果描述。"""
     s, mixin = _resolve(agent, sub)
     old = s.model
     s.model = model  # mixin 的 model 是只读 property, 必须落子 session

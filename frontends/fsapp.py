@@ -36,7 +36,7 @@ def _load_dict_config(path):
         return None
     try:
         if path.suffix == ".py":
-            mod_name = f"_fs_mykey_{uuid.uuid4().hex}"
+            mod_name = f"_fs_taukey_{uuid.uuid4().hex}"
             spec = importlib.util.spec_from_file_location(mod_name, path)
             if not spec or not spec.loader:
                 return None
@@ -52,16 +52,16 @@ def _load_dict_config(path):
         return None
 
 
-def _resolve_mykey_path():
+def _resolve_taukey_path():
     workspace_root = _workspace_root_dir()
     config_root = _workspace_config_dir(workspace_root)
     candidates = [
-        config_root / "mykey.json",
-        config_root / "mykey.py",
-        workspace_root / "mykey.json",
-        workspace_root / "mykey.py",
-        Path(PROJECT_ROOT) / "mykey.json",
-        Path(PROJECT_ROOT) / "mykey.py",
+        config_root / "taukey.json",
+        config_root / "taukey.py",
+        workspace_root / "taukey.json",
+        workspace_root / "taukey.py",
+        Path(PROJECT_ROOT) / "taukey.json",
+        Path(PROJECT_ROOT) / "taukey.py",
     ]
     for candidate in candidates:
         if _load_dict_config(candidate):
@@ -330,14 +330,14 @@ agent_lock = threading.Lock()
 
 
 def _load_config():
-    path = _resolve_mykey_path()
+    path = _resolve_taukey_path()
     if not path or not path.exists():
         return {}, str(path or "")
     try:
         data = _load_dict_config(path)
         return data if isinstance(data, dict) else {}, str(path)
     except Exception as e:
-        print(f"[ERROR] load mykey failed {path}: {e}")
+        print(f"[ERROR] load taukey failed {path}: {e}")
         return {}, str(path)
 
 
@@ -848,7 +848,7 @@ def main():
     global client, APP_ID, APP_SECRET, ALLOWED_USERS, PUBLIC_ACCESS, CONFIG_PATH
     APP_ID, APP_SECRET, ALLOWED_USERS, PUBLIC_ACCESS, CONFIG_PATH = _feishu_config()
     if not APP_ID or not APP_SECRET:
-        print(f"错误: 请在 mykey 配置中填写 fs_app_id 和 fs_app_secret\n配置文件: {CONFIG_PATH}", flush=True)
+        print(f"错误: 请在 taukey 配置中填写 fs_app_id 和 fs_app_secret\n配置文件: {CONFIG_PATH}", flush=True)
         sys.exit(1)
     handler = lark.EventDispatcherHandler.builder("", "").register_p2_im_message_receive_v1(handle_message).build()
     retry_delay = 5

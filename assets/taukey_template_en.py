@@ -1,9 +1,9 @@
 # ══════════════════════════════════════════════════════════════════════════════
-#  GenericAgent — mykey.py configuration template (copy to mykey.py and fill in)
+#  GenericAgent — taukey.py configuration template (copy to taukey.py and fill in)
 # ══════════════════════════════════════════════════════════════════════════════
 #
 #  Quick start:
-#    1. Copy this file to mykey.py
+#    1. Copy this file to taukey.py
 #    2. Uncomment one of the configs below and fill in your apikey
 #    3. Run `python agentmain.py` or `python launch.pyw`
 #
