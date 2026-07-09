@@ -3,10 +3,22 @@ from datetime import datetime
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 _RESP_CACHE_KEY = str(uuid.uuid4()); _RESP_CODEX_KEY = str(uuid.uuid4())
 _ROOT = os.path.dirname(os.path.abspath(__file__))
+_TAU_DIR = os.path.join(_ROOT, '.tau')
 if _ROOT not in sys.path: sys.path.append(_ROOT)
 
 def _load_taukeys():
     global _taukey_path
+    # Try .tau/taukey.py first (the new canonical location).
+    _taukey_file = os.path.join(_TAU_DIR, 'taukey.py')
+    if os.path.exists(_taukey_file):
+        try:
+            import taukey as _tk; importlib.reload(_tk)
+        except (ImportError, SyntaxError):
+            pass
+        else:
+            _taukey_path = taukey.__file__
+            return {k: v for k, v in vars(taukey).items() if not k.startswith('_')}
+    # Fallback: try plain import (project-root taukey.py for dev/portable setups).
     try:
         import taukey; importlib.reload(taukey); _taukey_path = taukey.__file__
         return {k: v for k, v in vars(taukey).items() if not k.startswith('_')}
@@ -15,17 +27,17 @@ def _load_taukeys():
             raise Exception(f'[ERROR] taukey.py found but failed to import: {e}') from e
     except SyntaxError as e:
         raise Exception(f'[ERROR] taukey.py has syntax error: {e}') from e
-    # Backward-compat fallback: read legacy mykey.py and emit a one-time migration hint.
+    # Legacy mykey.py → .tau/taukey.py migration hint.
     _legacy = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'mykey.py')
     if os.path.exists(_legacy):
         import mykey as _legacy_mod
         importlib.reload(_legacy_mod)
-        print('[WARN] `mykey.py` is deprecated; please rename it to `taukey.py`. (auto-loading for now)')
+        print('[WARN] `mykey.py` is deprecated; please migrate to `.tau/taukey.py`. (auto-loading for now)')
         _taukey_path = _legacy_mod.__file__
         return {k: v for k, v in vars(_legacy_mod).items() if not k.startswith('_')}
-    p = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'taukey.json')
-    if not os.path.exists(p): raise Exception('[ERROR] taukey.py not found in sys.path and taukey.json not found. Run "python configure_taukey.py" or copy assets/taukey_template.py to taukey.py and fill in your keys.')
-    with open(_taukey_path := p, encoding='utf-8') as f: mk = json.load(f)
+    _taukey_json = os.path.join(_TAU_DIR, 'taukey.json')
+    if not os.path.exists(_taukey_json): raise Exception(f'[ERROR] taukey not found in .tau/taukey.py or .tau/taukey.json. Run "python configure_taukey.py" to generate.')
+    with open(_taukey_path := _taukey_json, encoding='utf-8') as f: mk = json.load(f)
     if isinstance(mk, dict) and 'remote_url' in mk: return requests.get(mk['remote_url'], timeout=10).json()
     return mk
 

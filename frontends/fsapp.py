@@ -56,12 +56,12 @@ def _resolve_taukey_path():
     workspace_root = _workspace_root_dir()
     config_root = _workspace_config_dir(workspace_root)
     candidates = [
-        config_root / "taukey.json",
-        config_root / "taukey.py",
-        workspace_root / "taukey.json",
-        workspace_root / "taukey.py",
-        Path(PROJECT_ROOT) / "taukey.json",
-        Path(PROJECT_ROOT) / "taukey.py",
+        config_root / ".tau" / "taukey.json",
+        config_root / ".tau" / "taukey.py",
+        workspace_root / ".tau" / "taukey.json",
+        workspace_root / ".tau" / "taukey.py",
+        Path(PROJECT_ROOT) / ".tau" / "taukey.json",
+        Path(PROJECT_ROOT) / ".tau" / "taukey.py",
     ]
     for candidate in candidates:
         if _load_dict_config(candidate):

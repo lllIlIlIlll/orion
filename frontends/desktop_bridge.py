@@ -132,7 +132,7 @@ class AgentManager:
 
     @property
     def taukey_path(self) -> str:
-        return str(Path(self.ga_root) / "taukey.py")
+        return str(Path(self.ga_root) / ".tau" / "taukey.py")
 
     def _persist(self):
         try:
@@ -184,7 +184,8 @@ class AgentManager:
             print(f"[bridge] load sessions failed: {e}", file=sys.stderr)
 
     def _taukey_file(self) -> Path:
-        p = Path(self.ga_root) / "taukey.py"
+        p = Path(self.ga_root) / ".tau" / "taukey.py"
+        p.parent.mkdir(parents=True, exist_ok=True)
         if not p.exists():
             tpl = Path(self.ga_root) / "assets" / "taukey_template.py"
             p.write_text(tpl.read_text(encoding="utf-8") if tpl.exists() else "", encoding="utf-8")
@@ -874,7 +875,7 @@ _SERVICE_KEYS: Dict[str, tuple] = {
 
 
 def _load_taukeys(ga_root: Path) -> dict:
-    if not (ga_root / "taukey.py").exists():
+    if not (ga_root / ".tau" / "taukey.py").exists():
         return {}
     root = str(ga_root.resolve())
     if root not in sys.path:

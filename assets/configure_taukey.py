@@ -24,7 +24,10 @@ C = {
 }
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MYKPY_PATH = os.path.join(PROJECT_ROOT, 'taukey.py')
+_TAU_DIR = os.path.join(PROJECT_ROOT, '.tau')
+import os as _os
+_os.makedirs(_TAU_DIR, exist_ok=True)
+TAUKEY_PATH = os.path.join(_TAU_DIR, 'taukey.py')
 
 # ── 模型厂商定义 ───────────────────────────────────────────────────────────
 
@@ -1145,10 +1148,10 @@ def _parse_existing_taukey():
     platform_infos: [{'id': str, 'vars': [{'key': str, 'val': ...}]}]  — 平台信息
     解析失败时返回 ([], [])
     """
-    if not os.path.exists(MYKPY_PATH):
+    if not os.path.exists(TAUKEY_PATH):
         return [], []
 
-    with open(MYKPY_PATH, 'r', encoding='utf-8') as f:
+    with open(TAUKEY_PATH, 'r', encoding='utf-8') as f:
         content = f.read()
 
     # 解析模型名
@@ -1200,10 +1203,10 @@ def _parse_existing_llm_cfgs():
     """解析已有 taukey.py，返回完整 LLM 配置字典列表 [{name, apikey, ...}]
     解析失败时返回 []
     """
-    if not os.path.exists(MYKPY_PATH):
+    if not os.path.exists(TAUKEY_PATH):
         return []
 
-    with open(MYKPY_PATH, 'r', encoding='utf-8') as f:
+    with open(TAUKEY_PATH, 'r', encoding='utf-8') as f:
         content = f.read()
 
     cfgs = []
@@ -1247,7 +1250,7 @@ def _backup_with_name(model_names, platform_ids):
     if len(safe_name) > 100:
         safe_name = safe_name[:100]
     backup_path = os.path.join(PROJECT_ROOT, f'{safe_name}.py')
-    shutil.copy2(MYKPY_PATH, backup_path)
+    shutil.copy2(TAUKEY_PATH, backup_path)
     return backup_path
 
 
@@ -1274,7 +1277,7 @@ def main():
     is_modify = False
     is_new = False
 
-    if os.path.exists(MYKPY_PATH):
+    if os.path.exists(TAUKEY_PATH):
         model_names, platform_infos = _parse_existing_taukey()
         cur_models = ', '.join(model_names) if model_names else '(未知)'
         cur_platforms = ', '.join(p['id'] for p in platform_infos) if platform_infos else '(无)'
@@ -1351,7 +1354,7 @@ def main():
             platform_configs, platform_deps = configure_platforms()
             if ask_yesno("是否继续配置 LLM 模型？", default=True):
                 llm_cfgs = _do_llm()
-            elif os.path.exists(MYKPY_PATH):
+            elif os.path.exists(TAUKEY_PATH):
                 # 新建+仅平台：从备份保留旧 LLM 配置
                 old_cfgs = _parse_existing_llm_cfgs()
                 if old_cfgs:
@@ -1366,12 +1369,12 @@ def main():
     content = generate_taukey(llm_cfgs, platform_configs)
 
     # 备份旧文件（修改模式不备份，直接在原文件修改）
-    if os.path.exists(MYKPY_PATH) and not is_modify and not is_new:
+    if os.path.exists(TAUKEY_PATH) and not is_modify and not is_new:
         backup = _backup_with_name(model_names, [p['id'] for p in platform_infos])
         print(f"\n  {C['green']}✓ 旧配置已备份至:{C['reset']} {C['dim']}{backup}{C['reset']}")
 
     # 写入
-    with open(MYKPY_PATH, 'w', encoding='utf-8') as f:
+    with open(TAUKEY_PATH, 'w', encoding='utf-8') as f:
         f.write(content)
     print(f"\n  {C['green']}✓ taukey.py 已生成!{C['reset']}")
 
