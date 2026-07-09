@@ -82,7 +82,7 @@
   }
 
   function gaHydrateIcons(root = document) {
-    root.querySelectorAll('[data-ga-icon]').forEach((node) => {
+    root.querySelectorAll('[data-tau-icon]').forEach((node) => {
       node.outerHTML = gaIcon(node.dataset.gaIcon, node.className || '');
     });
   }

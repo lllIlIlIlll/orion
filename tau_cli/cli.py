@@ -1,7 +1,7 @@
 """
 ga_cli/cli.py - GenericAgent 命令行分发系统
 
-通过 python -m ga_cli <命令> 或 ga <命令> 调用
+通过 python -m ga_cli <命令> 或 tau <命令> 调用
 """
 import os, sys, subprocess, argparse, textwrap
 
@@ -148,19 +148,19 @@ def cmd_update():
 
 def main():
     parser = argparse.ArgumentParser(
-        prog="ga",
+        prog="tau",
         description="GenericAgent 全局命令入口",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent("""\
             示例:
-              ga gui               启动桌面 GUI
-              ga web               启动 Web 增强版
-              ga web --native      启动 Web 基础版(桌面壳)
-              ga tui               启动终端 TUI (v1)
-              ga tui2              启动终端 TUI (v2 增强版)
-              ga pet               启动桌面宠物 v2
-              ga launch            启动 webview 桌面壳
-              ga list              列出所有命令
+              tau gui               启动桌面 GUI
+              tau web               启动 Web 增强版
+              tau web --native      启动 Web 基础版(桌面壳)
+              tau tui               启动终端 TUI (v1)
+              tau tui2              启动终端 TUI (v2 增强版)
+              tau pet               启动桌面宠物 v2
+              tau launch            启动 webview 桌面壳
+              tau list              列出所有命令
         """),
     )
     parser.add_argument("command", nargs="?", help="命令名")
@@ -195,7 +195,7 @@ def main():
 
     if cmd not in COMMANDS:
         print(f"❌ 未知命令: {cmd}")
-        print(f"   使用 'ga list' 查看可用命令")
+        print(f"   使用 'tau list' 查看可用命令")
         sys.exit(1)
 
     info = COMMANDS[cmd]

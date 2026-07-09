@@ -17,7 +17,7 @@ def _ensure_dir(path):
 
 
 def _workspace_root_dir():
-    root = os.environ.get("GA_WORKSPACE_ROOT")
+    root = os.environ.get("TAU_WORKSPACE_ROOT")
     if root:
         return _ensure_dir(Path(root).expanduser().resolve())
     return _ensure_dir(Path(PROJECT_ROOT).resolve())
@@ -72,8 +72,8 @@ def _resolve_taukey_path():
 def _ensure_runtime_paths():
     workspace_root = _workspace_root_dir()
     config_root = _workspace_config_dir(workspace_root)
-    os.environ.setdefault("GA_WORKSPACE_ROOT", str(workspace_root))
-    os.environ.setdefault("GA_USER_DATA_DIR", str(config_root))
+    os.environ.setdefault("TAU_WORKSPACE_ROOT", str(workspace_root))
+    os.environ.setdefault("TAU_USER_DATA_DIR", str(config_root))
     return str(workspace_root), str(config_root)
 
 
@@ -393,10 +393,10 @@ def check_config(init_agent=False):
     }
     if init_agent:
         try:
-            ga = get_agent()
+            tau = get_agent()
             result["agent_ready"] = True
-            result["llm_count"] = len(ga.list_llms()) if hasattr(ga, "list_llms") else 0
-            result["current_llm"] = ga.get_llm_name() if getattr(ga, "llmclient", None) else ""
+            result["llm_count"] = len(tau.list_llms()) if hasattr(tau, "list_llms") else 0
+            result["current_llm"] = tau.get_llm_name() if getattr(tau, "llmclient", None) else ""
         except Exception as e:
             result["agent_ready"] = False
             result["agent_error"] = str(e)

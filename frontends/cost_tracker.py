@@ -3,7 +3,7 @@
 `install()` wraps `llmcore._record_usage` + `llmcore.print` (the SSE
 `messages` path only emits final `output_tokens` through `[Output] tokens=N`).
 Trackers are keyed by `threading.current_thread().name`; each TUI session
-runs its agent on `ga-tui-agent-<id>`, so `/cost` is a thread lookup.
+runs its agent on `tau-tui-agent-<id>`, so `/cost` is a thread lookup.
 
 Subagent processes are out-of-process, so `scan_subagent_logs` parses the
 same `[Cache]` / `[Output]` print lines from `temp/*/stdout.log`.
@@ -39,7 +39,7 @@ class TokenStats:
         return max(0.0, time.time() - self.started_at)
 
 
-# GA's real context budget lives on `BaseSession.context_win` (chars). The
+# TAU's real context budget lives on `BaseSession.context_win` (chars). The
 # trim trigger is `context_win * 3` (see llmcore.trim_messages_history), so
 # `/cost` compares actual-history chars against that cap for consistent units.
 def context_window_chars(backend) -> int:

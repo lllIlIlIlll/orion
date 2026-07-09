@@ -3,7 +3,7 @@
 Run from project root:
     python frontends/tuiapp_v2.py
 
-Visual design carried from temp/GA_tui 设计/tui_demo.py;
+Visual design carried from temp/TAU_tui 设计/tui_demo.py;
 functionality migrated from frontends/tuiapp.py plus new commands:
 - /btw       — side question (subagent, doesn't interrupt main)
 - /continue  — list / restore historical sessions
@@ -34,18 +34,18 @@ from typing import Any, Callable, Optional
 
 def _ensure_tui_deps() -> None:
     """Try the imports; on first miss, pip-install the wheel and retry once.
-    Keeps `ga-cli` working on a fresh Python (Windows / macOS / Linux) where
+    Keeps `tau-cli` working on a fresh Python (Windows / macOS / Linux) where
     Textual or Rich hasn't been installed yet. Bails with a clear message if
     pip itself is unavailable or the install fails — never silently."""
     import importlib.util, subprocess
     needed = ("rich", "textual")
     missing = [m for m in needed if importlib.util.find_spec(m) is None]
     if not missing: return
-    print(f"[ga-tui] installing {' '.join(missing)} into {sys.executable} ...", file=sys.stderr)
+    print(f"[tau-tui] installing {' '.join(missing)} into {sys.executable} ...", file=sys.stderr)
     try:
         subprocess.check_call([sys.executable, "-m", "pip", "install", "--quiet", *missing])
     except Exception as e:
-        print(f"[ga-tui] auto-install failed: {e}\n    fix: {sys.executable} -m pip install {' '.join(missing)}",
+        print(f"[tau-tui] auto-install failed: {e}\n    fix: {sys.executable} -m pip install {' '.join(missing)}",
               file=sys.stderr)
         raise SystemExit(2)
     for m in missing: importlib.invalidate_caches()
@@ -68,7 +68,7 @@ try:
     from textual.widgets.option_list import Option
     from textual.widgets.selection_list import Selection
 except ModuleNotFoundError as exc:
-    print(f"[ga-tui] still missing: {exc.name}. Run: {sys.executable} -m pip install rich textual",
+    print(f"[tau-tui] still missing: {exc.name}. Run: {sys.executable} -m pip install rich textual",
           file=sys.stderr)
     raise SystemExit(2) from exc
 
@@ -85,7 +85,7 @@ def _hint_terminal_capabilities() -> None:
     if os.environ.get("TERM", "").startswith("xterm"):
         # mintty exports TERM=xterm-256color. Textual still renders, but
         # mouse + truecolor handling is patchy. Point at the better option.
-        print("[ga-tui] hint: best rendering on Windows Terminal (`wt`) — "
+        print("[tau-tui] hint: best rendering on Windows Terminal (`wt`) — "
               "the mintty/git-bash console may clip colors or mouse events.",
               file=sys.stderr)
 
@@ -810,7 +810,7 @@ def _render_code_card(args, data, width):
     code = str(args.get("script") or args.get("code") or "")
     out_text, exit_code, err_msg, is_err = _code_parse_data(data)
 
-    # Timeout / manual-stop markers live inside stdout (ga.py:72-73).
+    # Timeout / manual-stop markers live inside stdout (tau.py:72-73).
     note_extra = ("超时" if "[Timeout Error]" in out_text
                   else "已停止" if "[Stopped]" in out_text else "")
     # Header failure detail. exit_code may be None (inline_eval has none, a
@@ -1545,8 +1545,8 @@ def _copy_to_clipboard(text: str) -> bool:
 AgentFactory = Callable[[], Any]
 
 # ---------- themes ----------
-# Our `ga-default` palette is registered as a Textual Theme; the other themes in
-# `_THEME_CYCLE` are Textual built-ins, whose ga-* slots are derived in
+# Our `tau-default` palette is registered as a Textual Theme; the other themes in
+# `_THEME_CYCLE` are Textual built-ins, whose tau-* slots are derived in
 # get_css_variables. C_* globals are kept in sync via watch_theme so Rich Text
 # styles (which take plain hex strings) update on theme switch.
 _DEFAULT_PALETTE: dict[str, str] = {
@@ -1564,7 +1564,7 @@ _DEFAULT_PALETTE: dict[str, str] = {
     "chip_time":   "#7ec27e",  # clock        — same muted green as the sidebar's active-session marker
 }
 
-_THEME_CYCLE = ["ga-default", "nord", "gruvbox", "dracula", "tokyo-night", "textual-light"]
+_THEME_CYCLE = ["tau-default", "nord", "gruvbox", "dracula", "tokyo-night", "textual-light"]
 
 
 # ---------- persisted settings ----------
@@ -1714,11 +1714,11 @@ def _palette_from_resolved_vars(v: dict[str, str], dark: bool) -> dict[str, str]
 
 
 _MAIN_CSS = """
-Screen { background: $ga-bg; color: $ga-fg; }
+Screen { background: $tau-bg; color: $tau-fg; }
 
 #topbar, #bottombar {
     height: 1;
-    background: $ga-bg;
+    background: $tau-bg;
     padding: 0 2;
 }
 
@@ -1730,8 +1730,8 @@ Screen { background: $ga-bg; color: $ga-fg; }
 #sidebar-scroll {
     width: 34;
     height: 100%;
-    background: $ga-bg;
-    border-right: solid $ga-alt-bg;
+    background: $tau-bg;
+    border-right: solid $tau-alt-bg;
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-size: 0 1;
@@ -1750,20 +1750,20 @@ Screen { background: $ga-bg; color: $ga-fg; }
 #main {
     height: 100%;
     padding: 1 6;
-    background: $ga-bg;
+    background: $tau-bg;
 }
 
 #messages {
     height: 1fr;
-    background: $ga-bg;
+    background: $tau-bg;
     /* horizontal hidden, 1-col vertical bar on right. */
     scrollbar-size: 0 1;
-    scrollbar-background: $ga-bg;
-    scrollbar-background-hover: $ga-bg;
-    scrollbar-background-active: $ga-bg;
-    scrollbar-color: $ga-border;
-    scrollbar-color-hover: $ga-border-hi;
-    scrollbar-color-active: $ga-dim;
+    scrollbar-background: $tau-bg;
+    scrollbar-background-hover: $tau-bg;
+    scrollbar-background-active: $tau-bg;
+    scrollbar-color: $tau-border;
+    scrollbar-color-hover: $tau-border-hi;
+    scrollbar-color-active: $tau-dim;
 }
 
 /* Plan/todo panel — fixed 5-row card between messages and composer.
@@ -1777,37 +1777,37 @@ Screen { background: $ga-bg; color: $ga-fg; }
 #planbar-scroll {
     display: none;
     height: auto;
-    background: $ga-sel-bg;
+    background: $tau-sel-bg;
     padding: 0 1;
     margin: 0 0 1 0;
-    border-left: thick $ga-green;
+    border-left: thick $tau-green;
 }
 #planbar-scroll.-visible { display: block; }
 #planbar-head {
     height: auto;
-    background: $ga-sel-bg;
+    background: $tau-sel-bg;
 }
 #planbar-tasks {
     height: auto;
     max-height: 4;
-    background: $ga-sel-bg;
+    background: $tau-sel-bg;
     scrollbar-size: 0 1;
-    scrollbar-background: $ga-sel-bg;
-    scrollbar-background-hover: $ga-sel-bg;
-    scrollbar-background-active: $ga-sel-bg;
-    scrollbar-color: $ga-border;
+    scrollbar-background: $tau-sel-bg;
+    scrollbar-background-hover: $tau-sel-bg;
+    scrollbar-background-active: $tau-sel-bg;
+    scrollbar-color: $tau-border;
 }
 #planbar {
     height: auto;
-    background: $ga-sel-bg;
+    background: $tau-sel-bg;
 }
 
 /* `└ Tip:` footer — one dim row, never grows. */
 #tipbar {
     height: 1;
-    background: $ga-bg;
+    background: $tau-bg;
     padding: 0;
-    color: $ga-dim;
+    color: $tau-dim;
 }
 
 /* Pickers — used by both ChoiceList (OptionList) and MultiChoiceList
@@ -1818,21 +1818,21 @@ OptionList.picker, SelectionList.picker {
     max-height: 12;
     margin: 0 0 1 0;
     padding: 0 1;
-    background: $ga-bg;
+    background: $tau-bg;
     border: none;
-    border-left: thick $ga-green;
+    border-left: thick $tau-green;
     scrollbar-size: 0 1;
 }
 OptionList.picker > .option-list--option-hover,
-SelectionList.picker > .option-list--option-hover { background: $ga-sel-bg; }
+SelectionList.picker > .option-list--option-hover { background: $tau-sel-bg; }
 OptionList.picker > .option-list--option-highlighted,
 SelectionList.picker > .option-list--option-highlighted {
-    background: $ga-blue 20%;
-    color: $ga-fg;
+    background: $tau-blue 20%;
+    color: $tau-fg;
     text-style: none;
 }
-SelectionList.picker > .selection-list--button { color: $ga-dim; }
-SelectionList.picker > .selection-list--button-selected { color: $ga-green; }
+SelectionList.picker > .selection-list--button { color: $tau-dim; }
+SelectionList.picker > .selection-list--button-selected { color: $tau-green; }
 SelectionList.picker > .selection-list--button-highlighted { background: transparent; }
 
 /* Searchable `/continue` picker wrapper. Textual's Vertical container defaults
@@ -1860,7 +1860,7 @@ SearchableChoiceList.picker {
     height: auto;
     margin-bottom: 0;
 }
-.fold-header:hover { background: $ga-sel-bg; }
+.fold-header:hover { background: $tau-sel-bg; }
 .spinner {
     height: 1;
     margin-top: 1;
@@ -1869,7 +1869,7 @@ SearchableChoiceList.picker {
 #palette {
     height: auto;
     max-height: 8;
-    background: $ga-bg;
+    background: $tau-bg;
     border: none;
     padding: 0;
     display: none;
@@ -1878,25 +1878,25 @@ SearchableChoiceList.picker {
 }
 #palette.-visible { display: block; }
 OptionList {
-    background: $ga-bg;
+    background: $tau-bg;
     border: none;
     padding: 0;
 }
 OptionList > .option-list--option {
     padding: 0 2;
-    background: $ga-bg;
-    color: $ga-fg;
+    background: $tau-bg;
+    color: $tau-fg;
 }
 OptionList > .option-list--option-highlighted {
-    background: $ga-fg;
-    color: $ga-bg;
+    background: $tau-fg;
+    color: $tau-bg;
     text-style: bold;
 }
 
 ChoiceList {
     height: auto;
     max-height: 12;
-    background: $ga-bg;
+    background: $tau-bg;
     border: none;
     padding: 0;
     margin-bottom: 1;
@@ -1910,11 +1910,11 @@ ChoiceList {
     /* min-width guards TextArea.render_lines against `range() arg 3 must not be zero`
        when the content region collapses to <= 0 cols (narrow window + sidebar shown). */
     min-width: 10;
-    background: $ga-sel-bg;
+    background: $tau-sel-bg;
     border: none;
     margin-bottom: 1;
     padding: 1 2;
-    color: $ga-fg;
+    color: $tau-fg;
     scrollbar-size: 0 0;
 }
 #input:focus { border: none; }
@@ -2082,7 +2082,7 @@ COMMANDS = [
     ("/review",   "[request]",         "in-session 代码审查（直接输出报告）"),
     # ── slash_cmds bundle (prompt-injection + /scheduler picker).  Kept in
     # the same table so /-completion + the palette pick them up for free.
-    ("/update",    "[note]",           "git pull 更新 GA 仓库并报告影响面"),
+    ("/update",    "[note]",           "git pull 更新 TAU 仓库并报告影响面"),
     ("/autorun",   "[seed]",           "进入 autonomous_operation 自主模式"),
     ("/morphling", "[target]",         "启用 Morphling 蒸馏 / 吞噬外部技能"),
     ("/goal",      "[goal]",           "进入 Goal 模式（需 condition 约束）"),
@@ -3433,10 +3433,10 @@ class HelpScreen(ModalScreen):
         max-width: 80;
         height: auto;
         max-height: 80%;
-        background: $ga-alt-bg;
-        border: solid $ga-border;
+        background: $tau-alt-bg;
+        border: solid $tau-border;
         padding: 1 2;
-        color: $ga-fg;
+        color: $tau-fg;
     }
     """
     BINDINGS = [
@@ -3464,14 +3464,14 @@ class ThemePicker(ModalScreen):
     ThemePicker > OptionList {
         width: 36;
         max-height: 80%;
-        background: $ga-alt-bg;
-        border: solid $ga-border;
+        background: $tau-alt-bg;
+        border: solid $tau-border;
         padding: 0 1;
-        color: $ga-fg;
+        color: $tau-fg;
     }
     ThemePicker > OptionList > .option-list--option-highlighted {
-        background: $ga-sel-bg;
-        color: $ga-fg;
+        background: $tau-sel-bg;
+        color: $tau-fg;
     }
     """
     BINDINGS = [
@@ -3517,7 +3517,7 @@ class ThemePicker(ModalScreen):
 # ===========================================================================
 # /rewind 面板 — 会话 checkpoint 的时间线 / 树状可视化 + 对话恢复
 #
-# GA 没有真正的 rewind 后端(checkpoint 树是从 LLM history 现算的),所以这里的
+# TAU 没有真正的 rewind 后端(checkpoint 树是从 LLM history 现算的),所以这里的
 # 「节点」= 用户提问边界(与既有 /rewind 的 _rewindable_turns 同源),每个节点的
 # `n` 直接喂给 _do_rewind(n)。「恢复对话」= 把 backend.history 截断回该提问之前
 # (复用既有 _do_rewind,仅在 agent 空闲时允许);restore code / fork / diff /
@@ -3589,17 +3589,17 @@ class GenericAgentTUI(App[None]):
         self._last_title: str = ""
         # Register our github-dark palette as a first-class Textual theme; the other
         # cycle entries are Textual built-ins (nord, gruvbox, dracula, tokyo-night,
-        # textual-light), whose ga-* CSS slots are derived in get_css_variables.
+        # textual-light), whose tau-* CSS slots are derived in get_css_variables.
         from textual.theme import Theme as _TxTheme
         p = _DEFAULT_PALETTE
         self.register_theme(_TxTheme(
-            name="ga-default", dark=True,
+            name="tau-default", dark=True,
             background=p["bg"], surface=p["alt_bg"], panel=p["sel_bg"],
             foreground=p["fg"],
             primary=p["green"], secondary=p["blue"], accent=p["purple"],
         ))
         saved = _load_settings().get("theme")
-        self.theme = saved if saved in _THEME_CYCLE else "ga-default"
+        self.theme = saved if saved in _THEME_CYCLE else "tau-default"
         self._spinner_frame: int = 0
         self._spinner_timer = None
         self._handlers: dict = {
@@ -3810,8 +3810,8 @@ class GenericAgentTUI(App[None]):
         agent = self.agent_factory()
         try: agent.inc_out = True
         except Exception: pass
-        # Per-session task_dir path enables ga's `_intervene` / `_keyinfo`
-        # consume paths (ga.py:575).  PID+session scoped so concurrent
+        # Per-session task_dir path enables tau's `_intervene` / `_keyinfo`
+        # consume paths (tau.py:575).  PID+session scoped so concurrent
         # sessions don't share signal files.  We only set the *path* here —
         # the dir is created lazily by the writer (`_session_intervene_path`)
         # when a signal is actually injected.  Eager makedirs left a stale
@@ -3833,7 +3833,7 @@ class GenericAgentTUI(App[None]):
             pass
         sess = AgentSession(agent_id=agent_id, name=name or f"agent-{agent_id}", agent=agent)
         # Rewind 后端:每 session 一个 checkpoint 树 + blob 库,key 对齐 agent.log_path
-        # (GA 稳定会话身份)。cwd = temp(与 GA handler 解析相对路径的基准一致,
+        # (TAU 稳定会话身份)。cwd = temp(与 TAU handler 解析相对路径的基准一致,
         # 见 agentmain GenericAgentHandler(..., temp))。store 挂到 agent 上供全局
         # tool_before 钩子按 agent 路由。
         try:
@@ -3849,7 +3849,7 @@ class GenericAgentTUI(App[None]):
             acquire_birth_lock(agent, agent_id)   # 原地复原:出生持锁,占用检测可见
         except Exception:
             pass
-        thread = threading.Thread(target=agent.run, name=f"ga-tui-agent-{agent_id}", daemon=True)
+        thread = threading.Thread(target=agent.run, name=f"tau-tui-agent-{agent_id}", daemon=True)
         thread.start()
         sess.thread = thread
         self.sessions[agent_id] = sess
@@ -4113,7 +4113,7 @@ class GenericAgentTUI(App[None]):
 
     def _install_rw_time_hook(self, sess: AgentSession) -> None:
         """Stamp wall-clock per turn-end, keyed by LLM-history length, so the
-        /rewind panels can show coarse relative time. GA stores no timestamps;
+        /rewind panels can show coarse relative time. TAU stores no timestamps;
         nodes predating this session (e.g. restored via /continue) show none.
         Hook runs in the agent thread — dict writes are GIL-safe."""
         agent = sess.agent
@@ -4140,7 +4140,7 @@ class GenericAgentTUI(App[None]):
         `_sanitize_candidates` so envelope debris / numbered prefixes / mashed
         multi-line strings don't leak into the picker.
 
-        ga.turn_end_callback reads hooks from `self.parent._turn_end_hooks`
+        tau.turn_end_callback reads hooks from `self.parent._turn_end_hooks`
         where `parent` is the GenericAgent — so the dict lives on the agent.
         """
         agent = sess.agent
@@ -4389,11 +4389,11 @@ class GenericAgentTUI(App[None]):
     def action_pick_theme(self) -> None:
         if isinstance(self.screen, ThemePicker):
             return
-        self.push_screen(ThemePicker(list(_THEME_CYCLE), self.theme or "ga-default"))
+        self.push_screen(ThemePicker(list(_THEME_CYCLE), self.theme or "tau-default"))
 
     def _resolve_palette(self) -> dict[str, str]:
         theme = self.current_theme
-        if theme is not None and theme.name == "ga-default":
+        if theme is not None and theme.name == "tau-default":
             return dict(_DEFAULT_PALETTE)
         base = super().get_css_variables()
         dark = bool(getattr(theme, "dark", True)) if theme is not None else True
@@ -4403,7 +4403,7 @@ class GenericAgentTUI(App[None]):
         base = super().get_css_variables()
         p = self._resolve_palette()
         for k, v in p.items():
-            base[f"ga-{k.replace('_', '-')}"] = v
+            base[f"tau-{k.replace('_', '-')}"] = v
         return base
 
     def watch_theme(self, _old_theme, _new_theme) -> None:
@@ -4422,7 +4422,7 @@ class GenericAgentTUI(App[None]):
         C_CHIP_EFFORT = _palette["chip_effort"]
         C_CHIP_TASKS  = _palette["chip_tasks"]
         C_CHIP_TIME   = _palette["chip_time"]
-        # watch_theme fires once during __init__ when we set ga-default — at that
+        # watch_theme fires once during __init__ when we set tau-default — at that
         # point sessions is empty and the DOM isn't composed yet. Skip the rebuild.
         if not self.is_mounted or self.current_id is None:
             return
@@ -4733,7 +4733,7 @@ class GenericAgentTUI(App[None]):
                     pass
                 return
             if cmd == "resume":
-                # GA's _handle_slash_cmd expands `/resume` at agent side —
+                # TAU's _handle_slash_cmd expands `/resume` at agent side —
                 # forward the literal so the agent recovers context.
                 self.submit_user_message(text)
                 return
@@ -5537,7 +5537,7 @@ class GenericAgentTUI(App[None]):
                 models, err = [], f"{type(e).__name__}: {e}"
             self.call_from_thread(self._fill_model_picker, msg, models, err, cur)
 
-        threading.Thread(target=worker, daemon=True, name="ga-tui-model").start()
+        threading.Thread(target=worker, daemon=True, name="tau-tui-model").start()
 
     # ---------------- /effort: reasoning effort 切换（逻辑在 model_cmd.py） ----------------
     def _cmd_effort(self, args, raw):
@@ -5604,7 +5604,7 @@ class GenericAgentTUI(App[None]):
                 answer = f"❌ /btw 失败: {type(e).__name__}: {e}"
             self.call_from_thread(self._update_assistant, sess.agent_id, answer)
 
-        threading.Thread(target=worker, daemon=True, name="ga-tui-btw").start()
+        threading.Thread(target=worker, daemon=True, name="tau-tui-btw").start()
 
     def _cmd_review(self, args, raw):
         """`/review` via TUI's streaming path; the TUI intercepts slash commands
@@ -5994,7 +5994,7 @@ class GenericAgentTUI(App[None]):
             else:
                 # Resolve each thread back to a session if we still know it; otherwise
                 # surface the bare thread name (the session may have been Ctrl+D'd).
-                by_name = {(s.thread.name if s.thread else f"ga-tui-agent-{sid}"): (sid, s)
+                by_name = {(s.thread.name if s.thread else f"tau-tui-agent-{sid}"): (sid, s)
                            for sid, s in self.sessions.items()}
                 lines.append("✦ Token usage (all sessions)")
                 first = True
@@ -6016,7 +6016,7 @@ class GenericAgentTUI(App[None]):
                 lines += _sub_section()
         else:
             sess = self.current
-            tname = sess.thread.name if sess.thread else f"ga-tui-agent-{sess.agent_id}"
+            tname = sess.thread.name if sess.thread else f"tau-tui-agent-{sess.agent_id}"
             t = cost_tracker.get(tname)
             lines.append("✦ Token usage")
             lines += _section(sess.agent_id, sess, t)
@@ -6393,7 +6393,7 @@ class GenericAgentTUI(App[None]):
     # ---------------- agent task + stream ----------------
     # Pending-queue transport: submit while running → wrap text with the
     # "complete current task first, then address this" supplementary
-    # phrasing and append to `_intervene` so ga.turn_end_callback prepends
+    # phrasing and append to `_intervene` so tau.turn_end_callback prepends
     # it to next_prompt as `[MASTER] ...` mid-turn.  The wrap makes
     # `[MASTER]` read as an envelope, not a directive override.  On an
     # exit-turn boundary consume_file ate the file but next_prompt was
@@ -6414,7 +6414,7 @@ class GenericAgentTUI(App[None]):
     )
 
     def _wrap_user_steer(self, text: str) -> str:
-        lang = (os.environ.get("GA_LANG", "") or "").lower()
+        lang = (os.environ.get("TAU_LANG", "") or "").lower()
         tmpl = self._INTERVENE_WRAP_EN if lang == "en" else self._INTERVENE_WRAP_ZH
         return tmpl.format(text=text)
 
@@ -6485,7 +6485,7 @@ class GenericAgentTUI(App[None]):
                             target=self._consume_display_queue,
                             args=(_s.agent_id, tid, dq),
                             daemon=True,
-                            name=f"ga-tui-consume-{_s.agent_id}-{tid}",
+                            name=f"tau-tui-consume-{_s.agent_id}-{tid}",
                         ).start()
                 try: self.call_from_thread(self._refresh_messages)
                 except Exception: pass
@@ -6544,7 +6544,7 @@ class GenericAgentTUI(App[None]):
             target=self._consume_display_queue,
             args=(sess.agent_id, tid, dq),
             daemon=True,
-            name=f"ga-tui-consume-{sess.agent_id}-{tid}",
+            name=f"tau-tui-consume-{sess.agent_id}-{tid}",
         ).start()
         return tid
 
@@ -7238,7 +7238,7 @@ class GenericAgentTUI(App[None]):
                 Console(file=nbuf, width=max(8, _w - _DIFF_MARGIN),
                         force_terminal=True, color_system="truecolor",
                         legacy_windows=False,
-                        theme=_markdown_rich_theme(_palette, minimal=(self.theme != "ga-default"))
+                        theme=_markdown_rich_theme(_palette, minimal=(self.theme != "tau-default"))
                         ).print(HardBreakMarkdown(seg), end="")
                 Console(file=wbuf, width=10000, force_terminal=False,
                         legacy_windows=False).print(HardBreakMarkdown(seg), end="")
@@ -7292,7 +7292,7 @@ class GenericAgentTUI(App[None]):
             buf = StringIO()
             Console(file=buf, width=render_w, force_terminal=True,
                     color_system="truecolor", legacy_windows=False,
-                    theme=_markdown_rich_theme(_palette, minimal=(self.theme != "ga-default"))
+                    theme=_markdown_rich_theme(_palette, minimal=(self.theme != "tau-default"))
                     ).print(HardBreakMarkdown(text), end="")
             narrow_raw = buf.getvalue().rstrip("\n")
 
@@ -7456,7 +7456,7 @@ class GenericAgentTUI(App[None]):
         try:
             import cost_tracker
             sess = self.sessions.get(self.current_id)
-            tname = sess.thread.name if sess and sess.thread else f"ga-tui-agent-{self.current_id}"
+            tname = sess.thread.name if sess and sess.thread else f"tau-tui-agent-{self.current_id}"
             t = cost_tracker.get(tname)
             cum_in = t.input + t.cache_create + t.cache_read
             cum_out = t.output
@@ -7589,7 +7589,7 @@ class GenericAgentTUI(App[None]):
         try:
             import cost_tracker
             sess = self.sessions.get(self.current_id)
-            tname = sess.thread.name if sess and sess.thread else f"ga-tui-agent-{self.current_id}"
+            tname = sess.thread.name if sess and sess.thread else f"tau-tui-agent-{self.current_id}"
             t = cost_tracker.get(tname)
             m._stream_baseline_input = t.input + t.cache_create + t.cache_read
             m._stream_baseline_output = t.output
@@ -7855,7 +7855,7 @@ def _warn_mintty():
     direct_mintty = term_prog == 'mintty' and not wt_session
     if direct_mintty:
         print(
-            "\033[33m[ga-tui] WARNING: direct Git Bash/mintty detected.\033[0m\n"
+            "\033[33m[tau-tui] WARNING: direct Git Bash/mintty detected.\033[0m\n"
             "  Textual TUI requires a modern terminal with full VT/xterm support.\n"
             "  Direct mintty can cause rendering issues (blank screen, garbled output).\n"
             "\n"
@@ -7865,10 +7865,10 @@ def _warn_mintty():
             "    - CMD:                       python frontends\\tuiapp_v2.py\n"
             "    - PowerShell:                python frontends/tuiapp_v2.py\n"
             "\n"
-            "  To continue anyway, set GA_TUI_FORCE=1",
+            "  To continue anyway, set TAU_TUI_FORCE=1",
             file=sys.stderr,
         )
-        if not os.environ.get('GA_TUI_FORCE'):
+        if not os.environ.get('TAU_TUI_FORCE'):
             raise SystemExit(1)
 
 

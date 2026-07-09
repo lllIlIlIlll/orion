@@ -61,7 +61,7 @@ def find_default_ga_root() -> Path:
     return APP_DIR.parent.parent.resolve()
 
 
-DEFAULT_GA_ROOT = find_default_ga_root()
+DEFAULT_TAU_ROOT = find_default_ga_root()
 
 _FINAL_INFO_RE = re.compile(r'\n*`{5}\n*\[Info\] Final response to user\.\n*`{5}\s*$')
 
@@ -123,7 +123,7 @@ def _sanitize_desktop_plan_path(session_id: str, plan_path: str) -> str:
 class AgentManager:
     def __init__(self):
         self.lock = threading.RLock()
-        self.ga_root = str(DEFAULT_GA_ROOT)
+        self.ga_root = str(DEFAULT_TAU_ROOT)
         self.config: Dict[str, Any] = {}
         self.sessions: Dict[str, Session] = {}
         self.active_session_id: Optional[str] = None
@@ -376,11 +376,11 @@ class AgentManager:
         try:
             os.chdir(sess.cwd or str(root))
             agentmain = importlib.import_module("agentmain")
-            GA = getattr(agentmain, "GenericAgent")
-            agent = GA()
+            TAU = getattr(agentmain, "GenericAgent")
+            agent = TAU()
             agent.inc_out = True
             agent.verbose = True
-            threading.Thread(target=agent.run, daemon=True, name=f"GA-{sess.id}").start()
+            threading.Thread(target=agent.run, daemon=True, name=f"TAU-{sess.id}").start()
             return agent
         finally:
             with contextlib.suppress(Exception):
@@ -1126,7 +1126,7 @@ class ServiceManager:
         return {"ok": True, "lines": lines}
 
 
-services = ServiceManager(str(DEFAULT_GA_ROOT), hub.emit)
+services = ServiceManager(str(DEFAULT_TAU_ROOT), hub.emit)
 
 
 def _bridge_shutdown_services() -> None:
@@ -1429,10 +1429,10 @@ async def path_open_handler(request):
     return json_ok({"ok": True, "path": str(target)})
 
 
-# File attachments live under GA's own temp dir (gitignored), NOT the OS temp
+# File attachments live under TAU's own temp dir (gitignored), NOT the OS temp
 # dir, so they survive bridge restarts. Instead of wiping everything on startup,
 # we keep files for UPLOAD_RETENTION_DAYS and only sweep stale ones.
-_WEB_UPLOAD_DIR = Path(DEFAULT_GA_ROOT) / "temp" / "desktop_uploads"
+_WEB_UPLOAD_DIR = Path(DEFAULT_TAU_ROOT) / "temp" / "desktop_uploads"
 _WEB_UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 UPLOAD_RETENTION_DAYS = 30
@@ -1694,8 +1694,8 @@ async def start_extras_handler(request):
 
 
 async def identity_handler(request):
-    return json_ok({"ga_root": str(DEFAULT_GA_ROOT), "app_dir": str(APP_DIR), "pid": os.getpid(),
-                    "build_id": os.environ.get("GA_BUILD_ID", "")})
+    return json_ok({"ga_root": str(DEFAULT_TAU_ROOT), "app_dir": str(APP_DIR), "pid": os.getpid(),
+                    "build_id": os.environ.get("TAU_BUILD_ID", "")})
 
 
 def _exit_bridge() -> None:
@@ -1719,7 +1719,7 @@ async def token_stats_handler(request):
         records = []
         for k, v in trackers.items():
             model = ''
-            sid = k.replace('GA-', '')
+            sid = k.replace('TAU-', '')
             with manager.lock:
                 sess = manager.sessions.get(sid)
             if sess and sess.agent:

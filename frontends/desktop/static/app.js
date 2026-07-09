@@ -67,7 +67,7 @@ let bridgeUiOffline = false;
     if (!listeners.has(channel)) listeners.set(channel, new Set());
     listeners.get(channel).add(cb);
     if (channel === 'bridge-ready' && cachedBridgeReady) {
-      try { cb(cachedBridgeReady); } catch (err) { console.error('[ga bridge] replay bridge-ready', err); }
+      try { cb(cachedBridgeReady); } catch (err) { console.error('[tau bridge] replay bridge-ready', err); }
     }
     return () => listeners.get(channel)?.delete(cb);
   }
@@ -77,7 +77,7 @@ let bridgeUiOffline = false;
     const set = listeners.get(channel);
     if (!set) return;
     for (const cb of Array.from(set)) {
-      try { cb(payload); } catch (err) { console.error('[ga bridge]', channel, err); }
+      try { cb(payload); } catch (err) { console.error('[tau bridge]', channel, err); }
     }
   }
 
@@ -263,7 +263,7 @@ let bridgeUiOffline = false;
     return res;
   }
 
-  window.ga = {
+  window.tau = {
     platform: navigator.platform.toLowerCase().includes('mac') ? 'darwin' : 'win32',
     startBridge: async () => { connectWs(); return http('/status'); },
     spawnBridge,
@@ -319,7 +319,7 @@ const I18N = {
     'preset.findwork.t': '找点事做', 'preset.findwork.d': '分析当前情况,推荐一批让你感兴趣的 TODO',
     'preset.mine.t': '我的·周报', 'preset.mine.d': '自定义：抓本周提交并写周报',
     'preset.add.t': '自定义', 'preset.add.d': '任意一句话存为功能',
-    'composer.placeholder': 'GA 能帮你做些什么？',
+    'composer.placeholder': 'TAU 能帮你做些什么？',
     'search.placeholder': '搜索会话…', 'conv.new': '新对话',
     'ctx.pin': '置顶', 'ctx.unpin': '取消置顶', 'ctx.rename': '重命名', 'ctx.del': '删除',
     'common.close': '关闭', 'common.more': '更多', 'common.optional': '选填', 'common.save': '保存',
@@ -472,7 +472,7 @@ const I18N = {
     'presetPrompt.review': '进入监察者模式：对刚才的产出严格挑刺、逐项复核并报告问题。',
     'presetPrompt.findwork': '按照自主行动的规划部分，充分分析我的情况，给我生成一批 TODO，务必让我感兴趣。',
     'presetPrompt.mine': '抓取本周的 git 提交并写一份周报。',
-    'ask.banner': 'GA 等你回答',
+    'ask.banner': 'TAU 等你回答',
     'ask.replyHint': '在下方输入框回复',
     'ask.placeholderOpen': '在此输入你的回答… (Enter 发送)',
   },
@@ -492,7 +492,7 @@ const I18N = {
     'preset.findwork.t': 'Find me work', 'preset.findwork.d': 'Analyze my context and suggest a batch of interesting TODOs',
     'preset.mine.t': 'My · Weekly', 'preset.mine.d': 'Custom: weekly report from commits',
     'preset.add.t': 'Custom', 'preset.add.d': 'Save any prompt as a function',
-    'composer.placeholder': 'What can GA do for you?',
+    'composer.placeholder': 'What can TAU do for you?',
     'search.placeholder': 'Search chats…', 'conv.new': 'New chat',
     'ctx.pin': 'Pin', 'ctx.unpin': 'Unpin', 'ctx.rename': 'Rename', 'ctx.del': 'Delete',
     'common.close': 'Close', 'common.more': 'More', 'common.optional': 'Optional', 'common.save': 'Save',
@@ -645,7 +645,7 @@ const I18N = {
     'presetPrompt.review': 'Enter reviewer mode: strictly scrutinize the previous output, review item by item and report issues.',
     'presetPrompt.findwork': 'Following the autonomous planning section, analyze my situation thoroughly and generate a batch of TODOs that genuinely interest me.',
     'presetPrompt.mine': 'Collect this week\'s git commits and write a weekly report.',
-    'ask.banner': 'GA is waiting for your answer',
+    'ask.banner': 'TAU is waiting for your answer',
     'ask.replyHint': 'Reply in the input below',
     'ask.placeholderOpen': 'Type your answer here… (Enter to send)',
   },
@@ -698,7 +698,7 @@ function syncBootCache() {
 }
 async function persistUiPrefs() {
   try {
-    await window.ga.saveConfig({
+    await window.tau.saveConfig({
       config: { lang, theme, appearance, plain: plainUi, llmNo: state.llmNo, fontSize: chatFontSize },
     });
     syncBootCache();
@@ -942,7 +942,7 @@ async function importTaukeyFromFile(file) {
   if (!file) return;
   const text = await file.text();
   if (!text.trim()) throw new Error(t('err.taukeyImport'));
-  await window.ga.saveTaukeyContent(text);
+  await window.tau.saveTaukeyContent(text);
   await loadModelProfiles();
 }
 bindClick('import-taukey-btn', (e) => {
@@ -963,12 +963,12 @@ if (importTaukeyInput) {
   });
 }
 async function exportTaukeyToDir() {
-  const res = await window.ga.getTaukeyContent();
+  const res = await window.tau.getTaukeyContent();
   const content = (res && res.content) ? String(res.content) : '';
   if (!content.trim()) throw new Error(t('err.taukeyExport'));
   // WebView2：独立缓存 + 无目录选择/下载；走 Tauri 原生另存为
   if (window.__TAURI__?.core?.invoke) {
-    const path = await window.ga.tauriInvoke('export_taukey', { content });
+    const path = await window.tau.tauriInvoke('export_taukey', { content });
     if (!path) return;
     showChanToast(t('sys.taukeyExported'), path, 'ok');
     return;
@@ -1101,7 +1101,7 @@ const ALLOWED_URI_RE = /^(https?:|mailto:|tel:|#|\/)/i;
 function escapeHtml(s) {
   const d = document.createElement('div'); d.textContent = String(s == null ? '' : s); return d.innerHTML;
 }
-/** GA list_llms 形如 SessionClass/备注；桌面 UI 只展示 / 后一段 */
+/** TAU list_llms 形如 SessionClass/备注；桌面 UI 只展示 / 后一段 */
 function profileLabel(name) {
   const s = String(name || '');
   const i = s.indexOf('/');
@@ -1667,7 +1667,7 @@ function syncAskUserUi() {
 
 /* ═══════════════ 渲染后增强 (PR移植) ═══════════════ */
 /* ───────────── 统一复制 SVG Icon ───────────── */
-// Phosphor 图标助手：把 window.gaIcon(name) 包一层，给动态渲染的 UI 用，与静态 [data-ga-icon] 保持一致
+// Phosphor 图标助手：把 window.gaIcon(name) 包一层，给动态渲染的 UI 用，与静态 [data-tau-icon] 保持一致
 const GA_ICON = (name, className = '') => (typeof window.gaIcon === 'function' ? window.gaIcon(name, className) : '');
 const SVG_COPY_ICON = GA_ICON('copy');
 const SVG_CHECK_ICON = GA_ICON('check');
@@ -2787,7 +2787,7 @@ function renderSessionList() {
 if (searchInput) searchInput.addEventListener('input', () => renderSessionList());
 async function ensureBridgeSession(sess) {
   if (sess.bridgeSessionId) return sess.bridgeSessionId;
-  const res = await window.ga.rpc('session/new', { cwd: '', mcp_servers: [] });
+  const res = await window.tau.rpc('session/new', { cwd: '', mcp_servers: [] });
   if (res?.error) throw new Error(res.error.message || res.error);
   sess.bridgeSessionId = res.sessionId || res.result?.sessionId;
   return sess.bridgeSessionId;
@@ -2880,7 +2880,7 @@ function setActiveSession(id) {
 async function closeSession(id) {
   const sess = state.sessions.get(id);
   if (sess && sess.bridgeSessionId) {
-    try { await window.ga.rpc('session/cancel', { sessionId: sess.bridgeSessionId }); } catch (_) {}
+    try { await window.tau.rpc('session/cancel', { sessionId: sess.bridgeSessionId }); } catch (_) {}
     fetch(`${BRIDGE_ORIGIN}/session/${sess.bridgeSessionId}`, { method: 'DELETE' }).catch(() => {});
   }
   state.sessions.delete(id); state.runtime.delete(id);
@@ -3090,7 +3090,7 @@ async function fetchSessionPoll(sess, opts = {}) {
   const sid = sess.bridgeSessionId || sess.id;
   const afterId = opts.after ?? r.lastId ?? 0;
   const limit = opts.limit ?? POLL_MSG_LIMIT;
-  const res = await window.ga.rpc('session/poll', { sessionId: sid, afterId, limit });
+  const res = await window.tau.rpc('session/poll', { sessionId: sid, afterId, limit });
   if (res?.error) throw new Error(res.error.message || res.error);
   return res.result || res;
 }
@@ -3260,7 +3260,7 @@ async function interruptBeforeSend(sess) {
   try {
     clearDraft(sess);
     try {
-      const res = await window.ga.rpc('session/cancel', { sessionId: sess.bridgeSessionId || sess.id });
+      const res = await window.tau.rpc('session/cancel', { sessionId: sess.bridgeSessionId || sess.id });
       if (res?.error) throw new Error(res.error.message || res.error);
     } catch (e) {
       showChanToast(t('err.stop') + ': ' + (e.message || e), '', 'err');
@@ -3331,7 +3331,7 @@ async function sendPrompt(text) {
         localStorage.setItem('ga_active', sess.id);  // 会话 id 因 bridge 重建而变更，同步持久化
       }
     }
-    const res = await window.ga.rpc('session/prompt', { sessionId: sid, prompt: composedPrompt, display: text, llmNo: state.llmNo,
+    const res = await window.tau.rpc('session/prompt', { sessionId: sid, prompt: composedPrompt, display: text, llmNo: state.llmNo,
       files: previewFiles, imageMetas: previewImgs.map(im => ({ name: im.name, path: im.path })) });
     if (res?.error) throw new Error(res.error.message || res.error);
     removeUsedPendingFiles(usedFiles);
@@ -3351,7 +3351,7 @@ async function cancelPrompt() {
   const sess = activeSess();
   if (!sess || !rt(sess).busy) return false;
   try {
-    const res = await window.ga.rpc('session/cancel', { sessionId: sess.bridgeSessionId || sess.id });
+    const res = await window.tau.rpc('session/cancel', { sessionId: sess.bridgeSessionId || sess.id });
     if (res?.error) throw new Error(res.error.message || res.error);
     clearDraft(sess);
     rt(sess).pollAgain = true;
@@ -3408,8 +3408,8 @@ function showError(text) {
 }
 let _toastTimer = null;
 function showToast(text) {
-  let el = document.getElementById('ga-toast');
-  if (!el) { el = document.createElement('div'); el.id = 'ga-toast'; el.className = 'ga-toast'; document.body.appendChild(el); }
+  let el = document.getElementById('tau-toast');
+  if (!el) { el = document.createElement('div'); el.id = 'tau-toast'; el.className = 'tau-toast'; document.body.appendChild(el); }
   el.textContent = text;
   el.classList.add('show');
   clearTimeout(_toastTimer);
@@ -3823,7 +3823,7 @@ function openSettings() {
 }
 async function loadModelProfiles() {
   try {
-    const res = await window.ga.getModelProfiles();
+    const res = await window.tau.getModelProfiles();
     const list = res?.profiles || res?.result?.profiles || [];
     state.modelProfiles = normalizeProfiles(list);
     const active = state.modelProfiles.find(p => p.active) || state.modelProfiles[0];
@@ -3845,7 +3845,7 @@ function renderModelMenu(menuEl) {
     const no = (p.id ?? i);
     const isActive = (state.llmNo === no) ? ' active' : '';
     const label = (isActive && p.kind === 'mixin' && state.modelName) ? state.modelName : modelDisplayName(p);
-    return `<div class="ga-menu-item${isActive}" data-llmno="${no}">${escapeHtml(label || '')}</div>`;
+    return `<div class="tau-menu-item${isActive}" data-llmno="${no}">${escapeHtml(label || '')}</div>`;
   });
   menuEl.innerHTML = rows.join('');
   applyI18n();
@@ -3876,7 +3876,7 @@ function bindModelMenuItemClick(menuEl) {
   if (!menuEl) return;
   menuEl.addEventListener('click', (e) => {
     e.stopPropagation();
-    const item = e.target.closest('.ga-menu-item');
+    const item = e.target.closest('.tau-menu-item');
     if (!item) return;
     const no = parseInt(item.dataset.llmno, 10);
     if (Number.isNaN(no)) return;
@@ -3928,7 +3928,7 @@ if (plainUiSwitch) plainUiSwitch.addEventListener('click', () => {
 });
 async function loadBridgeConfig() {
   try {
-    const res = await window.ga.getConfig();
+    const res = await window.tau.getConfig();
     const cfg = res?.config || {};
     if (LANGS.includes(cfg.lang)) {
       lang = cfg.lang;
@@ -4367,7 +4367,7 @@ if (chatPanel) {
 }
 
 /* ═══════════════ bridge 事件 ═══════════════ */
-window.ga.onBridgeReady(async () => {
+window.tau.onBridgeReady(async () => {
   state.bridgeReady = true;
   syncPlanPollTimer();
   refreshStatusLabel();
@@ -4383,7 +4383,7 @@ window.ga.onBridgeReady(async () => {
   if (sess) refreshEmptyState(sess);
 });
 setTimeout(() => { delete document.documentElement.dataset.bootHasSessions; }, 3000);
-window.ga.onBridgeNotification((msg) => {
+window.tau.onBridgeNotification((msg) => {
   if (msg && msg.type === 'session-state') {
     for (const sess of state.sessions.values()) {
       if (sess.bridgeSessionId === msg.sessionId) {
@@ -4395,8 +4395,8 @@ window.ga.onBridgeNotification((msg) => {
     }
   }
 });
-window.ga.onBridgeError((err) => { console.warn('[bridge error]', err); });
-window.ga.onBridgeClosed(() => {
+window.tau.onBridgeError((err) => { console.warn('[bridge error]', err); });
+window.tau.onBridgeClosed(() => {
   state.bridgeReady = false;
   syncPlanPollTimer();
   const s = activeSess();
@@ -4481,7 +4481,7 @@ async function tokPollBridge() {
     const history = tokLoadHistory();
     for (const r of (data.records||[])) {
       const key = r.thread;
-      const sid = key.replace('GA-','');
+      const sid = key.replace('TAU-','');
       const sess = [...state.sessions.values()].find(s=>s.bridgeSessionId===sid);
       if (sess && rt(sess).busy) continue;
       const prev = _tokLastSnap[key] || {input:0,output:0,cacheCreate:0,cacheRead:0};
@@ -5217,10 +5217,10 @@ function showChanToast(title, detail, kind) {
 
   async function maybeAskDesktopShortcut() {
     try {
-      const should = await window.ga.tauriInvoke('shortcut_should_ask');
+      const should = await window.tau.tauriInvoke('shortcut_should_ask');
       if (!should) return;
       const create = await showConfirmDialog({ title: t('common.confirm'), message: t('shortcut.askConfirm'), okText: t('common.confirm') });
-      await window.ga.tauriInvoke('shortcut_decide', { create });
+      await window.tau.tauriInvoke('shortcut_decide', { create });
     } catch (_) { /* not in tauri / not a bundle — ignore */ }
   }
 
@@ -5295,10 +5295,10 @@ async function toggleChannel(id, running, toggleEl) {
   const label = channelDisplayName(gaServiceStore.get(id) || { id });
   try {
     if (running) {
-      await window.ga.stopService(id);
+      await window.tau.stopService(id);
       showChanToast(t('sys.channelStopped') + ' · ' + label, '', 'ok');
     } else {
-      const res = await window.ga.startService(id);
+      const res = await window.tau.startService(id);
       if (res && res.service && res.service.status === 'error') {
         throw Object.assign(new Error(res.service.lastError || 'start_failed'), { data: res });
       }
@@ -5324,7 +5324,7 @@ async function openChannelLogs(id) {
   chanLogPre.textContent = t('ch.loading');
   openModal('chan-log-modal');
   try {
-    const res = await window.ga.getServiceLogs(id, 200);
+    const res = await window.tau.getServiceLogs(id, 200);
     const lines = res.lines || [];
     chanLogPre.textContent = lines.length ? lines.join('\n') : t('ch.logEmpty');
   } catch (e) {
@@ -5342,7 +5342,7 @@ async function openChannelTaukey(channelId) {
   if (chanConfigSave) chanConfigSave.disabled = true;
   openModal('chan-config-modal');
   try {
-    const res = await window.ga.getTaukeyContent();
+    const res = await window.tau.getTaukeyContent();
     chanConfigEditor.value = res.content || '';
   } catch (e) {
     chanConfigEditor.value = t('err.channelLoad') + ': ' + (e.message || e);
@@ -5356,7 +5356,7 @@ async function saveChannelTaukey() {
   if (!chanConfigEditor || !chanConfigSave) return;
   chanConfigSave.disabled = true;
   try {
-    await window.ga.saveTaukeyContent(chanConfigEditor.value);
+    await window.tau.saveTaukeyContent(chanConfigEditor.value);
     showChanToast(t('sys.configSaved'), '', 'ok');
     chanConfigModal.hidden = true;
   } catch (e) {
@@ -5488,10 +5488,10 @@ async function loadStatusPanel() {
     return;
   }
   try {
-    const res = await window.ga.getServicePanel();
+    const res = await window.tau.getServicePanel();
     renderStatusPanel(res.services || []);
   } catch (_) {
-    window.ga.setBridgeUiOffline(true);
+    window.tau.setBridgeUiOffline(true);
     gaServiceStore.applySnapshot(bridgeOfflinePanelServices());
     renderStatusPanel(bridgeOfflinePanelServices());
   }
@@ -5499,8 +5499,8 @@ async function loadStatusPanel() {
 
 async function restartService(id) {
   const label = statusDisplayName(gaServiceStore.get(id) || { id });
-  await window.ga.stopService(id);
-  const res = await window.ga.startService(id);
+  await window.tau.stopService(id);
+  const res = await window.tau.startService(id);
   if (res && res.service && res.service.status === 'error') {
     throw Object.assign(new Error(res.service.lastError || 'start_failed'), { data: res });
   }
@@ -5524,7 +5524,7 @@ if (statusListEl) {
       _chanBusy = true;
       actEl.disabled = true;
       try {
-        await window.ga.spawnBridge();
+        await window.tau.spawnBridge();
         await loadStatusPanel();
         showChanToast(t('sys.channelStarted') + ' · bridge', '', 'ok');
       } catch (err) {
@@ -5540,10 +5540,10 @@ if (statusListEl) {
       _chanBusy = true;
       actEl.disabled = true;
       try {
-        window.ga.setBridgeUiOffline(true);
+        window.tau.setBridgeUiOffline(true);
         gaServiceStore.applySnapshot(bridgeOfflinePanelServices());
         renderStatusPanel(bridgeOfflinePanelServices());
-        await window.ga.exitBridge();
+        await window.tau.exitBridge();
         showChanToast(t('sys.channelStopped') + ' · bridge', '', 'ok');
       } catch (err) {
         showChanToast(t('err.channelStop') + ' · bridge', err.message || String(err), 'err');
@@ -5626,7 +5626,7 @@ else refreshEmptyState(null);
 // 此时 state.bridgeReady 已为 true，直接按真实状态渲染，避免把「就绪」覆盖回「连接中」。
 if (state.bridgeReady) refreshStatusLabel();
 else chatStatus.setConnecting();
-window.ga.startBridge && window.ga.startBridge();
+window.tau.startBridge && window.tau.startBridge();
 })();
 
 /* 聊天 / Conductor 共用 composer 绑定（结构：.composer > .composer-slot > .composer-inset） */
@@ -5769,7 +5769,7 @@ function bindComposerInRoot(root, opts) {
     .replace(/\[(Image|File)\s+#\d+\]\s*/g, '')
     .replace(/[^\s]*desktop_uploads[^\s]*\s*/g, '')  // 兜底:去掉内联的本地上传路径,避免历史/回显消息把全路径甩出来
     .trim();
-  const GA_STATUS_BREATHE_SM = '<span class="ga-status-breathe ga-status-breathe--sm" aria-hidden="true"><span class="ga-status-breathe__ring"></span><span class="ga-status-breathe__core"></span></span>';
+  const GA_STATUS_BREATHE_SM = '<span class="tau-status-breathe tau-status-breathe--sm" aria-hidden="true"><span class="tau-status-breathe__ring"></span><span class="tau-status-breathe__core"></span></span>';
   function collabStatusMark(status) {
     switch (status) {
       case 'running': return GA_STATUS_BREATHE_SM;

@@ -836,7 +836,7 @@ class ToolClient:
         tool_instruction = ""
         if not tools: return tool_instruction
         tools_json = json.dumps(tools, ensure_ascii=False, separators=(',', ':'))
-        _en = os.environ.get('GA_LANG') == 'en'
+        _en = os.environ.get('TAU_LANG') == 'en'
         if _en:
             tool_instruction = f"""
 ### Interaction Protocol (must follow strictly, always in effect)
@@ -1044,7 +1044,7 @@ The reply body should first include a minimal one-line (<30 words) physical snap
 
 class NativeToolClient:
     @staticmethod
-    def _thinking_prompt(): return THINKING_PROMPT_EN if os.environ.get('GA_LANG') == 'en' else THINKING_PROMPT_ZH
+    def _thinking_prompt(): return THINKING_PROMPT_EN if os.environ.get('TAU_LANG') == 'en' else THINKING_PROMPT_ZH
     def __init__(self, backend):
         self.backend = backend
         self.backend.system = self._thinking_prompt()

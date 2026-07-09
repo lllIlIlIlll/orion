@@ -30,7 +30,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-LANG = os.environ.get('GA_LANG', 'zh')
+LANG = os.environ.get('TAU_LANG', 'zh')
 if LANG not in ('zh', 'en'): LANG = 'zh'
 I18N = {
     'zh': {

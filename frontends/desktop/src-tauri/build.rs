@@ -17,7 +17,7 @@ fn main() {
         .duration_since(std::time::UNIX_EPOCH)
         .map(|d| d.as_secs())
         .unwrap_or(0);
-    println!("cargo:rustc-env=GA_BUILD_ID={}-{}", commit, stamp);
+    println!("cargo:rustc-env=TAU_BUILD_ID={}-{}", commit, stamp);
     // Re-run when the checked-out commit changes so the id stays fresh.
     println!("cargo:rerun-if-changed=../../../.git/HEAD");
 

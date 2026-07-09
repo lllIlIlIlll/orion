@@ -7,7 +7,7 @@
 #    2. Uncomment one of the configs below and fill in your apikey
 #    3. Run `python agentmain.py` or `python launch.pyw`
 #
-#  GA auto-detects any variable whose name contains 'api'/'config'/'cookie'
+#  TAU auto-detects any variable whose name contains 'api'/'config'/'cookie'
 #  and picks the session class by keyword:
 #      name contains 'native' + 'claude'  → NativeClaudeSession  (Anthropic API)
 #      name contains 'native' + 'oai'     → NativeOAISession     (OpenAI API)

@@ -264,7 +264,7 @@ class GenericAgentTUI(App[None]):
         except Exception:
             pass
         session = AgentSession(agent_id=agent_id, name=name or f"agent-{agent_id}", agent=agent)
-        thread = threading.Thread(target=agent.run, name=f"ga-tui-agent-{agent_id}", daemon=True)
+        thread = threading.Thread(target=agent.run, name=f"tau-tui-agent-{agent_id}", daemon=True)
         thread.start()
         session.thread = thread
         self.sessions[agent_id] = session
@@ -358,7 +358,7 @@ class GenericAgentTUI(App[None]):
         threading.Thread(
             target=self._consume_display_queue,
             args=(session.agent_id, task_id, display_queue),
-            name=f"ga-tui-consumer-{session.agent_id}-{task_id}",
+            name=f"tau-tui-consumer-{session.agent_id}-{task_id}",
             daemon=True,
         ).start()
         return task_id

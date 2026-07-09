@@ -15,8 +15,8 @@
 
 :root{
   --font-sans:-apple-system,BlinkMacSystemFont,system-ui,"Segoe UI Variable","Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei UI","Microsoft YaHei",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",emoji;
-  --font-brand:"GA Azonix",var(--font-sans);
-  --font-mono:"GA JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,"Liberation Mono","Courier New","PingFang SC","Hiragino Sans GB","Microsoft YaHei UI","Microsoft YaHei",monospace;
+  --font-brand:"TAU Azonix",var(--font-sans);
+  --font-mono:"TAU JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,"Liberation Mono","Courier New","PingFang SC","Hiragino Sans GB","Microsoft YaHei UI","Microsoft YaHei",monospace;
   --font-num:var(--font-mono);
   --font-num-variant:lining-nums tabular-nums;
   --chat-col-w:760px;
@@ -392,14 +392,14 @@ body{ background:var(--bg); color:var(--txt); font-size:13px; overflow:hidden; f
 .model-act-addmix.is-in{ color:var(--accent); opacity:.5; }
 .model-act-addmix.is-in:hover{ opacity:.8; }
 /* 轻提示 toast（屏幕顶部）*/
-.ga-toast{
+.tau-toast{
   position:fixed; left:50%; top:72px; transform:translateX(-50%) translateY(-8px);
   background:var(--card); color:var(--txt); border:1px solid var(--line-strong);
   border-radius:6px; padding:10px 18px; font-size:13px; font-family:var(--font-sans);
   box-shadow:0 8px 28px rgba(0,0,0,.24); opacity:0; pointer-events:none;
   transition:opacity .18s, transform .18s; z-index:9999;
 }
-.ga-toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+.tau-toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
 .set-btn{
   width:100%; display:flex; align-items:center; gap:8px;
   border:1px solid var(--line); background:var(--card); color:var(--txt-2);
@@ -512,7 +512,7 @@ body{ background:var(--bg); color:var(--txt); font-size:13px; overflow:hidden; f
 }
 .brand-sub{ display:none; }
 
-.ga-num{
+.tau-num{
   font-family:var(--font-num);
   font-variant-numeric:var(--font-num-variant);
 }
@@ -698,7 +698,7 @@ body{ background:var(--bg); color:var(--txt); font-size:13px; overflow:hidden; f
 .run-state.busy{ color:var(--ok); }
 
 /* 呼吸灯：内圈常亮(容器 60%) + 中圈扩散（无转圈） */
-.ga-status-breathe,
+.tau-status-breathe,
 .run-state.busy .dot{
   --breathe-color:var(--ok);
   --breathe-box:12px;
@@ -712,12 +712,12 @@ body{ background:var(--bg); color:var(--txt); font-size:13px; overflow:hidden; f
   border:none;
   vertical-align:middle;
 }
-.ga-status-breathe--sm{ --breathe-box:10px; }
+.tau-status-breathe--sm{ --breathe-box:10px; }
 .run-state.busy .dot{
   width:var(--breathe-box);
   height:var(--breathe-box);
 }
-.ga-status-breathe__core,
+.tau-status-breathe__core,
 .run-state.busy .dot::before{
   content:'';
   position:absolute;
@@ -728,7 +728,7 @@ body{ background:var(--bg); color:var(--txt); font-size:13px; overflow:hidden; f
   background:var(--breathe-color);
   z-index:2;
 }
-.ga-status-breathe__ring,
+.tau-status-breathe__ring,
 .run-state.busy .dot::after{
   content:'';
   position:absolute;
@@ -739,9 +739,9 @@ body{ background:var(--bg); color:var(--txt); font-size:13px; overflow:hidden; f
   border:1px solid color-mix(in srgb, var(--breathe-color) 52%, transparent);
   z-index:1;
   pointer-events:none;
-  animation:ga-status-breathe 1.75s ease-out infinite;
+  animation:tau-status-breathe 1.75s ease-out infinite;
 }
-@keyframes ga-status-breathe{
+@keyframes tau-status-breathe{
   0%{ transform:translate(-50%,-50%) scale(1); opacity:.55; }
   100%{ transform:translate(-50%,-50%) scale(2.35); opacity:0; }
 }
@@ -869,12 +869,12 @@ body{ background:var(--bg); color:var(--txt); font-size:13px; overflow:hidden; f
   from{ opacity:0; transform:translateY(8px); }
   to{ opacity:1; transform:translateY(0); }
 }
-.ga-spin{
+.tau-spin{
   width:20px; height:20px; flex:0 0 auto;
   border:2.5px solid var(--line); border-top-color:var(--accent);
-  border-radius:50%; animation:ga-spin .65s linear infinite;
+  border-radius:50%; animation:tau-spin .65s linear infinite;
 }
-@keyframes ga-spin{ to{ transform:rotate(360deg); } }
+@keyframes tau-spin{ to{ transform:rotate(360deg); } }
 /* 有消息时必须顶对齐：父级 .page--chat-ui .msg-area 的 center 优先级更高，否则会滚不到顶部 */
 .page.page--chat-ui .msg-area.has-msgs{ align-items:stretch; justify-content:flex-start; }
 .conv-empty{ color:var(--muted2); font-size:12px; }
@@ -1318,7 +1318,7 @@ span.flatpickr-weekday{ color:var(--muted) !important; font-size:11px; }
   width:16px; height:16px;
   border:2px solid color-mix(in srgb, var(--on-accent) 35%, transparent);
   border-top-color:var(--on-accent); border-radius:50%;
-  animation:ga-spin .65s linear infinite;
+  animation:tau-spin .65s linear infinite;
 }
 .send svg{ width:15px; height:15px; }
 /* 运行中：发送键变红色停止键（点击=暂停当前回合）。回车仍走发送（打断重发）。 */
@@ -1701,7 +1701,7 @@ html[data-appearance="dark"] .plan-item--warn .plan-item-text{ color:#f0a020; }
 }
 
 /* ─── chat composer: model dropdown menu ─── */
-.ga-menu{
+.tau-menu{
   position:absolute;
   background:var(--card);
   border:1px solid var(--line);
@@ -1711,7 +1711,7 @@ html[data-appearance="dark"] .plan-item--warn .plan-item-text{ color:#f0a020; }
   min-width:160px;
   z-index:50;
 }
-.ga-menu-item{
+.tau-menu-item{
   display:block;
   width:100%;
   text-align:left;
@@ -1725,22 +1725,22 @@ html[data-appearance="dark"] .plan-item--warn .plan-item-text{ color:#f0a020; }
   font-family:var(--font-mono);
   font-variant-numeric:var(--font-num-variant);
 }
-.ga-menu-item:hover{ background:var(--hover-2); }
-.ga-menu-item.active{ color:var(--txt-strong); }  /* 选中项用强调色而非发灰的 --accent，避免变淡 */
+.tau-menu-item:hover{ background:var(--hover-2); }
+.tau-menu-item.active{ color:var(--txt-strong); }  /* 选中项用强调色而非发灰的 --accent，避免变淡 */
 /* 浅色模式：模型下拉里选中项仅靠文字色区分太弱——加背景 + 加粗，一眼可辨 */
-html[data-appearance="light"] .ga-menu-item.active{
+html[data-appearance="light"] .tau-menu-item.active{
   background:color-mix(in srgb, var(--accent) 16%, var(--panel));
   font-weight:700;
 }
 /* 深色模式：同样处理 */
-html[data-appearance="dark"] .ga-menu-item.active{
+html[data-appearance="dark"] .tau-menu-item.active{
   background:color-mix(in srgb, var(--accent) 22%, var(--panel));
   font-weight:700;
 }
-.composer-menu .ga-menu-item{
+.composer-menu .tau-menu-item{
   display:flex; align-items:center; gap:8px;
 }
-.composer-menu .ga-menu-item svg{ width:16px; height:16px; flex:0 0 auto; color:var(--icon); }
+.composer-menu .tau-menu-item svg{ width:16px; height:16px; flex:0 0 auto; color:var(--icon); }
 
 /* ─── chat composer: image thumb strip ─── */
 .thumb-strip{
@@ -2403,7 +2403,7 @@ html[data-appearance="dark"] .bubble.md pre code{ color:var(--txt-2); }
 }
 .collab-stat--running{ color:var(--ok); background:color-mix(in srgb, var(--ok) 10%, var(--panel)); }
 .collab-stat--done{ color:var(--muted); background:color-mix(in srgb, var(--muted) 10%, var(--panel)); }
-.collab-prog-stats .ga-status-breathe--sm{ --breathe-box:8px; }
+.collab-prog-stats .tau-status-breathe--sm{ --breathe-box:8px; }
 .collab-prog-stats .collab-rail-dot{ width:5px; height:5px; }
 .collab-stat--done .collab-rail-dot{ background:var(--muted2); }
 .collab-stat .n{ font-family:var(--font-num); font-variant-numeric:var(--font-num-variant); font-weight:500; font-size:10px; }

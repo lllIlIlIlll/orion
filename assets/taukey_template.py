@@ -42,7 +42,7 @@
 #  NativeClaudeSession 会额外附加 ?beta=true，用于触发 Anthropic beta 协议。
 #
 # ══════════════════════════════════════════════════════════════════════════════
-#  运行时参数调整：在 GA REPL 里输入
+#  运行时参数调整：在 TAU REPL 里输入
 #      /session.reasoning_effort=high
 #      /session.thinking_type=adaptive
 #      /session.thinking_budget_tokens=32768

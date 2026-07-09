@@ -2,10 +2,10 @@ import threading, sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from fastapi import FastAPI, Header, HTTPException, Query, Depends; from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
-from agentmain import GenericAgent as GA
+from agentmain import GenericAgent as TAU
 
 PORT, API_KEY = int(sys.argv[1]), sys.argv[2]
-app, agent, lock = FastAPI(), GA(), threading.Lock()
+app, agent, lock = FastAPI(), TAU(), threading.Lock()
 outputs, stopped = [], True
 threading.Thread(target=agent.run, daemon=True).start()
 class Req(BaseModel): prompt: str = ""
@@ -75,7 +75,7 @@ def sysprompt_ep(text: str = Query(None), _=Depends(require_key)):
         agent.extra_sys_prompts = [text] if text else []
     return {"extra_sys_prompts": agent.extra_sys_prompts}
 
-HELP = """GA HTTP 操作协议（所有请求带 ?key=API_KEY，或 Header X-API-Key）
+HELP = """TAU HTTP 操作协议（所有请求带 ?key=API_KEY，或 Header X-API-Key）
 GET  /output?k=N      查看状态：{stopped, output(末N条), history}。stopped=true 表示空闲
 POST /input  {prompt} 下发指令：空闲时作为新任务，忙时作为中途干预(intervene)
 POST /abort           中止当前任务
@@ -90,7 +90,7 @@ def help_ep(_=Depends(require_key)): return {"help": HELP}
 def ui():
     return HTMLResponse(f"""<!DOCTYPE html>
 <html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>GA Monitor</title>
+<title>TAU Monitor</title>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <style>
 *{{margin:0;padding:0;box-sizing:border-box}}

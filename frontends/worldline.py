@@ -1,4 +1,4 @@
-"""GA 世界线(Rewind / checkpoint)统一后端 —— **UI 无关,单文件,tui/gui 共用**。
+"""TAU 世界线(Rewind / checkpoint)统一后端 —— **UI 无关,单文件,tui/gui 共用**。
 
 三块合一(本文件不含任何 Textual/前端交互逻辑,只产数据与做存储):
   1. **持久化**(`RewindStore`):content-addressable blob + checkpoint 树 + 全持久化。
@@ -11,7 +11,7 @@
      纯计算;`restore_plan` 算出回退后的 history/文件/prefill 并落地(改文件+移 HEAD+
      重写投影),前端只管把结果刷到自己的界面。
 
-参考 Claude Code file-history 思路,按 GA 改造。纯 Python、可离线测试;线程安全交调用方
+参考 Claude Code file-history 思路,按 TAU 改造。纯 Python、可离线测试;线程安全交调用方
 (agent 跑在子线程,约定仅 agent 空闲时 restore)。详见需求文档(ga_rewind_tui_requirements)。
 """
 from __future__ import annotations
@@ -520,13 +520,13 @@ class RewindStore:
     @staticmethod
     def key_for_log(log_path: str) -> str:
         """会话 key = log_path 的 basename 去扩展名,如 `model_responses_123456`。
-        这是 GA 唯一稳定、/continue 据以识别会话的身份(task_dir 是 PID 级、重启即变,
+        这是 TAU 唯一稳定、/continue 据以识别会话的身份(task_dir 是 PID 级、重启即变,
         不能用)。"""
         return os.path.splitext(os.path.basename(log_path))[0]
 
     @classmethod
     def for_log(cls, temp_dir: str, log_path: str, cwd: str) -> "RewindStore":
-        """按 GA 的 log_path 落到 `temp/.ga_rewind/<key>/`。"""
+        """按 TAU 的 log_path 落到 `temp/.ga_rewind/<key>/`。"""
         root = os.path.join(temp_dir, ".ga_rewind", cls.key_for_log(log_path))
         return cls(root, cwd)
 
@@ -534,7 +534,7 @@ class RewindStore:
         """/continue 续接:把旧会话的 rewind 目录接到本 store(贴近 CC 的
         copyFileHistoryForResume)。
 
-        GA 每个新 agent 生成新 log_path → 新 key,旧会话的树/blob 默认看不到;
+        TAU 每个新 agent 生成新 log_path → 新 key,旧会话的树/blob 默认看不到;
         这里在新 key 下重建:① 接管旧 tree.json(仅当本 store 尚为空);
         ② blob 内容寻址,直接 hardlink(同名即同内容,跳过;失败回退 copy)。
         返回是否接管成功。"""
@@ -714,8 +714,8 @@ class RewindStore:
 
     @classmethod
     def _summary_of(cls, msg) -> str:
-        """从 assistant 消息提取 `<summary>`(GA 轮级纪要的来源);无则退化取首行。
-        与 ga.turn_end_callback 的提取口径一致,使从日志重建的 history_info 贴近原值。"""
+        """从 assistant 消息提取 `<summary>`(TAU 轮级纪要的来源);无则退化取首行。
+        与 tau.turn_end_callback 的提取口径一致,使从日志重建的 history_info 贴近原值。"""
         text = re.sub(r'```.*?```|<thinking>.*?</thinking>', '',
                       cls._all_text(msg), flags=re.DOTALL)
         m = re.search(r'<summary>(.*?)</summary>', text, re.DOTALL)
@@ -729,7 +729,7 @@ class RewindStore:
     @classmethod
     def _derive_hist_info(cls, history) -> list:
         """从对话历史重建 `handler.history_info`(轮级纪要):真实用户提问 → `[USER]: …`;
-        每条 assistant(=一轮) → `[Agent] <summary>`。这正是 GA 原本构建 history_info 的
+        每条 assistant(=一轮) → `[Agent] <summary>`。这正是 TAU 原本构建 history_info 的
         方式,故 reconcile 从日志吸收外部/老会话轮次时可据此把工作记忆补回(否则续接后
         rewind 到这些轮,纪要会缺失 → 串味)。"""
         out: list = []
@@ -812,7 +812,7 @@ class RewindStore:
         """node_id 对话增量里的首条 `role==user` 消息（原始 dict）；无则 None。
 
         供 rewind 后精确 prefill（取「该提问本身」，不靠会漂的绝对下标）。文本提取
-        交调用方（消息内容格式是 GA backend 私有的）。"""
+        交调用方（消息内容格式是 TAU backend 私有的）。"""
         for msg in self._node_conv(node_id):
             if isinstance(msg, dict) and msg.get("role") == "user":
                 return msg

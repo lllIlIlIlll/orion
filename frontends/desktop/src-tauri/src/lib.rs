@@ -426,7 +426,7 @@ fn sanitize_bundle_env(cmd: &mut Command) {
     cmd.env_remove("LD_LIBRARY_PATH");
     // Stamp the bridge we spawn with this build's id so a later app launch can tell whether the
     // bridge holding :14168 is ours (see bridge_identity_matches / GET /services/identity).
-    cmd.env("GA_BUILD_ID", env!("GA_BUILD_ID"));
+    cmd.env("TAU_BUILD_ID", env!("TAU_BUILD_ID"));
 }
 
 /// Run the offline prepare (install_windows.ps1 -Mode PrepareOnly) using bundled python + wheels.
@@ -549,7 +549,7 @@ fn bridge_identity_matches(project_dir: &str) -> bool {
     let Some(id) = bridge_reported_identity() else { return false; };
     let reported_root = id.get("ga_root").and_then(|v| v.as_str()).unwrap_or("");
     let reported_build = id.get("build_id").and_then(|v| v.as_str()).unwrap_or("");
-    if reported_build != env!("GA_BUILD_ID") {
+    if reported_build != env!("TAU_BUILD_ID") {
         return false;
     }
     let (a, b) = (norm_path(reported_root), norm_path(project_dir));

@@ -164,18 +164,18 @@ class DiscordApp(AgentChatMixin):
 
     def _get_agent(self, chat_id):
         with self._agent_lock:
-            ga = self._agents.get(chat_id)
-            if ga is None:
-                ga = GeneraticAgent()
-                ga.verbose = False
-                self._agents[chat_id] = ga
-                threading.Thread(target=ga.run, daemon=True, name=f"discord-agent-{chat_id}").start()
+            tau = self._agents.get(chat_id)
+            if tau is None:
+                tau = GeneraticAgent()
+                tau.verbose = False
+                self._agents[chat_id] = tau
+                threading.Thread(target=tau.run, daemon=True, name=f"discord-agent-{chat_id}").start()
                 if len(self._agents) > 200:
                     old_chat_id, _old_agent = self._agents.popitem(last=False)
                     print(f"[Discord] dropped agent cache entry: {old_chat_id}")
             else:
                 self._agents.move_to_end(chat_id)
-            return ga
+            return tau
 
     async def _download_attachments(self, message):
         """Download attachments/images to MEDIA_DIR, return list of local paths."""
@@ -238,7 +238,7 @@ class DiscordApp(AgentChatMixin):
 
     async def handle_command(self, chat_id, cmd, **ctx):
         """Handle slash commands against the per-chat agent, keeping Discord chats isolated."""
-        ga = self._get_agent(chat_id)
+        tau = self._get_agent(chat_id)
         parts = (cmd or "").split()
         op = (parts[0] if parts else "").lower()
         if op == "/help":
@@ -247,21 +247,21 @@ class DiscordApp(AgentChatMixin):
             state = self.user_tasks.get(chat_id)
             if state:
                 state["running"] = False
-            ga.abort()
+            tau.abort()
             return await self.send_text(chat_id, "⏹️ 正在停止...", **ctx)
         if op == "/status":
-            llm = ga.get_llm_name() if ga.llmclient else "未配置"
-            return await self.send_text(chat_id, f"状态: {'🔴 运行中' if ga.is_running else '🟢 空闲'}\nLLM: [{ga.llm_no}] {llm}", **ctx)
+            llm = tau.get_llm_name() if tau.llmclient else "未配置"
+            return await self.send_text(chat_id, f"状态: {'🔴 运行中' if tau.is_running else '🟢 空闲'}\nLLM: [{tau.llm_no}] {llm}", **ctx)
         if op == "/llm":
-            if not ga.llmclient:
+            if not tau.llmclient:
                 return await self.send_text(chat_id, "❌ 当前没有可用的 LLM 配置", **ctx)
             if len(parts) > 1:
                 try:
-                    ga.next_llm(int(parts[1]))
-                    return await self.send_text(chat_id, f"✅ 已切换到 [{ga.llm_no}] {ga.get_llm_name()}", **ctx)
+                    tau.next_llm(int(parts[1]))
+                    return await self.send_text(chat_id, f"✅ 已切换到 [{tau.llm_no}] {tau.get_llm_name()}", **ctx)
                 except Exception:
-                    return await self.send_text(chat_id, f"用法: /llm <0-{len(ga.list_llms()) - 1}>", **ctx)
-            lines = [f"{'→' if cur else '  '} [{i}] {name}" for i, name, cur in ga.list_llms()]
+                    return await self.send_text(chat_id, f"用法: /llm <0-{len(tau.list_llms()) - 1}>", **ctx)
+            lines = [f"{'→' if cur else '  '} [{i}] {name}" for i, name, cur in tau.list_llms()]
             return await self.send_text(chat_id, "LLMs:\n" + "\n".join(lines), **ctx)
         if op == "/restore":
             try:
@@ -269,25 +269,25 @@ class DiscordApp(AgentChatMixin):
                 if err:
                     return await self.send_text(chat_id, err, **ctx)
                 restored, fname, count = restored_info
-                ga.abort()
-                ga.history.extend(restored)
+                tau.abort()
+                tau.history.extend(restored)
                 return await self.send_text(chat_id, f"✅ 已恢复 {count} 轮对话\n来源: {fname}\n(仅恢复上下文，请输入新问题继续)", **ctx)
             except Exception as e:
                 return await self.send_text(chat_id, f"❌ 恢复失败: {e}", **ctx)
         if op == "/continue":
-            return await self.send_text(chat_id, _handle_continue_frontend(ga, cmd), **ctx)
+            return await self.send_text(chat_id, _handle_continue_frontend(tau, cmd), **ctx)
         if op == "/new":
-            return await self.send_text(chat_id, _reset_conversation(ga), **ctx)
+            return await self.send_text(chat_id, _reset_conversation(tau), **ctx)
         return await self.send_text(chat_id, HELP_TEXT, **ctx)
 
     async def run_agent(self, chat_id, text, **ctx):
         """Run the isolated per-chat Discord agent."""
-        ga = self._get_agent(chat_id)
+        tau = self._get_agent(chat_id)
         state = {"running": True}
         self.user_tasks[chat_id] = state
         try:
             await self.send_text(chat_id, "思考中...", **ctx)
-            dq = ga.put_task(f"{FILE_HINT}\n\n{text}", source=self.source)
+            dq = tau.put_task(f"{FILE_HINT}\n\n{text}", source=self.source)
             last_ping = time.time()
             last_step = ""
             step_no = 0
@@ -295,7 +295,7 @@ class DiscordApp(AgentChatMixin):
                 try:
                     item = await asyncio.to_thread(dq.get, True, 3)
                 except Q.Empty:
-                    if ga.is_running and time.time() - last_ping > self.ping_interval:
+                    if tau.is_running and time.time() - last_ping > self.ping_interval:
                         await self.send_text(chat_id, "⏳ 还在处理中，请稍等...", **ctx)
                         last_ping = time.time()
                     continue

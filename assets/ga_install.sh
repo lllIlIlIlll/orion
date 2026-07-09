@@ -15,11 +15,11 @@ GLOBAL="${GLOBAL:-0}"
 
 REPO_URL="https://github.com/lllIlIlIlll/orion.git"
 VPS_BASE="http://47.101.182.29:9000"
-GA_ZIP_URL="$VPS_BASE/files/GenericAgent.zip"
+TAU_ZIP_URL="$VPS_BASE/files/GenericAgent.zip"
 MAINLAND_INDEX="https://pypi.tuna.tsinghua.edu.cn/simple"
 DEPS=("requests>=2.28" "beautifulsoup4>=4.12" "bottle>=0.12" "simple-websocket-server>=0.4" "streamlit>=1.28")
 
-say(){ printf '\033[36m[ga-deploy]\033[0m %s\n' "$*"; }
+say(){ printf '\033[36m[tau-deploy]\033[0m %s\n' "$*"; }
 ok(){ printf '\033[32m[ok]\033[0m %s\n' "$*"; }
 die(){ printf '\033[31m[error]\033[0m %s\n' "$*" >&2; exit 1; }
 
@@ -49,26 +49,26 @@ case "$OS:$ARCH" in
   *) die "Unsupported platform: $OS $ARCH" ;;
 esac
 
-GA_DIR="${INSTALL_DIR/#\~/$HOME}"
-case "$GA_DIR" in
+TAU_DIR="${INSTALL_DIR/#\~/$HOME}"
+case "$TAU_DIR" in
   /*) ;;
-  *) GA_DIR="$PWD/$GA_DIR" ;;
+  *) TAU_DIR="$PWD/$TAU_DIR" ;;
 esac
-mkdir -p "$GA_DIR"
-GA_DIR="$(cd "$GA_DIR" && pwd -P)"
-PORTABLE_ROOT="$GA_DIR/.portable"
+mkdir -p "$TAU_DIR"
+TAU_DIR="$(cd "$TAU_DIR" && pwd -P)"
+PORTABLE_ROOT="$TAU_DIR/.portable"
 BIN="$PORTABLE_ROOT/bin"
 CACHE="$PORTABLE_ROOT/cache"
 UV_TGZ="$CACHE/$uv_file"
-GA_ZIP="$CACHE/GenericAgent.zip"
+TAU_ZIP="$CACHE/GenericAgent.zip"
 UV_EXTRACT="$CACHE/uv-extract"
-GA_EXTRACT="$CACHE/ga-extract"
+TAU_EXTRACT="$CACHE/tau-extract"
 UV_EXE="$BIN/uv"
-ENV_SH="$GA_DIR/env.sh"
+ENV_SH="$TAU_DIR/env.sh"
 
-mkdir -p "$GA_DIR" "$PORTABLE_ROOT" "$BIN" "$CACHE"
+mkdir -p "$TAU_DIR" "$PORTABLE_ROOT" "$BIN" "$CACHE"
 
-say "Install dir: $GA_DIR"
+say "Install dir: $TAU_DIR"
 if [[ "$GLOBAL" == "1" ]]; then say "Mode: GLOBAL=1 / GitHub clone"; else say "Mode: Mainland / VPS zip"; fi
 
 if [[ "$FORCE" == "1" ]]; then
@@ -81,7 +81,7 @@ download(){
   mkdir -p "$(dirname "$out")"
   say "Downloading $url"
   if command -v curl >/dev/null 2>&1; then
-    curl -fL --retry 3 -A "ga-deploy" -o "$out" "$url"
+    curl -fL --retry 3 -A "tau-deploy" -o "$out" "$url"
   elif command -v wget >/dev/null 2>&1; then
     wget -O "$out" "$url"
   else
@@ -118,7 +118,7 @@ copy_contents(){
 
 remove_source_files(){
   shopt -s dotglob nullglob
-  for p in "$GA_DIR"/*; do
+  for p in "$TAU_DIR"/*; do
     [[ "$(basename "$p")" == ".portable" ]] && continue
     rm -rf "$p"
   done
@@ -172,25 +172,25 @@ fi
 # Fetch/update GenericAgent source.
 if [[ "$GLOBAL" == "1" ]]; then
   say "Cloning GenericAgent from GitHub"
-  if [[ -n "$(find "$GA_DIR" -mindepth 1 -maxdepth 1 ! -name .portable -print -quit)" ]]; then
+  if [[ -n "$(find "$TAU_DIR" -mindepth 1 -maxdepth 1 ! -name .portable -print -quit)" ]]; then
     [[ "$FORCE" == "1" ]] || die "Install dir contains files. Re-run with FORCE=1 to replace source while preserving portable tools."
     remove_source_files
   fi
-  TMP_CLONE="$CACHE/ga-clone"
+  TMP_CLONE="$CACHE/tau-clone"
   rm -rf "$TMP_CLONE"
   "$GIT_EXE" clone --depth 1 "$REPO_URL" "$TMP_CLONE"
-  copy_contents "$TMP_CLONE" "$GA_DIR"
+  copy_contents "$TMP_CLONE" "$TAU_DIR"
   rm -rf "$TMP_CLONE"
 else
   say "Downloading GenericAgent package from VPS"
-  download "$GA_ZIP_URL" "$GA_ZIP"
-  extract_zip_clean "$GA_ZIP" "$GA_EXTRACT"
-  SRC_DIR="$GA_EXTRACT/GenericAgent"
-  [[ -d "$SRC_DIR" ]] || SRC_DIR="$GA_EXTRACT"
+  download "$TAU_ZIP_URL" "$TAU_ZIP"
+  extract_zip_clean "$TAU_ZIP" "$TAU_EXTRACT"
+  SRC_DIR="$TAU_EXTRACT/GenericAgent"
+  [[ -d "$SRC_DIR" ]] || SRC_DIR="$TAU_EXTRACT"
   remove_source_files
-  copy_contents "$SRC_DIR" "$GA_DIR"
+  copy_contents "$SRC_DIR" "$TAU_DIR"
 fi
-ok "GenericAgent source ready: $GA_DIR"
+ok "GenericAgent source ready: $TAU_DIR"
 
 # Install basic dependencies and project in editable mode into portable Python.
 say "Installing GenericAgent dependencies via uv pip"
@@ -199,10 +199,10 @@ if [[ "$GLOBAL" != "1" ]]; then install_args+=(--index-url "$MAINLAND_INDEX"); f
 install_args+=("${DEPS[@]}")
 "$UV_EXE" "${install_args[@]}"
 
-if [[ -f "$GA_DIR/pyproject.toml" ]]; then
+if [[ -f "$TAU_DIR/pyproject.toml" ]]; then
   project_args=(pip install --python "$PYTHON_EXE" --break-system-packages)
   if [[ "$GLOBAL" != "1" ]]; then project_args+=(--index-url "$MAINLAND_INDEX"); fi
-  project_args+=(-e "$GA_DIR")
+  project_args+=(-e "$TAU_DIR")
   "$UV_EXE" "${project_args[@]}"
 fi
 
@@ -227,7 +227,7 @@ fi
 if [[ "$GLOBAL" == "1" ]]; then
   cat > "$ENV_SH" <<EOF
 export PORTABLE_DEV_ROOT="$PORTABLE_ROOT"
-export GENERICAGENT_HOME="$GA_DIR"
+export GENERICAGENT_HOME="$TAU_DIR"
 export UV_PYTHON_INSTALL_DIR="$PORTABLE_ROOT/uv-python"
 export UV_CACHE_DIR="$PORTABLE_ROOT/uv-cache"
 export PATH="$BIN:$PYTHON_DIR:\$PATH"
@@ -236,7 +236,7 @@ EOF
 else
   cat > "$ENV_SH" <<EOF
 export PORTABLE_DEV_ROOT="$PORTABLE_ROOT"
-export GENERICAGENT_HOME="$GA_DIR"
+export GENERICAGENT_HOME="$TAU_DIR"
 export UV_PYTHON_INSTALL_DIR="$PORTABLE_ROOT/uv-python"
 export UV_CACHE_DIR="$PORTABLE_ROOT/uv-cache"
 export UV_DEFAULT_INDEX="$MAINLAND_INDEX"
@@ -253,9 +253,9 @@ if [[ -n "$GIT_EXE" ]]; then "$GIT_EXE" --version; fi
 "$PYTHON_EXE" -c "import requests, bs4, bottle; print('deps ok')"
 
 # Copy taukey template if taukey.py does not exist (GLOBAL mode only)
-TAUKEY_DST="$GA_DIR/taukey.py"
+TAUKEY_DST="$TAU_DIR/taukey.py"
 if [[ "$GLOBAL" == "1" && ! -f "$TAUKEY_DST" ]]; then
-  TAUKEY_TPL="$GA_DIR/assets/taukey_template_en.py"
+  TAUKEY_TPL="$TAU_DIR/assets/taukey_template_en.py"
   if [[ -f "$TAUKEY_TPL" ]]; then
     cp "$TAUKEY_TPL" "$TAUKEY_DST"
     ok "Copied assets/taukey_template_en.py -> taukey.py"
@@ -269,9 +269,9 @@ if [[ "$GLOBAL" == "1" ]]; then
 ╔═══════════════════════════════════════════════╗
 ║  ✅ GenericAgent installed successfully!       ║
 ╠═══════════════════════════════════════════════╣
-║  📁 Location: $GA_DIR
+║  📁 Location: $TAU_DIR
 ║  🔑 Config: edit taukey.py (copied from template)
-║  🚀 Launch: ga tui / ga launch / ga hub
+║  🚀 Launch: tau tui / tau launch / tau hub
 ╚═══════════════════════════════════════════════╝
 EOF
 else
@@ -279,9 +279,9 @@ else
 ╔═══════════════════════════════════════════════╗
 ║  ✅ GenericAgent 安装完成！                    ║
 ╠═══════════════════════════════════════════════╣
-║  📁 安装目录: $GA_DIR
-║  🔑 配置密钥: ga configure
-║  🚀 启动: ga tui / ga launch / ga hub
+║  📁 安装目录: $TAU_DIR
+║  🔑 配置密钥: tau configure
+║  🚀 启动: tau tui / tau launch / tau hub
 ╚═══════════════════════════════════════════════╝
 EOF
 fi

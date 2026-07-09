@@ -1,5 +1,5 @@
 @font-face {
-  font-family: "GA Azonix";
+  font-family: "TAU Azonix";
   src:
     url("./azonix-wordmark.woff2") format("woff2"),
     local("Azonix"),
@@ -12,7 +12,7 @@
 }
 
 @font-face {
-  font-family: "GA JetBrains Mono";
+  font-family: "TAU JetBrains Mono";
   src: url("./jetbrains-mono-latin.woff2") format("woff2");
   font-style: normal;
   font-weight: 400 600;

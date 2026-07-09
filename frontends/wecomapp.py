@@ -159,7 +159,7 @@ class WeComApp(AgentChatMixin):
         hook_key = f"wecom_{chat_id}"  # namespace: wecom_ + chat_id, matches _turn_end_hooks convention
 
         def _on_turn(ctx):
-            """Turn-end callback injected into agent. ctx = locals() from ga.py."""
+            """Turn-end callback injected into agent. ctx = locals() from tau.py."""
             try:
                 if ctx.get("exit_reason"):
                     resp = ctx.get("response")

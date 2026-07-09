@@ -10,7 +10,7 @@ CRITICAL: 严禁 import pyautogui。
   - 逻辑坐标 = 物理坐标 * dpi_scale  (CGEvent 内部用逻辑点)
 
 权限前置 (缺失则键鼠/截图静默失败):
-  - 辅助功能(Accessibility): 系统设置>隐私与安全性>辅助功能, 授权 GA 宿主进程
+  - 辅助功能(Accessibility): 系统设置>隐私与安全性>辅助功能, 授权 TAU 宿主进程
   - 屏幕录制(Screen Recording): 同上>屏幕录制
   用 macljqCtrl.check_permissions() 自检。
 
@@ -70,9 +70,9 @@ def check_permissions(verbose=True):
     if verbose:
         print(f'[PERM] Accessibility(键鼠): {ax}   ScreenRecording(截图): {sc}')
         if ax is False:
-            print('  → 系统设置>隐私与安全性>辅助功能, 勾选 GA 宿主进程后重启 GA')
+            print('  → 系统设置>隐私与安全性>辅助功能, 勾选 TAU 宿主进程后重启 TAU')
         if sc is False:
-            print('  → 系统设置>隐私与安全性>屏幕录制, 勾选 GA 宿主进程后重启 GA')
+            print('  → 系统设置>隐私与安全性>屏幕录制, 勾选 TAU 宿主进程后重启 TAU')
     return ax, sc
 
 

@@ -48,4 +48,4 @@ py-modules = []
 packages = ["ga_cli"]
 
 [project.scripts]
-ga = "ga_cli.cli:main"
+tau = "tau_cli.cli:main"

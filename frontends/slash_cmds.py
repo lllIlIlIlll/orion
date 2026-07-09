@@ -96,7 +96,7 @@ _ROOT = Path(__file__).resolve().parent.parent
 # Language resolution is owned here (not passed in as a formal arg) so every
 # prompt builder stays single-parameter and TUI call sites don't need to know
 # which prompt happens to be bilingual.  Source of truth, in order:
-#   1. `GA_LANG` env var (scriptable override; matches tui_v3 convention)
+#   1. `TAU_LANG` env var (scriptable override; matches tui_v3 convention)
 #   2. tui_v3's persisted settings file (same path as tui_v3.py:_SETTINGS_PATH)
 #   3. system locale (zh* → 'zh', else 'en')
 # When the user switches language inside tui_v3 (set_lang persists), the next
@@ -105,7 +105,7 @@ _SETTINGS_PATH = _ROOT / "temp" / "tui_v3_settings.json"
 
 
 def _current_lang() -> str:
-    env = (os.environ.get("GA_LANG") or "").strip().lower()
+    env = (os.environ.get("TAU_LANG") or "").strip().lower()
     if env in ("zh", "en"):
         return env
     try:
@@ -147,7 +147,7 @@ def build_update_prompt(args_text: str = "") -> str:
     The TUI owns zero git/LLM logic.  This prompt asks the normal agent loop to
     do a user-friendly preflight (upstream commits + diff) before pulling.
     Language follows `_current_lang()` so a /language switch in tui_v3 (or a
-    `GA_LANG=...` shell override) automatically flips this prompt too.
+    `TAU_LANG=...` shell override) automatically flips this prompt too.
     """
     if _current_lang() == "en":
         return (
@@ -421,7 +421,7 @@ def start_service(name: str) -> tuple[bool, str]:
 #     services keep running (CREATE_NEW_PROCESS_GROUP).  Cmdline scan is the
 #     only single source of truth across launchers, surviving restarts.
 # Trade-off: it costs ~30ms per /scheduler open, and matches by cmdline tail,
-# so two checkouts of GA can collide.  We accept that — running two GAs out
+# so two checkouts of TAU can collide.  We accept that — running two GAs out
 # of two clones is already an unsupported configuration.
 
 def _match_service(cmdline: list[str], svc: dict) -> bool:
@@ -583,14 +583,14 @@ def start_reflect_task(name: str) -> tuple[bool, str]:
 # (cmd, arg_hint, desc)  — kept identical between v2 and v3 so the palette
 # stays consistent across frontends.
 PALETTE_ENTRIES: list[tuple[str, str, str]] = [
-    ("/update",    "[note]",    "git pull 更新 GA 仓库并报告影响面"),
+    ("/update",    "[note]",    "git pull 更新 TAU 仓库并报告影响面"),
     ("/autorun",   "[seed]",    "进入 autonomous_operation 自主模式"),
     ("/morphling", "[target]",  "启用 Morphling 蒸馏 / 吞噬外部技能"),
     ("/goal",      "[goal]",    "进入 Goal 模式（需 condition 约束）"),
     ("/hive",      "[target]",  "进入 Hive 多 worker 协作模式"),
     ("/conductor", "[task]",    "调用 frontends/conductor.py 多 subagent 编排"),
     ("/scheduler", "",          "多选启动/停止 reflect 任务（cron 由 reflect/scheduler.py 驱动）"),
-    ("/resume",    "",           "列出最近会话并恢复其中一个（GA 端展开 prompt）"),
+    ("/resume",    "",           "列出最近会话并恢复其中一个（TAU 端展开 prompt）"),
 ]
 
 

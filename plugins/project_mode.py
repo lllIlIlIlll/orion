@@ -1,4 +1,4 @@
-"""Project Mode plugin — 零核心代码改动实现 GA 项目模式。
+"""Project Mode plugin — 零核心代码改动实现 TAU 项目模式。
 
 机制：注册 agent_before hook（agent_loop.py 中每个用户轮触发一次）。
 当项目模式激活时，把 L1 层（规则 + 记忆文件指针 + 收尾纪律）追加到最后一条 user message（str 直接拼接，多模态 list 追加 text block）。
@@ -7,8 +7,8 @@
 利用 messages 是 list 引用的事实，直接 mutate 即反映到真正发给 LLM 的内容。
 
 激活态载体 = 文件锚 temp/.active_project.<宿主pid>（存当前项目名）。PID 键控：
-  - 锚只对写它的那个 GA 进程有效 → 多开 GA 各自激活不同项目，互不可见
-  - GA 关闭即自动失活（重启后 pid 变，旧锚作废）；重新激活需经用户确认（SOP 指示）
+  - 锚只对写它的那个 TAU 进程有效 → 多开 TAU 各自激活不同项目，互不可见
+  - TAU 关闭即自动失活（重启后 pid 变，旧锚作废）；重新激活需经用户确认（SOP 指示）
   - 进入：agent 读 project_mode_sop，经用户确认后写锚（code_run 中 os.getppid() 即宿主 pid）
   - 退出：删除该文件。插件加载时清扫旧版无后缀锚与自己 pid 的前世残留（不碰他进程的锚）
 

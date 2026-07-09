@@ -10,7 +10,7 @@
   * **路径基准必须与插件一致**:插件的 `_TEMP` 是基于其 `__file__` 的 `<repo>/temp`
     绝对路径(非 cwd)。本模块也从自身 `__file__` 推 `<repo>/temp`(frontends/ 的上一级
     即 repo 根),两边独立计算但结果一致,互不 import。
-  * **pid 语义**:插件读 `os.getpid()`(GA 进程)。前端就跑在 GA 进程里,写锚同样用
+  * **pid 语义**:插件读 `os.getpid()`(TAU 进程)。前端就跑在 TAU 进程里,写锚同样用
     `os.getpid()`(不是 SOP 里 code_run 子进程用的 getppid)。
   * **命名** `name = f"{basename}-{hash8}"`,hash8 = blake2b(规范化绝对路径)[:8]。
     同一 workspace 恒定同名(幂等复用);hash 后缀又让 junction 名不与其它 UI 人工命名的

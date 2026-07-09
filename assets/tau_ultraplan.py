@@ -7,10 +7,10 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 __all__ = ["plan", "phase", "parallel", "mapchain"]
 
 _ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-_PORT = int(os.environ.get("GA_ULTRAPLAN_PORT", "47831"))
+_PORT = int(os.environ.get("TAU_ULTRAPLAN_PORT", "47831"))
 _T0 = time(); _phases = []; _phase_stack = []; _tasks = []; _current = "idle"; _events = []; _srv = None; _last = time(); _lock = threading.Lock(); _exec_lock = threading.Lock()
 _TASK_SLUG = "task"; _FUNC_SEQ = 0; _PLANNED = False; _SESSION = None; _sessions = {}
-_RUN_DIR = os.path.abspath(os.environ.get("GA_ULTRAPLAN_RUNDIR", os.path.join(_ROOT, "temp", "ultraplan_default")))
+_RUN_DIR = os.path.abspath(os.environ.get("TAU_ULTRAPLAN_RUNDIR", os.path.join(_ROOT, "temp", "ultraplan_default")))
 os.makedirs(_RUN_DIR, exist_ok=True)
 
 def _bind(rundir):
@@ -55,7 +55,7 @@ def _phase_lines(nodes, depth=0):
 
 def _page():
     with _lock:
-        lines = ["GA UltraPlan"]
+        lines = ["TAU UltraPlan"]
         for key, s in _sessions.items():
             lines += ["", f"== {os.path.basename(key) or key} ==", f"rundir: {key}", f"current: {s['current']}", "", "phases:"]
             lines += _phase_lines(s["phases"]) or ["(none)"]
@@ -75,7 +75,7 @@ class _H(BaseHTTPRequestHandler):
         out = io.StringIO(); err = io.StringIO(); rc = 0
         with _exec_lock, redirect_stdout(out), redirect_stderr(err):
             _bind(req["rundir"]); _note("exec: " + req.get("path", "<script>"))
-            cwd = os.getcwd(); old_env = os.environ.copy(); os.environ["GA_ULTRAPLAN_DAEMON"] = "1"; _PLANNED = False; _TASK_SLUG = req.get("task") or _task_slug(req.get("path")); _save_session()
+            cwd = os.getcwd(); old_env = os.environ.copy(); os.environ["TAU_ULTRAPLAN_DAEMON"] = "1"; _PLANNED = False; _TASK_SLUG = req.get("task") or _task_slug(req.get("path")); _save_session()
             try:
                 if req.get("cwd"): os.chdir(req["cwd"])
                 g = {"__name__": "__main__", "__file__": req.get("path", "<ultraplan>")}
@@ -95,7 +95,7 @@ def _serve_daemon():
     sys.modules.setdefault("assets.ga_ultraplan", sys.modules[__name__])
     _srv = ThreadingHTTPServer(("127.0.0.1", _PORT), _H); _srv.timeout = 60; url = f"http://127.0.0.1:{_PORT}/"
     print(f"[ultraplan] {url}", flush=True)
-    if os.environ.get("GA_ULTRAPLAN_BROWSER") != "0": webbrowser.open(url)
+    if os.environ.get("TAU_ULTRAPLAN_BROWSER") != "0": webbrowser.open(url)
     while time() - _last < 3600: _srv.handle_request()
 
 def _ping():
@@ -103,9 +103,9 @@ def _ping():
     except Exception: return False
 
 def _show():
-    if os.environ.get("GA_ULTRAPLAN_DAEMON") == "1" or os.environ.get("GA_ULTRAPLAN_HTML") == "0": return
+    if os.environ.get("TAU_ULTRAPLAN_DAEMON") == "1" or os.environ.get("TAU_ULTRAPLAN_HTML") == "0": return
     if not _ping():
-        subprocess.Popen([sys.executable, __file__, "--daemon"], cwd=_ROOT, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, env={**os.environ, "GA_ULTRAPLAN_DAEMON":"1"})
+        subprocess.Popen([sys.executable, __file__, "--daemon"], cwd=_ROOT, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, env={**os.environ, "TAU_ULTRAPLAN_DAEMON":"1"})
         for _ in range(20):
             if _ping(): break
             sleep(0.25)
@@ -114,7 +114,7 @@ def plan(rundir):
     global _PLANNED
     if _PLANNED: return
     _PLANNED = True; _bind(rundir); _save_session()
-    if os.environ.get("GA_ULTRAPLAN_DAEMON") == "1": return
+    if os.environ.get("TAU_ULTRAPLAN_DAEMON") == "1": return
     _show(); path = os.path.abspath(sys.argv[0]); code = open(path, encoding="utf-8").read()
     data = json.dumps({"path": path, "cwd": os.getcwd(), "rundir": _RUN_DIR, "task": _task_slug(path), "code": code}).encode("utf-8")
     r = urllib.request.urlopen(urllib.request.Request(f"http://127.0.0.1:{_PORT}/exec", data=data, headers={"Content-Type":"application/json"}), timeout=None)

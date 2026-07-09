@@ -54,27 +54,27 @@
     <aside class="sidebar">
       <div class="brand">
         <div class="brand-text">
-          <div class="brand-name ga-wordmark">Generic Agent</div>
+          <div class="brand-name tau-wordmark">Generic Agent</div>
           <div class="brand-sub" data-i18n="brand.sub"></div>
         </div>
       </div>
 
       <nav class="nav" id="nav">
         <a class="nav-item active" data-page="chat">
-          <span class="ic" data-ga-icon="chatTeardropText"></span>
+          <span class="ic" data-tau-icon="chatTeardropText"></span>
           <span data-i18n="nav.chat"></span>
         </a>
         <a class="nav-item" data-page="collab">
-          <span class="ic" data-ga-icon="gitFork"></span>
+          <span class="ic" data-tau-icon="gitFork"></span>
           <span data-i18n="nav.collab"></span>
           <span id="collab-badge" class="collab-nav-badge" hidden></span>
         </a>
         <a class="nav-item" data-page="services">
-          <span class="ic" data-ga-icon="broadcast"></span>
+          <span class="ic" data-tau-icon="broadcast"></span>
           <span data-i18n="nav.services"></span>
         </a>
         <a class="nav-item" data-page="token">
-          <span class="ic" data-ga-icon="coins"></span>
+          <span class="ic" data-tau-icon="coins"></span>
           <span data-i18n="nav.token"></span>
         </a>
       </nav>
@@ -83,10 +83,10 @@
       <div class="provider-quickstart" id="provider-quickstart">
         <div class="pq-head" id="pq-toggle" role="button" tabindex="0" aria-expanded="true">
           <span class="fr-l">
-            <span class="ic" data-ga-icon="lightning"></span>
+            <span class="ic" data-tau-icon="lightning"></span>
             <span class="pq-title" data-i18n="pq.title"></span>
           </span>
-          <span class="pq-collapse chev" data-ga-icon="caretRight" aria-hidden="true"></span>
+          <span class="pq-collapse chev" data-tau-icon="caretRight" aria-hidden="true"></span>
         </div>
         <div class="pq-body">
           <button type="button" class="pq-btn" data-provider="deepseek">
@@ -95,7 +95,7 @@
               <span class="pq-btn-name">DeepSeek</span>
               <span class="pq-btn-desc" data-i18n="pq.deepseekDesc"></span>
             </span>
-            <span class="pq-arrow" data-ga-icon="caretRight"></span>
+            <span class="pq-arrow" data-tau-icon="caretRight"></span>
           </button>
           <button type="button" class="pq-btn" data-provider="qwen">
             <span class="pq-logo" style="background:rgba(97,92,237,.12)" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#615CED" xmlns="http://www.w3.org/2000/svg"><path d="M23.919 14.545 20.817 9.17l1.47-2.544a.56.56 0 0 0 0-.566l-1.633-2.83a.57.57 0 0 0-.49-.283h-6.207L12.487.402a.57.57 0 0 0-.49-.284H8.732a.56.56 0 0 0-.49.284L5.139 5.775h-2.94a.56.56 0 0 0-.49.284L.077 8.887a.56.56 0 0 0 0 .567L3.18 14.83l-1.47 2.545a.56.56 0 0 0 0 .566l1.634 2.83a.57.57 0 0 0 .49.283h6.205l1.47 2.545a.57.57 0 0 0 .49.284h3.266a.57.57 0 0 0 .49-.284l3.104-5.375h2.94a.57.57 0 0 0 .49-.283l1.634-2.828a.55.55 0 0 0-.004-.568M8.733.686l1.634 2.828-1.634 2.828H21.8L20.164 9.17H7.425L5.63 6.06Zm1.306 19.801-6.205-.002 1.634-2.83h3.265L2.201 6.344h3.267q3.182 5.517 6.367 11.032zm10.124-5.66L18.53 12l-6.532 11.315-1.634-2.83c2.129-3.673 4.25-7.351 6.373-11.028h3.592l3.102 5.374z"/></svg></span>
@@ -103,7 +103,7 @@
               <span class="pq-btn-name">通义千问</span>
               <span class="pq-btn-desc" data-i18n="pq.qwenDesc"></span>
             </span>
-            <span class="pq-arrow" data-ga-icon="caretRight"></span>
+            <span class="pq-arrow" data-tau-icon="caretRight"></span>
           </button>
         </div>
       </div>
@@ -111,10 +111,10 @@
       <div class="sidebar-foot">
         <a class="foot-row" id="settings-btn">
           <span class="fr-l">
-            <span class="ic" data-ga-icon="gear"></span>
+            <span class="ic" data-tau-icon="gear"></span>
             <span data-i18n="foot.settings"></span>
           </span>
-          <span class="chev" data-ga-icon="caretRight"></span>
+          <span class="chev" data-tau-icon="caretRight"></span>
         </a>
         <div class="foot-ver" data-i18n="foot.ver"></div>
       </div>
@@ -130,13 +130,13 @@
         <section class="page active page--chat-ui" data-page="chat">
           <div class="page-top">
             <button type="button" class="pt-icon pt-sb-toggle" aria-label="toggle sidebar">
-              <span data-ga-icon="caretLeft"></span>
+              <span data-tau-icon="caretLeft"></span>
             </button>
             <button class="run-state" id="run-toggle" type="button">
               <i class="dot"></i> <span class="rs-label"></span>
             </button>
             <button type="button" class="pt-icon pt-rp-toggle" aria-label="toggle conversations">
-              <span data-ga-icon="caretRight"></span>
+              <span data-tau-icon="caretRight"></span>
             </button>
           </div>
           <div class="chat-shell">
@@ -150,11 +150,11 @@
               <div class="feature-grid"></div>
             </div>
             <div class="session-loading" id="session-loading" hidden aria-live="polite">
-              <span class="ga-spin" aria-hidden="true"></span>
+              <span class="tau-spin" aria-hidden="true"></span>
               <span data-i18n="chat.sessionLoading"></span>
             </div>
             <div class="msg-loading" id="msg-loading" hidden aria-live="polite">
-              <span class="ga-spin" aria-hidden="true"></span>
+              <span class="tau-spin" aria-hidden="true"></span>
               <span data-i18n="chat.interrupting"></span>
             </div>
           </div>
@@ -168,28 +168,28 @@
               <div class="composer-bot">
                 <div class="composer-plus-wrap">
                   <button type="button" class="ic-btn composer-plus" id="chat-plus-btn" aria-haspopup="menu" aria-expanded="false" data-i18n-title="collab.plusMenu" title="">
-                    <span data-ga-icon="plus"></span>
+                    <span data-tau-icon="plus"></span>
                   </button>
-                  <div class="ga-menu composer-menu" id="chat-menu" hidden role="menu">
-                    <button type="button" class="ga-menu-item" data-composer-action="upload" role="menuitem">
-                      <span data-ga-icon="paperclip"></span>
+                  <div class="tau-menu composer-menu" id="chat-menu" hidden role="menu">
+                    <button type="button" class="tau-menu-item" data-composer-action="upload" role="menuitem">
+                      <span data-tau-icon="paperclip"></span>
                       <span data-i18n="upload.button"></span>
                     </button>
-                    <button type="button" class="ga-menu-item" data-composer-action="preset" role="menuitem">
-                      <span data-ga-icon="lightning"></span>
+                    <button type="button" class="tau-menu-item" data-composer-action="preset" role="menuitem">
+                      <span data-tau-icon="lightning"></span>
                       <span data-i18n="modal.preset"></span>
                     </button>
                   </div>
                 </div>
                 <span class="spacer"></span>
-                <button type="button" class="chip" id="model-chip" data-i18n-title="model.menuLabel" title=""><span class="model-name"></span> <span class="chip-ic" data-ga-icon="caretDown"></span></button>
+                <button type="button" class="chip" id="model-chip" data-i18n-title="model.menuLabel" title=""><span class="model-name"></span> <span class="chip-ic" data-tau-icon="caretDown"></span></button>
                 <button type="button" class="send" id="send-btn" aria-label="send">
-                  <span data-ga-icon="paperPlaneTilt"></span>
+                  <span data-tau-icon="paperPlaneTilt"></span>
                 </button>
               </div>
             </div>
             </div>
-            <div class="ga-menu" id="model-menu" hidden></div>
+            <div class="tau-menu" id="model-menu" hidden></div>
             <input type="file" id="chat-file-input" multiple hidden>
             </div>
           </div>
@@ -201,11 +201,11 @@
         <section class="page" data-page="services">
           <div class="page-top">
             <button type="button" class="pt-icon pt-sb-toggle" aria-label="toggle sidebar">
-              <span data-ga-icon="caretLeft"></span>
+              <span data-tau-icon="caretLeft"></span>
             </button>
             <span class="pt-spacer"></span>
             <button type="button" class="pt-icon pt-rp-toggle" aria-label="toggle conversations">
-              <span data-ga-icon="caretRight"></span>
+              <span data-tau-icon="caretRight"></span>
             </button>
           </div>
           <div class="page-pad">
@@ -228,7 +228,7 @@
         <section class="page page--chat-ui" data-page="collab">
           <div class="page-top">
             <button type="button" class="pt-icon pt-sb-toggle" aria-label="toggle sidebar">
-              <span data-ga-icon="caretLeft"></span>
+              <span data-tau-icon="caretLeft"></span>
             </button>
             <div class="page-top-center">
               <button class="run-state" id="collab-run-toggle" type="button">
@@ -239,7 +239,7 @@
               </button>
             </div>
             <button type="button" class="pt-icon pt-rp-toggle" aria-label="toggle conversations">
-              <span data-ga-icon="caretRight"></span>
+              <span data-tau-icon="caretRight"></span>
             </button>
           </div>
           <div class="chat-shell">
@@ -253,19 +253,19 @@
                 </div>
                 <div class="collab-guide-steps">
                   <div class="collab-guide-step">
-                    <span class="collab-guide-ic" aria-hidden="true"><span data-ga-icon="chatTeardropText"></span></span>
+                    <span class="collab-guide-ic" aria-hidden="true"><span data-tau-icon="chatTeardropText"></span></span>
                     <span class="collab-guide-txt"><span class="collab-guide-label" data-i18n="collab.guideStep1t"></span><span class="collab-guide-desc" data-i18n="collab.guideStep1d"></span></span>
                   </div>
                   <div class="collab-guide-step">
-                    <span class="collab-guide-ic" aria-hidden="true"><span data-ga-icon="gridFour"></span></span>
+                    <span class="collab-guide-ic" aria-hidden="true"><span data-tau-icon="gridFour"></span></span>
                     <span class="collab-guide-txt"><span class="collab-guide-label" data-i18n="collab.guideStep2t"></span><span class="collab-guide-desc" data-i18n="collab.guideStep2d"></span></span>
                   </div>
                   <div class="collab-guide-step">
-                    <span class="collab-guide-ic" aria-hidden="true"><span data-ga-icon="listChecks"></span></span>
+                    <span class="collab-guide-ic" aria-hidden="true"><span data-tau-icon="listChecks"></span></span>
                     <span class="collab-guide-txt"><span class="collab-guide-label" data-i18n="collab.guideStep3t"></span><span class="collab-guide-desc" data-i18n="collab.guideStep3d"></span></span>
                   </div>
                   <div class="collab-guide-step">
-                    <span class="collab-guide-ic" aria-hidden="true"><span data-ga-icon="pencilSimple"></span></span>
+                    <span class="collab-guide-ic" aria-hidden="true"><span data-tau-icon="pencilSimple"></span></span>
                     <span class="collab-guide-txt"><span class="collab-guide-label" data-i18n="collab.guideStep4t"></span><span class="collab-guide-desc" data-i18n="collab.guideStep4d"></span></span>
                   </div>
                 </div>
@@ -318,11 +318,11 @@
               <div class="composer-bot">
                 <div class="composer-plus-wrap">
                   <button type="button" class="ic-btn composer-plus" id="cdb-plus-btn" aria-haspopup="menu" aria-expanded="false" data-i18n-title="collab.plusMenu" title="">
-                    <span data-ga-icon="plus"></span>
+                    <span data-tau-icon="plus"></span>
                   </button>
-                  <div class="ga-menu composer-menu" id="cdb-menu" hidden role="menu">
-                    <button type="button" class="ga-menu-item" data-composer-action="upload" role="menuitem">
-                      <span data-ga-icon="paperclip"></span>
+                  <div class="tau-menu composer-menu" id="cdb-menu" hidden role="menu">
+                    <button type="button" class="tau-menu-item" data-composer-action="upload" role="menuitem">
+                      <span data-tau-icon="paperclip"></span>
                       <span data-i18n="upload.button"></span>
                     </button>
                   </div>
@@ -330,15 +330,15 @@
                 <span class="spacer"></span>
                 <button type="button" class="chip" id="cdb-model-chip" data-i18n-title="model.menuLabel" title="">
                   <span class="model-name"></span>
-                  <span class="chip-ic" data-ga-icon="caretDown"></span>
+                  <span class="chip-ic" data-tau-icon="caretDown"></span>
                 </button>
                 <button type="button" class="send" id="cdb-send" aria-label="send">
-                  <span data-ga-icon="paperPlaneTilt"></span>
+                  <span data-tau-icon="paperPlaneTilt"></span>
                 </button>
               </div>
             </div>
             </div>
-            <div class="ga-menu" id="cdb-model-menu" hidden></div>
+            <div class="tau-menu" id="cdb-model-menu" hidden></div>
             <input type="file" id="cdb-file-input" multiple hidden>
             </div>
           </div>
@@ -350,11 +350,11 @@
         <section class="page" data-page="token">
           <div class="page-top">
             <button type="button" class="pt-icon pt-sb-toggle" aria-label="toggle sidebar">
-              <span data-ga-icon="caretLeft"></span>
+              <span data-tau-icon="caretLeft"></span>
             </button>
             <span class="pt-spacer"></span>
             <button type="button" class="pt-icon pt-rp-toggle" aria-label="toggle conversations">
-              <span data-ga-icon="caretRight"></span>
+              <span data-tau-icon="caretRight"></span>
             </button>
           </div>
           <div class="page-pad">
@@ -398,12 +398,12 @@
     <aside class="rightpanel" id="rightpanel">
       <div class="rp-head">
         <div class="search">
-          <span class="search-ic" data-ga-icon="magnifyingGlass"></span>
+          <span class="search-ic" data-tau-icon="magnifyingGlass"></span>
           <input data-i18n-ph="search.placeholder" placeholder="" maxlength="50">
         </div>
       </div>
       <button type="button" class="new-conv">
-        <span data-ga-icon="plus"></span>
+        <span data-tau-icon="plus"></span>
         <span data-i18n="conv.new"></span>
       </button>
       <div class="conv-list"></div>
@@ -411,15 +411,15 @@
       <!-- 会话操作菜单 -->
       <div class="ctx-menu" id="conv-menu" hidden>
         <div class="ctx-item" data-act="pin">
-          <span data-ga-icon="pushPinSimple"></span>
+          <span data-tau-icon="pushPinSimple"></span>
           <span data-i18n="ctx.pin"></span>
         </div>
         <div class="ctx-item" data-act="rename">
-          <span data-ga-icon="pencilSimple"></span>
+          <span data-tau-icon="pencilSimple"></span>
           <span data-i18n="ctx.rename"></span>
         </div>
         <div class="ctx-item danger" data-act="del">
-          <span data-ga-icon="trash"></span>
+          <span data-tau-icon="trash"></span>
           <span data-i18n="ctx.del"></span>
         </div>
       </div>
@@ -435,7 +435,7 @@
         <div class="modal-title" data-i18n="modal.preset"></div>
         <button id="preset-restore-btn" class="preset-restore" type="button" data-i18n="builtinPreset.restoreBtn" hidden></button>
         <button class="modal-x" data-close data-i18n-title="common.close" title="">
-          <span data-ga-icon="x"></span>
+          <span data-tau-icon="x"></span>
         </button>
       </div>
       <div class="modal-body preset-pop">
@@ -451,7 +451,7 @@
       <div class="modal-head">
         <div class="modal-title" id="model-form-title" data-i18n="modal.addModel"></div>
         <button class="modal-x" data-close data-i18n-title="common.close" title="">
-          <span data-ga-icon="x"></span>
+          <span data-tau-icon="x"></span>
         </button>
       </div>
       <div class="modal-body model-form-body">
@@ -468,7 +468,7 @@
           <div class="model-guide-link-row">
             <a class="model-guide-link" id="model-guide-link" href="#" target="_blank" rel="noopener noreferrer"></a>
             <button type="button" class="model-guide-copy" id="model-guide-copy" data-i18n-title="guide.copy" title="" aria-label="copy">
-              <span data-ga-icon="copy"></span>
+              <span data-tau-icon="copy"></span>
             </button>
           </div>
           <p class="model-guide-tip" data-i18n="guide.prefillTip"></p>
@@ -511,7 +511,7 @@
       <div class="modal-head">
         <div class="modal-title" id="confirm-title"></div>
         <button class="modal-x" data-close data-i18n-title="common.close" title="">
-          <span data-ga-icon="x"></span>
+          <span data-tau-icon="x"></span>
         </button>
       </div>
       <div class="modal-body confirm-body">
@@ -531,7 +531,7 @@
       <div class="modal-head">
         <div class="modal-title" data-i18n="modal.customPreset"></div>
         <button class="modal-x" data-close data-i18n-title="common.close" title="">
-          <span data-ga-icon="x"></span>
+          <span data-tau-icon="x"></span>
         </button>
       </div>
       <div class="modal-body cp-body">
@@ -553,7 +553,7 @@
       <div class="modal-head">
         <div class="modal-title" id="chan-log-title" data-i18n="modal.channelLogs"></div>
         <button class="modal-x" data-close data-i18n-title="common.close" title="">
-          <span data-ga-icon="x"></span>
+          <span data-tau-icon="x"></span>
         </button>
       </div>
       <div class="modal-body modal-body-inset">
@@ -569,7 +569,7 @@
       <div class="modal-head">
         <div class="modal-title" id="chan-config-title" data-i18n="modal.taukeyConfig"></div>
         <button class="modal-x" data-close data-i18n-title="common.close" title="">
-          <span data-ga-icon="x"></span>
+          <span data-tau-icon="x"></span>
         </button>
       </div>
       <div class="modal-body modal-body-inset chan-config-body">
@@ -588,7 +588,7 @@
       <div class="modal-head">
         <div class="modal-title" data-i18n="modal.settings"></div>
         <button class="modal-x" data-close data-i18n-title="common.close" title="">
-          <span data-ga-icon="x"></span>
+          <span data-tau-icon="x"></span>
         </button>
       </div>
       <div class="modal-body set-body">
@@ -634,23 +634,23 @@
           <div class="set-sec-t" data-i18n="set.model"></div>
           <div class="model-list" id="model-list"></div>
           <button class="set-btn" id="add-model-btn" type="button">
-            <span data-ga-icon="plus"></span>
+            <span data-tau-icon="plus"></span>
             <span data-i18n="set.addModel"></span>
           </button>
         </div>
         <div class="set-block">
           <div class="set-sec-t" data-i18n="set.features"></div>
           <button class="set-btn" id="import-taukey-btn" type="button">
-            <span data-ga-icon="fileText"></span>
+            <span data-tau-icon="fileText"></span>
             <span data-i18n="set.importTaukey"></span>
           </button>
           <input type="file" id="import-taukey-input" accept=".py,text/plain" hidden>
           <button class="set-btn set-btn-follow" id="export-taukey-btn" type="button">
-            <span data-ga-icon="folderSimple"></span>
+            <span data-tau-icon="folderSimple"></span>
             <span data-i18n="set.exportTaukey"></span>
           </button>
           <button class="set-btn set-btn-follow" id="settings-services-btn" type="button">
-            <span data-ga-icon="broadcast"></span>
+            <span data-tau-icon="broadcast"></span>
             <span data-i18n="set.serviceManager"></span>
           </button>
         </div>

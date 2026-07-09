@@ -92,7 +92,7 @@ $GitExeArchive = Join-Path $Cache "PortableGit-2.54.0-64-bit.7z.exe"
 
 $UvExtract = Join-Path $Cache "uv-extract"
 
-$GaExtract = Join-Path $Cache "ga-extract"
+$GaExtract = Join-Path $Cache "tau-extract"
 
 $GitDir = Join-Path $Tools "PortableGit"
 
@@ -106,7 +106,7 @@ $EnvPs1 = Join-Path $GaDir "env.ps1"
 
 
 
-function Say($m) { Write-Host "[ga-deploy] $m" -ForegroundColor Cyan }
+function Say($m) { Write-Host "[tau-deploy] $m" -ForegroundColor Cyan }
 
 function Ok($m) { Write-Host "[ok] $m" -ForegroundColor Green }
 
@@ -134,7 +134,7 @@ function Download-File($Url, $OutFile) {
 
     $wc = New-Object System.Net.WebClient
 
-    $wc.Headers.Add("User-Agent", "Mozilla/5.0 ga-deploy")
+    $wc.Headers.Add("User-Agent", "Mozilla/5.0 tau-deploy")
 
     try { $wc.DownloadFile($Url, $OutFile) } finally { $wc.Dispose() }
 
@@ -305,7 +305,7 @@ if ($GlobalMode) {
 
     }
 
-    $TmpClone = Join-Path $Cache "ga-clone"
+    $TmpClone = Join-Path $Cache "tau-clone"
 
     if (Test-Path $TmpClone) { Remove-Item -Recurse -Force $TmpClone }
 
@@ -543,7 +543,7 @@ if ($GlobalMode) {
 
 ║  🔑 Config: edit taukey.py (copied from template)
 
-║  🚀 Launch: ga tui / ga launch / ga hub
+║  🚀 Launch: tau tui / tau launch / tau hub
 
 ╚═══════════════════════════════════════════════╝
 
@@ -561,9 +561,9 @@ if ($GlobalMode) {
 
 ║  安装目录: $GaDir
 
-║  配置密钥: ga configure
+║  配置密钥: tau configure
 
-║  启动: ga tui / ga launch / ga hub
+║  启动: tau tui / tau launch / tau hub
 
 ╚═══════════════════════════════════════════════╝
 

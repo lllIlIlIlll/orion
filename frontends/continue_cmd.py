@@ -145,7 +145,7 @@ def parse_native_log(path, allow_empty=False):
 
 def _derive_hist_info(history):
     """从 native history 重建 history_info(轮级纪要):真实用户提问 → `[USER]: …`;每条
-    assistant(=一轮) → `[Agent] <summary>`(无 summary 取首行)。与 ga.turn_end_callback /
+    assistant(=一轮) → `[Agent] <summary>`(无 summary 取首行)。与 tau.turn_end_callback /
     worldline 树同口径。纯函数、不依赖 worldline,供续接 opt-in 恢复工作记忆(见 restore_wm)。"""
     def _all_text(m):
         c = m.get('content') if isinstance(m, dict) else None
@@ -1012,7 +1012,7 @@ def _ensure_hb_thread():
     with _hb_lock:
         if _hb_thread is None:
             _hb_thread = threading.Thread(target=_hb_loop,
-                                          name='ga-session-heartbeat', daemon=True)
+                                          name='tau-session-heartbeat', daemon=True)
             _hb_thread.start()
 
 

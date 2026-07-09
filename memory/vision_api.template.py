@@ -3,7 +3,7 @@ from io import BytesIO
 from pathlib import Path
 
 # ============ 用户配置区（从 template 拷贝后只需改这里）============
-# GA自举提示：
+# TAU自举提示：
 # taukey.py配置变量名不固定；默认值失败时，枚举候选变量名，并用最小vision请求实验探测哪组配置可用。
 # 只打印变量名/字段名/model/apibase域名路径/HTTP状态码/错误类型，禁止打印完整dict和apikey/token。
 # 常见格式：

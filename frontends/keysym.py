@@ -6,14 +6,14 @@ label such as ``"Ctrl+B"`` on Win/Linux or ``"⌃B"`` on macOS.
 Binding strings (the *physical* keys Textual captures) are NOT touched —
 this module only formats labels for tips / footers / help panels.
 
-Override with env ``GA_KEYSYM_STYLE=auto|mac|ascii`` (default ``auto``).
+Override with env ``TAU_KEYSYM_STYLE=auto|mac|ascii`` (default ``auto``).
 """
 from __future__ import annotations
 
 import os
 import sys
 
-_STYLE = os.environ.get("GA_KEYSYM_STYLE", "auto").lower()
+_STYLE = os.environ.get("TAU_KEYSYM_STYLE", "auto").lower()
 IS_MAC = _STYLE == "mac" or (_STYLE != "ascii" and sys.platform == "darwin")
 
 # Modifier display per style. mac uses Apple HIG glyphs; others use words.

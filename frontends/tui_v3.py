@@ -1379,7 +1379,7 @@ class AgentBridge:
         # /workspace 绑定时改为项目名 + 真实路径。
         self.agent._ga_project_mode_name = None
         self.agent._ga_project_mode_workspace_path = ''
-        # task_dir path enables ga's `_keyinfo` / `_intervene` consume paths.
+        # task_dir path enables tau's `_keyinfo` / `_intervene` consume paths.
         # PID-scoped so concurrent v3 processes don't share signal files.
         # Only the *path* is set here; the dir is created lazily by the writer
         # (`inject_intervene`) when a signal is actually injected.  Eager
@@ -1412,11 +1412,11 @@ class AgentBridge:
             _cc.acquire_birth_lock(self.agent)
         except Exception:
             pass
-        self._runner = threading.Thread(target=self._run_safe, daemon=True, name=f'ga-tui-agent')
+        self._runner = threading.Thread(target=self._run_safe, daemon=True, name=f'tau-tui-agent')
         self._runner.start()
 
     def inject_intervene(self, text: str, *, track: bool = False) -> bool:
-        """Append `text` to `<task_dir>/_intervene`.  ga.turn_end_callback
+        """Append `text` to `<task_dir>/_intervene`.  tau.turn_end_callback
         consumes the file at the next turn boundary and prepends `[MASTER]
         ...` to next_prompt.  Returns False when the agent is idle (caller
         falls back to put_task).  Append-mode keeps us idempotent under
@@ -1474,7 +1474,7 @@ class AgentBridge:
         """Hand off the display_queue from an exit-boundary replay once.
 
         If a queued mid-run user message is consumed on the same boundary that
-        exits the current task, ga discards next_prompt.  `_on_turn_end` replays
+        exits the current task, tau discards next_prompt.  `_on_turn_end` replays
         it with put_task; the TUI must then drain that returned queue or the
         reply is written only to model_responses and appears only after
         /continue.
@@ -1671,7 +1671,7 @@ _TOOL_RE = re.compile(
     r'(.*?)(?=^🛠️ Tool: `|^\*\*(?:LLM Running \()?Turn \d+|^Turn \d+ \.\.\.$|^<summary>|\Z)'  # 6 = live exec trace
     r')',
     re.DOTALL | re.MULTILINE)
-# Prompted-style tool wrappers GA models emit AS TEXT in saved logs (no
+# Prompted-style tool wrappers TAU models emit AS TEXT in saved logs (no
 # structured tool_use block). Fold them into chips too so /continue replays
 # match live mode. Whitelist = every name in assets/tools_schema.json + the
 # native metadata wrappers; user HTML (<div>/<svg>/<a>/<p>/<script>…) stays
@@ -1696,12 +1696,12 @@ class ToolRecord:
     name: str
     args: str = ''
     result: str = ''
-    status: str = '?'          # ok | error | ? — GA emits ✅/❌; no duration
+    status: str = '?'          # ok | error | ? — TAU emits ✅/❌; no duration
     raw: str = ''
 
 
 def _tool_status(result: str, trailing: str) -> str:
-    """Infer status from GA's emitted markers ONLY. Read-tool results can
+    """Infer status from TAU's emitted markers ONLY. Read-tool results can
     contain ❌ or the word 'error' as ordinary content (a doc on coding rules,
     plan_sop with ⛔/❌ markers, etc.) — those MUST NOT flag the chip red."""
     s = result + trailing
@@ -1709,7 +1709,7 @@ def _tool_status(result: str, trailing: str) -> str:
         return 'error'
     if re.match(r'^(?:Error[:\s]|Exception[:\s]|Traceback|❌|⛔)', s.lstrip(), re.I):
         return 'error'
-    # ga.do_ask_user yields a 'Waiting for your answer ...' marker BEFORE the
+    # tau.do_ask_user yields a 'Waiting for your answer ...' marker BEFORE the
     # user has actually answered (it's the "I'm blocking on input" signal).
     # The plain s.strip() truthy check below would otherwise light the chip
     # ✓ ok the instant that marker appears — making the user think the tool
@@ -1767,7 +1767,7 @@ _META_LINE_RE = re.compile(
 
 def _result_preview(result: str, max_rows: int, row_w: int) -> list[str]:
     """First few content lines from a tool result (cc-style hanging content
-    preview), skipping GA's [Action]/[Status]/[Stdout] meta markers. If the
+    preview), skipping TAU's [Action]/[Status]/[Stdout] meta markers. If the
     result is a JSON envelope (common in replayed code_run/web_* results),
     unwrap the meaningful field so the preview shows the actual content
     instead of `{"status": ...}` serialization noise. Each returned line is
@@ -1859,7 +1859,7 @@ _FINAL_MARKER_RE = re.compile(
 
 def _strip_final_marker(text: str) -> str:
     """Drop the trailing `[Info] Final response to user.` marker (emitted by
-    ga.do_no_tool, optionally fenced).  It's a conductor protocol signal, not
+    tau.do_no_tool, optionally fenced).  It's a conductor protocol signal, not
     user-facing content — desktop_bridge / app.js strip it the same way."""
     return _FINAL_MARKER_RE.sub('', text)
 
@@ -2548,7 +2548,7 @@ class SB:
     _PLAN_LOST_GRACE_SEC = 5.0  # keep prior items visible during agent rewrites
                                 # / brief working-state clears (longer than v2's
                                 # 1.5s because v3 polls only on render, not on
-                                # turn boundaries — and ga.py auto-exits plan
+                                # turn boundaries — and tau.py auto-exits plan
                                 # mode whenever plan.md momentarily has 0 `[ ]`)
 
     def _agent_msgs(self, ag) -> list[str]:
@@ -4677,7 +4677,7 @@ class SB:
                 except queue.Empty:
                     self.commit([_t('msg.review_empty')])
         elif name == 'resume':
-            # GA's _handle_slash_cmd (agentmain.py:124) replaces `/resume`
+            # TAU's _handle_slash_cmd (agentmain.py:124) replaces `/resume`
             # with a session-recovery prompt before the LLM sees it.  We
             # just forward the literal string — the agent expands it.
             self._submit('/resume', [])
@@ -5226,7 +5226,7 @@ class SB:
                     return
                 continue
             if isinstance(ev, DoneEvent):
-                # ga.ask_user() emits its "Waiting for your answer …" marker
+                # tau.ask_user() emits its "Waiting for your answer …" marker
                 # to the stream *just before* it pushes the AskUserEvent onto
                 # ask_user_queue.  When the agent then short-circuits with
                 # should_exit=True a DoneEvent can land here before the

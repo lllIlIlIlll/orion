@@ -20,7 +20,7 @@ _IGNORE_DIRS = {
     ".git", ".hg", ".svn", "node_modules", "__pycache__", ".venv", "venv",
     ".mypy_cache", ".pytest_cache", ".ruff_cache", "dist", "build",
     ".next", ".idea", ".vscode", "target", ".cache", ".eggs",
-    "model_responses",   # GA 会话日志（上千个 .txt），未绑时根=temp 会淹没 @ 候选
+    "model_responses",   # TAU 会话日志（上千个 .txt），未绑时根=temp 会淹没 @ 候选
 }
 _IGNORE_EXT = {".pyc", ".pyo", ".so", ".o", ".class", ".lock", ".dll", ".exe"}
 _MAX_FILES = 50_000          # 超大目录宁缺毋卡：到上限就停
@@ -83,7 +83,7 @@ class FileIndexCache:
                 with self._lock:
                     self._building = False
 
-        threading.Thread(target=_build, name="ga-at-index", daemon=True).start()
+        threading.Thread(target=_build, name="tau-at-index", daemon=True).start()
 
     def snapshot(self) -> list[str]:
         with self._lock:
