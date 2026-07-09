@@ -1,0 +1,32 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+
+# Node
+node_modules/
+
+# Rust / Tauri build artifacts
+target/
+
+# Build output
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+
+# Claude Code local settings (personal, not shared)
+.claude/settings.local.json
+
+# Real API key file (keep templates: mykey_template*.py, ignore real mykey.py)
+mykey.py
