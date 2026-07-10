@@ -2290,7 +2290,7 @@ def _filter_choices(all_choices: list, query: str) -> list:
     # the bounded-window file grep. We keep the import inside the function so
     # other (non-/continue) pickers don't pay for it on app startup.
     try:
-        from .shared import continue_cmd as _cc
+        from ..shared import continue_cmd as _cc
     except Exception:
         try:
             import frontends.shared.continue_cmd as _cc  # type: ignore

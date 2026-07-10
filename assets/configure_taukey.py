@@ -996,11 +996,11 @@ def _wechat_scan():
     print(f"\n  {C['cyan']}📱 正在启动微信 iLink 扫码登录...{C['reset']}")
     print(f"  {C['dim']}  请用微信扫描终端二维码，完成授权后自动获取凭据。{C['reset']}\n")
 
-    # 确保项目根在路径中，以便导入 frontends/wechatapp
+    # 确保项目根在路径中，以便导入 frontends/bots/wechatapp
     if PROJECT_ROOT not in sys.path:
         sys.path.insert(0, PROJECT_ROOT)
     try:
-        from frontends.wechatapp import WxBotClient
+        from frontends.bots.wechatapp import WxBotClient
     except ImportError as e:
         print(f"\n  {C['yellow']}⚠ 无法导入 WxBotClient: {e}{C['reset']}")
         return {}
