@@ -1,7 +1,7 @@
 """
 tau_cli/cli.py - TAU 命令行分发系统
 
-通过 python -m ga_cli <命令> 或 tau <命令> 调用
+通过 python -m tau_cli <命令> 或 tau <命令> 调用
 """
 import os, sys, subprocess, argparse, textwrap
 
