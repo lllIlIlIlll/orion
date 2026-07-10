@@ -5372,7 +5372,7 @@ if (chanConfigSave) {
 /* ═══════════════ 状态面板（复用 ServiceManager + 启停/日志） ═══════════════ */
 const statusListEl = document.getElementById('status-list');
 const BRIDGE_SERVICE_ID = '__bridge__';
-const EXTRA_SERVICE_IDS = new Set(['frontends/conductor.py', 'reflect/scheduler.py']);
+const EXTRA_SERVICE_IDS = new Set(['frontends/conductor/conductor.py', 'reflect/scheduler.py']);
 
 function bridgeOfflinePanelServices() {
   return [
@@ -5387,8 +5387,8 @@ function bridgeOfflinePanelServices() {
       managed: false,
     },
     {
-      id: 'frontends/conductor.py',
-      name: 'frontends/conductor.py',
+      id: 'frontends/conductor/conductor.py',
+      name: 'frontends/conductor/conductor.py',
       status: 'offline',
       running: false,
       pid: null,
@@ -5415,7 +5415,7 @@ function statusDisplayName(s) {
   if (!s) return '';
   if (s.id === BRIDGE_SERVICE_ID) return s.name || 'bridge';
   if (s.id === 'reflect/scheduler.py') return t('proc.scheduler');
-  if (s.id === 'frontends/conductor.py') return t('proc.conductor');
+  if (s.id === 'frontends/conductor/conductor.py') return t('proc.conductor');
   return channelDisplayName(s);
 }
 function fmtPid(pid) { return pid ? `PID ${pid}` : '—'; }

@@ -238,9 +238,9 @@ def candidates_for(query: str, root: str, limit: int = 15, absolute: bool = Fals
 # ------------------------------------------------------ submit-time absolutize
 # A fuzzy candidate inserts a path relative to the @ root (workspace/CWD), but
 # the agent's file_read resolves relative to its own ./temp cwd — so a bare
-# `@frontends/x.py` won't be found. At submit we rewrite each @mention naming a
-# real file to an absolute path; display keeps the short form. Still no content
-# read — this only completes the path so the agent can locate it.
+# `@frontends/<carrier>/x.py` won't be found. At submit we rewrite each @mention
+# naming a real file to an absolute path; display keeps the short form. Still no
+# content read — this only completes the path so the agent can locate it.
 
 _AT_ABS_RE = re.compile(r'(^|\s)@("([^"]+)"|([\w\-./\\~:#]+))', re.UNICODE)
 _LINE_SUFFIX_RE = re.compile(r'(#L\d+(?:-\d+)?)$')

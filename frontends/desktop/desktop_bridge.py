@@ -19,9 +19,9 @@ HTTP API:
   POST   /session/{sid}/prompt
   GET    /session/{sid}/messages?after=0&limit=200
   POST   /session/{sid}/cancel
-  POST   /services/start        body: {"id":"frontends/qqapp.py"}
-  POST   /services/stop         body: {"id":"frontends/qqapp.py"}
-  GET    /services/logs?id=frontends/qqapp.py&tail=200
+  POST   /services/start        body: {"id":"frontends/bots/qqapp.py"}
+  POST   /services/stop         body: {"id":"frontends/bots/qqapp.py"}
+  GET    /services/logs?id=frontends/bots/qqapp.py&tail=200
   GET    /services/panel
   GET    /services/taukey
   POST   /services/taukey       body: {"content":"..."}
@@ -865,12 +865,12 @@ _SKIP = frozenset({"goal_mode.py", "chatapp_common.py", "tuiapp.py", "qtapp.py"}
 BRIDGE_ID = "__bridge__"
 
 _SERVICE_KEYS: Dict[str, tuple] = {
-    "frontends/qqapp.py": ("qq_app_id", "qq_app_secret"),
-    "frontends/dcapp.py": ("discord_bot_token",),
-    "frontends/dingtalkapp.py": ("dingtalk_client_id", "dingtalk_client_secret"),
-    "frontends/fsapp.py": ("fs_app_id", "fs_app_secret"),
-    "frontends/tgapp.py": ("tg_bot_token",),
-    "frontends/wecomapp.py": ("wecom_bot_id", "wecom_secret"),
+    "frontends/bots/qqapp.py": ("qq_app_id", "qq_app_secret"),
+    "frontends/bots/dcapp.py": ("discord_bot_token",),
+    "frontends/bots/dingtalkapp.py": ("dingtalk_client_id", "dingtalk_client_secret"),
+    "frontends/bots/fsapp.py": ("fs_app_id", "fs_app_secret"),
+    "frontends/bots/tgapp.py": ("tg_bot_token",),
+    "frontends/bots/wecomapp.py": ("wecom_bot_id", "wecom_secret"),
 }
 
 
@@ -887,13 +887,16 @@ def _load_taukeys(ga_root: Path) -> dict:
 
 def discover_im_services(ga_root: Path) -> List[dict]:
     out: List[dict] = []
-    d = ga_root / "frontends"
+    # IM bots live in frontends/bots/ since the carrier-subdir restructure;
+    # filtering semantics (_SKIP basename, 'app' in name, no stapp/tuiapp)
+    # are unchanged — only the scan dir and rel/cmd path prefix moved.
+    d = ga_root / "frontends" / "bots"
     if not d.is_dir():
         return out
     for f in sorted(os.listdir(d)):
         if "app" not in f or not f.endswith(".py") or f in _SKIP or "stapp" in f or "tuiapp" in f:
             continue
-        rel = f"frontends/{f}"
+        rel = f"frontends/bots/{f}"
         out.append({"id": rel, "cmd": [sys.executable, str(d / f)]})
     return out
 
@@ -909,11 +912,12 @@ def discover_extra_services(ga_root: Path) -> List[dict]:
     # conductor 跟 scheduler 一样,bridge 启动时自动拉起。--no-browser 是关键:
     # conductor.py 默认会用 webbrowser.open 在用户浏览器弹一个 8900 端口 UI,
     # 桌面版自启时不需要这个独立 UI(用户从「指挥家」页直接访问)。
-    conductor = ga_root / "frontends" / "conductor.py"
+    # Carrier-subdir restructure: frontends/conductor.py → frontends/conductor/conductor.py.
+    conductor = ga_root / "frontends" / "conductor" / "conductor.py"
     if conductor.is_file():
         out.append({
-            "id": "frontends/conductor.py",
-            "cmd": [sys.executable, "frontends/conductor.py", "--no-browser"],
+            "id": "frontends/conductor/conductor.py",
+            "cmd": [sys.executable, "frontends/conductor/conductor.py", "--no-browser"],
         })
     return out
 
