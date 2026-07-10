@@ -1,6 +1,6 @@
 import os, sys, re, threading, asyncio, queue as Q, time, random, uuid
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-_TEMP_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'temp')
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+_TEMP_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'temp')
 from agentmain import Tau as GeneraticAgent
 try:
     from telegram import BotCommand, InlineKeyboardButton, InlineKeyboardMarkup

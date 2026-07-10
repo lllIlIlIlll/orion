@@ -15,7 +15,7 @@ class TurnContext(TypedDict, total=False):
 
 TurnHookFn = Callable[[TurnContext], None]
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from agentmain import Tau as GeneraticAgent
 from frontends.shared.chatapp_common import (AgentChatMixin, FILE_HINT, build_done_text, clean_reply,
                             ensure_single_instance, extract_files, public_access,
@@ -34,7 +34,7 @@ SECRET    = str(taukeys.get("wecom_secret", "") or "").strip()
 WELCOME   = str(taukeys.get("wecom_welcome_message", "") or "").strip()
 ALLOWED   = {str(x).strip() for x in taukeys.get("wecom_allowed_users", []) if str(x).strip()}
 PORT      = 19531                # single-instance lock port
-TEMP_DIR  = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "temp")
+TEMP_DIR  = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "temp")
 MEDIA_DIR = os.path.join(TEMP_DIR, "media")
 IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp", ".svg"}
 

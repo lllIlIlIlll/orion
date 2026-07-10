@@ -3,8 +3,8 @@ from pathlib import Path
 from urllib.parse import quote
 import requests, qrcode
 from Crypto.Cipher import AES
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-_TEMP_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'temp')
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+_TEMP_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'temp')
 from agentmain import Tau as GeneraticAgent
 
 # ── AuthExpired (errcode -14 from getUpdates) ──
@@ -432,7 +432,7 @@ if __name__ == '__main__':
     _do_relogin = '--relogin' in sys.argv
     try: _lock = socket.socket(socket.AF_INET, socket.SOCK_STREAM); _lock.bind(('127.0.0.1', 19531))
     except OSError: print('[WeChat] Another instance running, exiting.'); sys.exit(1)
-    _logf = open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'temp', 'wechatapp.log'), 'a', encoding='utf-8', buffering=1)
+    _logf = open(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'temp', 'wechatapp.log'), 'a', encoding='utf-8', buffering=1)
     sys.stdout = sys.stderr = _logf
     print(f'[NEW] Process starting {time.strftime("%m-%d %H:%M")}')
     bot = WxBotClient()

@@ -6,7 +6,7 @@
 import asyncio, json, os, queue as Q, re, sys, threading, time
 from collections import OrderedDict
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from agentmain import Tau as GeneraticAgent
 from frontends.shared.chatapp_common import (
     AgentChatMixin, build_done_text, ensure_single_instance, extract_files,
@@ -26,7 +26,7 @@ agent = GeneraticAgent(); agent.verbose = False
 BOT_TOKEN = str(taukeys.get("discord_bot_token", "") or "").strip()
 ALLOWED = {str(x).strip() for x in taukeys.get("discord_allowed_users", []) if str(x).strip()}
 USER_TASKS = {}
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 TEMP_DIR = os.path.join(PROJECT_ROOT, "temp")
 MEDIA_DIR = os.path.join(TEMP_DIR, "discord_media")
 ACTIVE_FILE = os.path.join(TEMP_DIR, "discord_active_channels.json")
