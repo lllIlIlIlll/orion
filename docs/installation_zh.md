@@ -41,7 +41,7 @@ curl -fsSL http://fudankw.cn:9000/files/ga_install.sh | bash
 安装完成后，Windows 用户可双击：
 
 ```text
-frontends/GenericAgent.exe
+apps/GenericAgent.exe
 ```
 
 也可以进入项目目录运行：
@@ -110,7 +110,7 @@ python assets/configure_taukey.py
 一键安装自带桌面端，双击：
 
 ```text
-frontends/GenericAgent.exe
+apps/GenericAgent.exe
 ```
 
 #### 终端 UI
@@ -118,7 +118,7 @@ frontends/GenericAgent.exe
 基于 [Textual](https://github.com/Textualize/textual) 的轻量键盘驱动界面。支持多会话并发、实时流式输出，有终端就能跑。
 
 ```bash
-python frontends/tui/tuiapp_v2.py
+python apps/tui/tuiapp_v2.py
 ```
 
 #### Streamlit UI
@@ -141,7 +141,7 @@ git rev-parse --short HEAD
 ```bash
 python launch.pyw
 # 或
-python frontends/tui/tuiapp_v2.py
+python apps/tui/tuiapp_v2.py
 ```
 
 ### 常见坑
@@ -158,7 +158,7 @@ python frontends/tui/tuiapp_v2.py
 type ga
 ```
 
-如果解析到意料之外的位置，就不要依赖这个快捷命令。请进入安装目录运行 `python launch.pyw` 或 `python frontends/tui/tuiapp_v2.py`。
+如果解析到意料之外的位置，就不要依赖这个快捷命令。请进入安装目录运行 `python launch.pyw` 或 `python apps/tui/tuiapp_v2.py`。
 
 #### Windows 上 TUI 显示异常
 
@@ -167,7 +167,7 @@ TUI 在 Windows 上依赖终端、字体和 `textual` 版本。
 1. 先升级 Textual：`pip install -U textual`。
 2. PowerShell / cmd 对 Unicode 和键位支持较弱，**Windows 上推荐用 Git Bash**。
 3. 仍然异常时，可以让 GA 自己修一遍。参考 Prompt：
-   > *"我在 Windows 的 PowerShell / cmd / Git Bash 中使用 `frontends/tui/tuiapp_v2.py` 体验非常差，出现了一堆不兼容问题。请参考 Claude Code 在 Windows 终端的最佳配置，把所有字体和显示不兼容的问题修一遍。"*
+   > *"我在 Windows 的 PowerShell / cmd / Git Bash 中使用 `apps/tui/tuiapp_v2.py` 体验非常差，出现了一堆不兼容问题。请参考 Claude Code 在 Windows 终端的最佳配置，把所有字体和显示不兼容的问题修一遍。"*
 
 #### Linux 上 `pywebview` 安装失败
 
@@ -194,7 +194,7 @@ uv pip install -e ".[ui]"
 如果 `git pull` 报冲突：
 
 - `taukey.py`、`memory/`、`skills/`、`temp/` 和用户成果：本地优先。
-- `agent*.py`、`frontends/*`、`reflect/*`、`tools/*` 等核心代码：通常 upstream 优先，除非用户另有说明。
+- `agent*.py`、`apps/*`、`reflect/*`、`tools/*` 等核心代码：通常 upstream 优先，除非用户另有说明。
 - 明确解决冲突后，再 `git add` 并提交合并。
 
 ---
@@ -271,7 +271,7 @@ git rev-parse --short HEAD
 ```bash
 python launch.pyw
 # 或，无桌面环境时：
-python frontends/tui/tuiapp_v2.py
+python apps/tui/tuiapp_v2.py
 ```
 
 ### 第 4 步：验证与下一步
@@ -285,7 +285,7 @@ python frontends/tui/tuiapp_v2.py
 
 #### 对用户说 “Congratulations! 🎉”
 
-对用户说：Congratulations! 🎉 你已经成功安装 TAU！Windows 下可双击 `frontends/TAU.exe`，或在终端运行 `python frontends/tui/tuiapp_v2.py` 开始使用。
+对用户说：Congratulations! 🎉 你已经成功安装 TAU！Windows 下可双击 `apps/TAU.exe`，或在终端运行 `python apps/tui/tuiapp_v2.py` 开始使用。
 
 #### 回报具体结果
 

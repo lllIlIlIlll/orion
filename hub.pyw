@@ -27,20 +27,20 @@ def discover_services():
                     'cmd': [sys.executable, 'agentmain.py', '--reflect', 'reflect/' + f],
                 })
     # Carrier subdirs (bots/tui/web/desktop/conductor/acp) replaced the old
-    # flat frontends/ layout. Filtering semantics (EXCLUDES by basename,
+    # flat apps/ layout. Filtering semantics (EXCLUDES by basename,
     # 'app' in f, stapp streamlit special-case) are unchanged; only the scan
     # scope and the rel/cmd path prefix differ.
-    frontends_dir = os.path.join(BASE_DIR, 'frontends')
-    if os.path.isdir(frontends_dir):
+    apps_dir = os.path.join(BASE_DIR, 'apps')
+    if os.path.isdir(apps_dir):
         for carrier in ('bots', 'tui', 'web', 'desktop', 'conductor', 'acp'):
-            cdir = os.path.join(frontends_dir, carrier)
+            cdir = os.path.join(apps_dir, carrier)
             if not os.path.isdir(cdir):
                 continue
             for f in sorted(os.listdir(cdir)):
                 if not f.endswith('.py'):
                     continue
                 if 'app' in f and len([x for x in EXCLUDES if x in f]) == 0:
-                    rel = f'frontends/{carrier}/{f}'
+                    rel = f'apps/{carrier}/{f}'
                     if 'stapp' in f:
                         cmd = [sys.executable, '-m', 'streamlit', 'run', rel, '--server.headless=true']
                     else:

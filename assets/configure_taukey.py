@@ -397,7 +397,7 @@ PLATFORMS = [
         'id': 'telegram',
         'name': 'Telegram 机器人',
         'desc': '通过 Telegram Bot 与 Agent 对话',
-        'file': 'frontends/bots/tgapp.py',
+        'file': 'apps/bots/tgapp.py',
         'deps': ['python-telegram-bot'],
         'env_vars': [
             {'key': 'tg_bot_token', 'label': 'Bot Token', 'hint': '从 @BotFather 获取'},
@@ -408,7 +408,7 @@ PLATFORMS = [
         'id': 'qq',
         'name': 'QQ 机器人',
         'desc': '通过 QQ 官方机器人 API 接入',
-        'file': 'frontends/bots/qqapp.py',
+        'file': 'apps/bots/qqapp.py',
         'deps': ['qq-botpy'],
         'env_vars': [
             {'key': 'qq_app_id', 'label': 'App ID', 'hint': 'QQ 开放平台获取'},
@@ -420,7 +420,7 @@ PLATFORMS = [
         'id': 'feishu',
         'name': '飞书机器人',
         'desc': '通过飞书应用与 Agent 对话',
-        'file': 'frontends/bots/fsapp.py',
+        'file': 'apps/bots/fsapp.py',
         'deps': ['lark-oapi'],
         'env_vars': [
             {'key': 'fs_app_id', 'label': 'App ID', 'hint': '飞书开放平台获取'},
@@ -432,7 +432,7 @@ PLATFORMS = [
         'id': 'wecom',
         'name': '企业微信机器人',
         'desc': '通过企业微信 Bot 接入',
-        'file': 'frontends/bots/wecomapp.py',
+        'file': 'apps/bots/wecomapp.py',
         'deps': ['wecombot'],
         'env_vars': [
             {'key': 'wecom_bot_id', 'label': 'Bot ID'},
@@ -444,7 +444,7 @@ PLATFORMS = [
         'id': 'dingtalk',
         'name': '钉钉机器人',
         'desc': '通过钉钉应用接入',
-        'file': 'frontends/bots/dingtalkapp.py',
+        'file': 'apps/bots/dingtalkapp.py',
         'deps': ['dingtalk-sdk'],
         'env_vars': [
             {'key': 'dingtalk_client_id', 'label': 'Client ID (App Key)'},
@@ -456,7 +456,7 @@ PLATFORMS = [
         'id': 'discord',
         'name': 'Discord 机器人',
         'desc': '通过 Discord Bot 接入',
-        'file': 'frontends/bots/dcapp.py',
+        'file': 'apps/bots/dcapp.py',
         'deps': ['discord.py'],
         'env_vars': [
             {'key': 'dc_bot_token', 'label': 'Bot Token', 'hint': 'Discord Developer Portal 获取'},
@@ -467,7 +467,7 @@ PLATFORMS = [
         'id': 'wechat',
         'name': '微信 (iLink 协议)',
         'desc': '通过微信个人号与 Agent 对话，扫码自动登录',
-        'file': 'frontends/bots/wechatapp.py',
+        'file': 'apps/bots/wechatapp.py',
         'deps': ['requests', 'qrcode', 'pycryptodome'],
         'env_vars': [],
     },
@@ -996,11 +996,11 @@ def _wechat_scan():
     print(f"\n  {C['cyan']}📱 正在启动微信 iLink 扫码登录...{C['reset']}")
     print(f"  {C['dim']}  请用微信扫描终端二维码，完成授权后自动获取凭据。{C['reset']}\n")
 
-    # 确保项目根在路径中，以便导入 frontends/bots/wechatapp
+    # 确保项目根在路径中，以便导入 apps/bots/wechatapp
     if PROJECT_ROOT not in sys.path:
         sys.path.insert(0, PROJECT_ROOT)
     try:
-        from frontends.bots.wechatapp import WxBotClient
+        from apps.bots.wechatapp import WxBotClient
     except ImportError as e:
         print(f"\n  {C['yellow']}⚠ 无法导入 WxBotClient: {e}{C['reset']}")
         return {}

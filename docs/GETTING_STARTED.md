@@ -191,9 +191,9 @@ Agent 会自己读代码、找出需要的包、全部装好。
 
 | 前端 | 启动命令 | 说明 |
 |------|---------|------|
-| **桌面端** | 双击 `frontends/GenericAgent.exe`（Windows 一键安装自带） | 真原生窗口，零终端依赖 |
-| **TUI v3** | `python frontends/tui/tui_v3.py` | 基于块的滚屏回看、resize 重排、每终端独立配色，跨终端体验一致 |
-| **TUI v2** | `python frontends/tui/tuiapp_v2.py` | Textual 键盘驱动界面，图片粘贴折叠、`/llm`/`/export`/`/continue` 选择器 |
+| **桌面端** | 双击 `apps/GenericAgent.exe`（Windows 一键安装自带） | 真原生窗口，零终端依赖 |
+| **TUI v3** | `python apps/tui/tui_v3.py` | 基于块的滚屏回看、resize 重排、每终端独立配色，跨终端体验一致 |
+| **TUI v2** | `python apps/tui/tuiapp_v2.py` | Textual 键盘驱动界面，图片粘贴折叠、`/llm`/`/export`/`/continue` 选择器 |
 | **Streamlit / 悬浮窗** | `python launch.pyw` | 浏览器中打开的 Streamlit UI，附带桌面悬浮窗 |
 
 > 💡 Windows 下推荐用 **Git Bash** 跑 TUI；PowerShell / cmd 对 Unicode 和键位支持较弱。仍异常时请直接告诉 Agent：「参考 Claude Code 在 Windows 终端的最佳配置帮我把 TUI 修一遍」。

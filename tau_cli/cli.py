@@ -13,8 +13,8 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_DIR = os.path.dirname(SCRIPT_DIR)
 
 
-def _frontends():
-    return os.path.join(PROJECT_DIR, "frontends")
+def _apps():
+    return os.path.join(PROJECT_DIR, "apps")
 
 def _reflect():
     return os.path.join(PROJECT_DIR, "reflect")
@@ -25,7 +25,7 @@ def launch_frontend(cmd_parts, args=None):
     full_cmd = []
     for part in cmd_parts:
         part = part.replace("{PROJECT_DIR}", PROJECT_DIR)
-        part = part.replace("{FRONTENDS}", _frontends())
+        part = part.replace("{APPS}", _apps())
         part = part.replace("{REFLECT}", _reflect())
         full_cmd.append(part)
 
@@ -48,7 +48,7 @@ COMMANDS = {
     "gui": {
         "help": "启动桌面GUI (qtapp)",
         "desc": "启动基于 PyQt5 的完整桌面聊天界面（气泡代码高亮、文件拖拽、历史搜索）",
-        "cmd": ["python", "{FRONTENDS}/desktop/qtapp.py"],
+        "cmd": ["python", "{APPS}/desktop/qtapp.py"],
     },
     "configure": {
         "help": "运行初始配置向导 (configure_taukey.py)",
@@ -63,12 +63,12 @@ COMMANDS = {
     "tui": {
         "help": "启动终端 TUI (tuiapp)",
         "desc": "启动终端图形界面（Textual），适合纯终端环境或 SSH",
-        "cmd": ["python", "{FRONTENDS}/tui/tuiapp.py"],
+        "cmd": ["python", "{APPS}/tui/tuiapp.py"],
     },
     "tui2": {
         "help": "启动终端 TUI v2 (tuiapp_v2)",
         "desc": "启动增强版终端图形界面（Textual v2），更多功能更好的体验",
-        "cmd": ["python", "{FRONTENDS}/tui/tuiapp_v2.py"],
+        "cmd": ["python", "{APPS}/tui/tuiapp_v2.py"],
     },
     "cli": {
         "help": "启动 CLI 对话 (agentmain)",
