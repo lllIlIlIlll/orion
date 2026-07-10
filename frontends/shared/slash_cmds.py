@@ -91,7 +91,7 @@ def detect_user_shell() -> tuple[list[str], str]:
 
 # Repo root = parent of frontends/.  Avoid hard-coding; both TUIs live next to
 # this file and share the same anchor.
-_ROOT = Path(__file__).resolve().parent.parent
+_ROOT = Path(__file__).resolve().parent.parent.parent
 
 # Language resolution is owned here (not passed in as a formal arg) so every
 # prompt builder stays single-parameter and TUI call sites don't need to know

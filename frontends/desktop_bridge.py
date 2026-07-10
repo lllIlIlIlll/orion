@@ -111,7 +111,7 @@ def _load_plan_baseline(item: dict, msgs: list) -> int:
 
 def _sanitize_desktop_plan_path(session_id: str, plan_path: str) -> str:
     """Desktop: drop shared plan_demo paths so sessions do not read the same file."""
-    import plan_state
+    import frontends.shared.plan_state as plan_state
     p = (plan_path or "").strip()
     if not p:
         return ""
@@ -370,7 +370,7 @@ class AgentManager:
 
     def make_agent(self, sess: Session):
         root = self.ensure_ga_import_path()
-        try: import cost_tracker; cost_tracker.install()
+        try: import frontends.shared.cost_tracker as cost_tracker; cost_tracker.install()
         except Exception: pass
         old_cwd = os.getcwd()
         try:
@@ -600,7 +600,7 @@ class AgentManager:
             if image_metas:
                 extra["images"] = image_metas
             user_msg = self.add_message(sess, "user", prompt, **extra)
-            import plan_state
+            import frontends.shared.plan_state as plan_state
             if plan_state.is_plan_preset_prompt(prompt):
                 plan_state.bind_plan_session(sess, prompt)
                 self._persist()
@@ -695,7 +695,7 @@ class AgentManager:
                 full = strip_final_info_marker(full)
                 if done_outputs:
                     done_outputs = [strip_final_info_marker(s) for s in done_outputs]
-                import plan_state
+                import frontends.shared.plan_state as plan_state
                 plan_state.sync_plan_path_from_text(sess, full, sess.cwd or self.ga_root)
                 # 轨道2: 落库时带结构化全量轮(权威turn_segs),前端按轮渲染;content保留兜底
                 _final_segs = [str(s) for s in done_outputs] if done_outputs else None
@@ -726,7 +726,7 @@ class AgentManager:
             msgs = [m for m in sess.messages if int(m.get("id", 0)) > after]
             if limit > 0:
                 msgs = msgs[-limit:]
-            import plan_state
+            import frontends.shared.plan_state as plan_state
             return {
                 "sessionId": sid,
                 "status": sess.status,
@@ -744,7 +744,7 @@ class AgentManager:
             sess = self.sessions.get(sid)
             if not sess:
                 raise web.HTTPNotFound(text=json.dumps({"error": f"session not found: {sid}"}, ensure_ascii=False), content_type="application/json")
-            import plan_state
+            import frontends.shared.plan_state as plan_state
             return {
                 "sessionId": sid,
                 "plan": plan_state.desktop_plan_payload_from_session(sess, self.ga_root),
@@ -1714,7 +1714,7 @@ async def bridge_exit_handler(request):
 async def token_stats_handler(request):
     try:
         sys.path.insert(0, str(APP_DIR)) if str(APP_DIR) not in sys.path else None
-        import cost_tracker
+        import frontends.shared.cost_tracker as cost_tracker
         trackers = cost_tracker.all_trackers()
         records = []
         for k, v in trackers.items():

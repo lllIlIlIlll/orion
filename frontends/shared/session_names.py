@@ -5,7 +5,7 @@ basename → user name. Touched only by `/rename` and `/continue <name>`.
 """
 import glob, json, os, re, threading
 
-_LOG_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+_LOG_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
                         'temp', 'model_responses')
 _REG_PATH = os.path.join(_LOG_DIR, 'session_names.json')
 _LOG_RE = re.compile(r'^model_responses_(\d+)\.txt$')

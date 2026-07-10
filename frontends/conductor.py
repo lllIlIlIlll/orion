@@ -47,7 +47,7 @@ async def lifespan(app: FastAPI):
     # 服务启动（事件循环已就绪）：捕获 loop 供工作线程跨线程推 WS 广播，并起主agent
     global main_loop
     main_loop = asyncio.get_running_loop()
-    import cost_tracker; cost_tracker.install()
+    import frontends.shared.cost_tracker as cost_tracker; cost_tracker.install()
     conductor.start()
     threading.Thread(target=im_poll_loop, name="im-poller", daemon=True).start()
     yield
@@ -414,7 +414,7 @@ def im_poll_loop():
 
 @app.get("/token-stats")
 def conductor_token_stats():
-    import cost_tracker
+    import frontends.shared.cost_tracker as cost_tracker
     return {"records": [{"thread": k, "input": v.input, "output": v.output, "cacheCreate": v.cache_create, "cacheRead": v.cache_read} for k, v in cost_tracker.all_trackers().items()]}
 
 @app.get("/")

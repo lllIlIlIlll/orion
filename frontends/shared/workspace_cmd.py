@@ -35,7 +35,7 @@ from typing import Optional
 # --------------------------------------------------------------------------- #
 # 路径基准(与 plugins/project_mode.py 的 _TEMP 保持一致)
 # --------------------------------------------------------------------------- #
-_REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 def _temp_root() -> str:

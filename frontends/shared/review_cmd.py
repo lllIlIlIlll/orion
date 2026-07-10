@@ -9,7 +9,7 @@ from __future__ import annotations
 import os
 from typing import Optional
 
-CODE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CODE_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 _PROMPT_DIR = 'review_sop'
 _INLINE_PROMPT_ZH = 'review_inline_prompt.txt'
 _INLINE_PROMPT_EN = 'review_inline_prompt.en.txt'

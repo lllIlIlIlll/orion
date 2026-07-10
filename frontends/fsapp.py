@@ -79,7 +79,7 @@ def _ensure_runtime_paths():
 
 _ensure_runtime_paths()
 from agentmain import Tau as GeneraticAgent
-from frontends.chatapp_common import AgentChatMixin, FILE_HINT, split_text
+from frontends.shared.chatapp_common import AgentChatMixin, FILE_HINT, split_text
 
 _TAG_PATS = [r"<" + t + r">.*?</" + t + r">" for t in ("thinking", "summary", "tool_use", "file_content")]
 _IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp", ".ico", ".tiff", ".tif"}

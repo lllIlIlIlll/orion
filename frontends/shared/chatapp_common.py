@@ -1,7 +1,7 @@
 import ast, asyncio, glob, json, os, queue as Q, re, socket, sys, time
 
 # 确保能导入上级目录的模块（如 agentmain）
-_parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_parent_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 if _parent_dir not in sys.path:
     sys.path.insert(0, _parent_dir)
 
@@ -38,7 +38,7 @@ def build_help_text(commands=HELP_COMMANDS):
 HELP_TEXT = build_help_text()
 FILE_HINT = "If you need to show files to user, use [FILE:filepath] in your response."
 TAG_PATS = [r"<" + t + r">.*?</" + t + r">" for t in ("thinking", "summary", "tool_use", "file_content")]
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 RESTORE_GLOBS = (
     os.path.join(PROJECT_ROOT, "temp", "model_responses", "model_responses_*.txt"),
     os.path.join(PROJECT_ROOT, "temp", "model_responses_*.txt"),
@@ -346,7 +346,7 @@ class AgentChatMixin:
 
 
 from agentmain import Tau as _GA
-from continue_cmd import handle_frontend_command as _handle_continue_frontend, install as _install_continue, reset_conversation as _reset_conversation
+from frontends.shared.continue_cmd import handle_frontend_command as _handle_continue_frontend, install as _install_continue, reset_conversation as _reset_conversation
 _install_continue(_GA)
-from btw_cmd import handle_frontend_command as _handle_btw_frontend, install as _install_btw; _install_btw(_GA)
-from review_cmd import install as _install_review; _install_review(_GA)
+from frontends.shared.btw_cmd import handle_frontend_command as _handle_btw_frontend, install as _install_btw; _install_btw(_GA)
+from frontends.shared.review_cmd import install as _install_review; _install_review(_GA)

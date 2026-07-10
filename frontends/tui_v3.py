@@ -32,7 +32,7 @@ from rich.markdown import Markdown
 from rich.text import Text
 from rich.theme import Theme
 from typing import Callable
-from frontends import at_complete, workspace_cmd   # @ 补全 + /workspace（与 v2 共用）
+from frontends.shared import at_complete, workspace_cmd   # @ 补全 + /workspace（与 v2 共用）
 
 # ════════════════════════════════════════════════════════════════════════════
 # i18n — minimal dict-based zh/en translation layer (inlined; was tui_v3_i18n.py)
@@ -1373,7 +1373,7 @@ class AgentBridge:
             self.agent.llmclient = self.agent.llmclients[llm_no % len(self.agent.llmclients)]
         self.agent.inc_out = True
         self.agent.verbose = True
-        from frontends.slash_cmds import COMMIT_SIGNATURE_PROMPT
+        from frontends.shared.slash_cmds import COMMIT_SIGNATURE_PROMPT
         self.agent.extra_sys_prompts.append(COMMIT_SIGNATURE_PROMPT)
         # 默认普通模式：设 None 让 project_mode 插件不读 pid 文件锚（与 v2 一致）。
         # /workspace 绑定时改为项目名 + 真实路径。
@@ -1408,7 +1408,7 @@ class AgentBridge:
             self._init_error = _t('err.no_llm')
         # 原地复原:本会话出生即持有自己日志的锁,使占用检测对它可见(别的会话据此判活)。
         try:
-            from frontends import continue_cmd as _cc
+            from frontends.shared import continue_cmd as _cc
             _cc.acquire_birth_lock(self.agent)
         except Exception:
             pass
@@ -2335,7 +2335,7 @@ def _indent_rows(rows: list[str], width: int) -> list[str]:
 def _cost_str(agent) -> str:
     """Context-window usage view (cc/v2 style): used / cap of context_win*3."""
     try:
-        from frontends import cost_tracker
+        from frontends.shared import cost_tracker
         be = agent.llmclient.backend
         cap = cost_tracker.context_window_chars(be)
         used = cost_tracker.current_input_chars(be)
@@ -2584,7 +2584,7 @@ class SB:
             return []
         ag = self._bridge.agent
         try:
-            from frontends import plan_state
+            from frontends.shared import plan_state
         except Exception:
             return []
 
@@ -2681,7 +2681,7 @@ class SB:
         """Card shown when plan mode is armed but plan.md hasn't been written
         yet — covers the enter_plan_mode → first write gap."""
         try:
-            from frontends import plan_state
+            from frontends.shared import plan_state
         except Exception:
             return []
         msgs = self._agent_msgs(ag)
@@ -3426,7 +3426,7 @@ class SB:
         head = _SHELL_ACCENT + '! ' + _RST + cmd
         self.commit([_tile(' ' + head, _TILE_SHELL, w)])
         import subprocess
-        from frontends.slash_cmds import detect_user_shell
+        from frontends.shared.slash_cmds import detect_user_shell
         shell_argv, shell_name = detect_user_shell()
         out = ''
         rc = 0
@@ -4313,7 +4313,7 @@ class SB:
     def _cost_section(self, tname: str, t, be) -> list[str]:
         """A v2-style /cost block for one token tracker — total / cache /
         context-window / requests.  Labels stay English (jargon)."""
-        from frontends import cost_tracker
+        from frontends.shared import cost_tracker
         k = _human
         model = self._bridge.llm_name if self._bridge else '?'
         label = self._session_name or tname           # show the session name when set
@@ -4336,7 +4336,7 @@ class SB:
         """Persist the session name (keyed by the agent's log file) so a later
         /continue surfaces it — mirrors v2's session_names integration."""
         try:
-            from frontends import session_names
+            from frontends.shared import session_names
             lp = getattr(ag, 'log_path', '') or ''
             if lp:
                 session_names.set_name(lp, name)
@@ -4346,7 +4346,7 @@ class SB:
     def _reset_session(self, ag) -> None:
         """Wipe the conversation: drop LLM history, clear the screen and every
         rendered block.  Shared by /clear and /new."""
-        from frontends import continue_cmd
+        from frontends.shared import continue_cmd
         continue_cmd.begin_fresh_session(ag)   # 切走:旧日志留作空闲会话 + 铸新 logid(不存快照)
         _w('\x1b[2J\x1b[H'); self._painted = []; self._live_rows = 0
         self._blocks = []; self._streaming_block = None; self._sent = 0
@@ -4476,7 +4476,7 @@ class SB:
             else:
                 state = _t('status.state.idle')
             try:
-                from frontends import cost_tracker as _ct
+                from frontends.shared import cost_tracker as _ct
                 cap = _ct.context_window_chars(be) if be is not None else 0
                 used = _ct.context_chars_used(be) if be is not None else 0
                 ctx_use = _t('status.ctx.fmt', used=used, cap=cap * 3) if cap else _t('status.ctx.unknown')
@@ -4519,7 +4519,7 @@ class SB:
         # elif name in ('switch', 'close', 'branch'):
         #     self.commit([_t('err.multi_session', name=name)])
         elif name == 'continue':
-            from frontends import continue_cmd
+            from frontends.shared import continue_cmd
             sess = continue_cmd.list_sessions(exclude_log=os.path.basename(getattr(ag, "log_path", "") or ""))
             if not sess:
                 self.commit([_DIM + _t('msg.no_history') + _RST]); return
@@ -4593,7 +4593,7 @@ class SB:
             # without needing /continue N as a fallback.
             w = _term()[0]
             try:
-                from frontends import session_names as _sn
+                from frontends.shared import session_names as _sn
             except Exception:
                 _sn = None
             options: list[str] = []
@@ -4665,7 +4665,7 @@ class SB:
             threading.Thread(target=self._btw, args=(entry,), daemon=True).start()
             self._render_live()
         elif name == 'review':
-            from frontends import review_cmd
+            from frontends.shared import review_cmd
             dq = queue.Queue()
             prompt = review_cmd.handle(ag, arg, dq)
             if prompt:
@@ -4685,14 +4685,14 @@ class SB:
             # slash_cmds bundle — build a long prompt and feed it back through
             # _submit so the agent sees an ordinary user turn.  Keeps the
             # frontend ignorant of SOP details; see frontends/slash_cmds.py.
-            from frontends import slash_cmds
+            from frontends.shared import slash_cmds
             prompt = slash_cmds.prompt_for('/' + name, arg or '')
             if prompt:
                 self._submit(prompt, [])
             else:
                 self.commit([f'❌ unknown command /{name}'])
         elif name == 'scheduler':
-            from frontends import slash_cmds
+            from frontends.shared import slash_cmds
             parts = (arg or '').split(None, 1)
             head = parts[0].lower() if parts else ''
             if head in ('start', 'run'):
@@ -4844,7 +4844,7 @@ class SB:
                 self._show_menu(_t('llm.title'), options, _pick_llm)
                 self._menu_sel = current
         elif name == 'cost':
-            from frontends import cost_tracker
+            from frontends.shared import cost_tracker
             trackers = cost_tracker.all_trackers()
             if not trackers:
                 self.commit([_t('msg.no_tracker')]); return
@@ -4863,7 +4863,7 @@ class SB:
             self.commit(['✦ Token usage']
                         + self._cost_section(self._session_name or 'session', agg, be))
         elif name == 'export':
-            from frontends import export_cmd
+            from frontends.shared import export_cmd
             parts = arg.split(None, 1) if arg else []
             head = parts[0].lower() if parts else ''
             rest = parts[1] if len(parts) > 1 else ''
@@ -4968,7 +4968,7 @@ class SB:
         """Answer a side question and fill `entry[1]` in place.  If Esc cleared
         the panel meanwhile, `entry` is just an orphan — the mutation is
         invisible and the panel renders the current (empty) list."""
-        from frontends import btw_cmd
+        from frontends.shared import btw_cmd
         question = entry[0]
         try:
             ans = btw_cmd.handle_frontend_command(self._bridge.agent, '/btw ' + question)
@@ -5153,7 +5153,7 @@ class SB:
                 elif d == b'c':
                     clip.copy(getattr(r, fields[mode]) or '')
                 elif d == b'e':
-                    from frontends import export_cmd
+                    from frontends.shared import export_cmd
                     export_cmd.export_to_temp(getattr(r, fields[mode]) or '',
                                               f'tool_t{r.id}_{fields[mode]}')
         finally:
@@ -5827,7 +5827,7 @@ class SB:
 
         self._bridge = AgentBridge()
         try:
-            from frontends import cost_tracker
+            from frontends.shared import cost_tracker
             cost_tracker.install()
         except Exception:
             pass

@@ -15,10 +15,10 @@ import streamlit as st
 import time, json, re, threading, queue
 from datetime import timedelta
 from agentmain import Tau as GeneraticAgent
-import chatapp_common  # activate /continue command (monkey patches Tau)
-from continue_cmd import handle_frontend_command, reset_conversation, list_sessions, extract_ui_messages
-from btw_cmd import handle_frontend_command as btw_handle_frontend
-from export_cmd import last_assistant_text, export_to_temp, wrap_for_clipboard
+import frontends.shared.chatapp_common as chatapp_common  # activate /continue command (monkey patches Tau)
+from frontends.shared.continue_cmd import handle_frontend_command, reset_conversation, list_sessions, extract_ui_messages
+from frontends.shared.btw_cmd import handle_frontend_command as btw_handle_frontend
+from frontends.shared.export_cmd import last_assistant_text, export_to_temp, wrap_for_clipboard
 
 st.set_page_config(page_title="Cowork", layout="wide", initial_sidebar_state="collapsed")
 

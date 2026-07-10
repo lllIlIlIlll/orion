@@ -26,7 +26,7 @@ import shutil
 
 # Local: cross-platform shortcut-label formatter (Win/Linux "Ctrl+B" vs mac "⌃B").
 # Imported early because _TIPS at module load time uses fmt_key().
-from keysym import fmt_key, fmt_keys  # noqa: E402
+from frontends.shared.keysym import fmt_key, fmt_keys  # noqa: E402
 from dataclasses import dataclass, field
 from itertools import count
 from typing import Any, Callable, Optional
@@ -1412,7 +1412,7 @@ def _align_md_renders(narrow_raw: str, wide_raw: str):
 #   提交期：不处理，@路径 作为普通文本发给 agent，由其自行决定是否 file_read。
 #   纯逻辑（索引/模糊/token）抽到 frontends/at_complete.py，与 tui_v3 共用；
 #   自动预读那一版见 temp/plan_v2_at_mention/autoread_version.py。
-from at_complete import get_index, fuzzy_rank, find_at_token, format_pick, candidates_for, absolutize_mentions
+from frontends.shared.at_complete import get_index, fuzzy_rank, find_at_token, format_pick, candidates_for, absolutize_mentions
 
 
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -1446,14 +1446,14 @@ def _sweep_stale_task_dirs() -> None:
             _rmdir_if_empty(d)
 
 # Side-effect imports activate /btw + /continue monkey-patches.
-import chatapp_common  # noqa: F401
-from chatapp_common import format_restore
-from btw_cmd import handle_frontend_command as btw_handle
-from review_cmd import handle as review_handle
-from continue_cmd import list_sessions as continue_list, extract_ui_messages as continue_extract
-import workspace_cmd
-from export_cmd import last_assistant_text, export_to_temp, wrap_for_clipboard
-from worldline import (
+import frontends.shared.chatapp_common as chatapp_common  # noqa: F401
+from frontends.shared.chatapp_common import format_restore
+from frontends.shared.btw_cmd import handle_frontend_command as btw_handle
+from frontends.shared.review_cmd import handle as review_handle
+from frontends.shared.continue_cmd import list_sessions as continue_list, extract_ui_messages as continue_extract
+import frontends.shared.workspace_cmd as workspace_cmd
+from frontends.shared.export_cmd import last_assistant_text, export_to_temp, wrap_for_clipboard
+from frontends.shared.worldline import (
     RewindStore, restore_plan,
     ellipsize, rel_time, files_summary, kind_glyph, kind_label,
     tree_from_store, CompressedTree,
@@ -2054,7 +2054,7 @@ class AgentSession:
 
 def default_agent_factory() -> Any:
     from agentmain import Tau
-    from frontends.slash_cmds import COMMIT_SIGNATURE_PROMPT
+    from frontends.shared.slash_cmds import COMMIT_SIGNATURE_PROMPT
     agent = Tau()
     agent.inc_out = True
     agent.extra_sys_prompts.append(COMMIT_SIGNATURE_PROMPT)
@@ -2290,10 +2290,10 @@ def _filter_choices(all_choices: list, query: str) -> list:
     # the bounded-window file grep. We keep the import inside the function so
     # other (non-/continue) pickers don't pay for it on app startup.
     try:
-        from . import continue_cmd as _cc
+        from .shared import continue_cmd as _cc
     except Exception:
         try:
-            import continue_cmd as _cc  # type: ignore
+            import frontends.shared.continue_cmd as _cc  # type: ignore
         except Exception:
             _cc = None
 
@@ -3627,18 +3627,18 @@ class TauTUI(App[None]):
             "quit": self._cmd_quit, "exit": self._cmd_quit,
         }
         try:
-            import cost_tracker; cost_tracker.install()
+            import frontends.shared.cost_tracker as cost_tracker; cost_tracker.install()
         except Exception:
             pass
         # Patch TAU for /review in case chatapp_common didn't wire it.
         try:
             from agentmain import Tau as _GA
-            import review_cmd; review_cmd.install(_GA)
+            import frontends.shared.review_cmd as review_cmd; review_cmd.install(_GA)
         except Exception:
             pass
         # Drop session_names entries pointing at rotated-away logs.
         try:
-            import session_names; session_names.gc()
+            import frontends.shared.session_names as session_names; session_names.gc()
         except Exception:
             pass
 
@@ -3845,7 +3845,7 @@ class TauTUI(App[None]):
             sess.store = None
         self._install_rw_tool_hook()
         try:
-            from continue_cmd import acquire_birth_lock
+            from frontends.shared.continue_cmd import acquire_birth_lock
             acquire_birth_lock(agent, agent_id)   # 原地复原:出生持锁,占用检测可见
         except Exception:
             pass
@@ -4061,7 +4061,7 @@ class TauTUI(App[None]):
         if isinstance(cache, dict) and cache.get("key") == key:
             return list(cache.get("history") or [])
         try:
-            import continue_cmd as _cc
+            import frontends.shared.continue_cmd as _cc
             hist = _cc.parse_native_log(log_path, allow_empty=True)
         except Exception:
             hist = None
@@ -4371,7 +4371,7 @@ class TauTUI(App[None]):
             try: dropped.agent.abort()
             except Exception: pass
             try:
-                from continue_cmd import release_current
+                from frontends.shared.continue_cmd import release_current
                 release_current(dropped.agent)
             except Exception: pass
         del self.sessions[sid]
@@ -5048,7 +5048,7 @@ class TauTUI(App[None]):
         log_path = getattr(self.current.agent, "log_path", "") or ""
         own_key = os.path.basename(log_path)
         try:
-            import session_names
+            import frontends.shared.session_names as session_names
             if session_names.has_name(name, exclude_basename=own_key):
                 self._system(f"❌ 名称已被另一会话注册，请换一个"); return
         except Exception:
@@ -5501,7 +5501,7 @@ class TauTUI(App[None]):
 
     # ---------------- /model: 渠道内 model 切换（逻辑在 model_cmd.py） ----------------
     def _cmd_model(self, args, raw):
-        import model_cmd
+        import frontends.shared.model_cmd as model_cmd
         agent = self.current.agent
         if args:  # /model <name> 直设, 不拉列表
             self._system(model_cmd.set_model(agent, " ".join(args)))
@@ -5512,7 +5512,7 @@ class TauTUI(App[None]):
         """立即挂一个空的 searchable picker(输入框先可用, 下方 hint 行显示加载中),
         后台拉取完成后 _fill_model_picker 就地填充。mixin 不再选渠道, 直接作用于
         当前子渠道 (model_cmd sub=None 即当前)。"""
-        import model_cmd
+        import frontends.shared.model_cmd as model_cmd
         agent = self.current.agent
         cur = model_cmd.current_model(agent, None)
         msg = ChatMessage(
@@ -5541,7 +5541,7 @@ class TauTUI(App[None]):
 
     # ---------------- /effort: reasoning effort 切换（逻辑在 model_cmd.py） ----------------
     def _cmd_effort(self, args, raw):
-        import model_cmd
+        import frontends.shared.model_cmd as model_cmd
         if args:  # /effort <level> 直设
             self._system(model_cmd.set_effort(self.current.agent, " ".join(args)))
             return
@@ -5666,7 +5666,7 @@ class TauTUI(App[None]):
             log_path = getattr(sess.agent, "log_path", "") or ""
             own_key = os.path.basename(log_path)
             try:
-                import session_names
+                import frontends.shared.session_names as session_names
                 path = session_names.path_for(token, exclude_basename=own_key)
                 if path is None and session_names.name_for(log_path).lower() == token.strip().lower():
                     self._system(f"✅ 当前已在 {token!r} 会话中"); return
@@ -5682,7 +5682,7 @@ class TauTUI(App[None]):
             self._system("❌ 没有可恢复的历史会话"); return
         choices = []
         try:
-            import session_names as _sn
+            import frontends.shared.session_names as _sn
         except Exception:
             _sn = None
         for path, mtime, first, n in sessions:
@@ -5714,7 +5714,7 @@ class TauTUI(App[None]):
     def _do_continue_restore(self, path: str) -> str:
         # 默认原地续(接管原日志,延续同一会话)。快照只能拷贝续;被活进程占用 →
         # 弹窗问是否从原会话拷贝一份继续(复用内联 choice)。
-        import continue_cmd as _cc
+        import frontends.shared.continue_cmd as _cc
         sess = self.current
         if not _cc.is_snapshot(path):
             occ = _cc.session_occupant(path)
@@ -5731,7 +5731,7 @@ class TauTUI(App[None]):
 
     def _continue_restore_apply(self, path: str, copy: bool) -> str:
         sess = self.current
-        import continue_cmd as _cc
+        import frontends.shared.continue_cmd as _cc
         try:
             if copy:
                 result, ok = _cc.continue_copy(sess.agent, path, sess.agent_id, allow_empty=True, restore_wm=True)
@@ -5784,7 +5784,7 @@ class TauTUI(App[None]):
             # the same way) — otherwise restored file_write/file_patch fall back to
             # the raw verbose args block instead of a diff.
             try:
-                from continue_cmd import iter_write_captures
+                from frontends.shared.continue_cmd import iter_write_captures
                 from agent_loop import get_pretty_json
                 for cap in iter_write_captures(path):
                     _WRITE_CAP[hash(get_pretty_json(cap["args"]))] = cap
@@ -5799,8 +5799,8 @@ class TauTUI(App[None]):
             # and isn't all-done (an abandoned finished/headless plan stays
             # buried). baseline stays 0: it only scopes current_step's 📌 scan.
             sess.plan_scan_baseline = 0
-            import plan_state
-            from continue_cmd import find_plan_entry
+            import frontends.shared.plan_state as plan_state
+            from frontends.shared.continue_cmd import find_plan_entry
             pp = find_plan_entry(path)
             rp = plan_state._resolve_stashed(pp) if pp else None
             if rp:
@@ -5813,7 +5813,7 @@ class TauTUI(App[None]):
                     sess.restored_plan_path = rp
                     sess.plan_items = items
             try:
-                import session_names
+                import frontends.shared.session_names as session_names
                 nm = session_names.name_for(path)
                 if nm:
                     sess.name = nm
@@ -5913,7 +5913,7 @@ class TauTUI(App[None]):
 
     def _cmd_cost(self, args, raw):
         try:
-            import cost_tracker
+            import frontends.shared.cost_tracker as cost_tracker
         except Exception as e:
             self._system(f"❌ cost_tracker 不可用: {e}"); return
         show_all = bool(args) and args[0].lower() == "all"
@@ -6131,7 +6131,7 @@ class TauTUI(App[None]):
         so the agent sees it as a normal user turn (display bubble still
         shows the original `/cmd ...` for clarity).
         """
-        from frontends import slash_cmds
+        from frontends.shared import slash_cmds
         text = (raw or "").strip()
         # Pull just the leading token to look up the prompt builder.
         head = text.split(None, 1)[0] if text else ""
@@ -6160,7 +6160,7 @@ class TauTUI(App[None]):
         Cron-style sche_tasks/*.json are read-only here; the launch.pyw
         scheduler daemon already owns them.
         """
-        from frontends import slash_cmds
+        from frontends.shared import slash_cmds
         body = " ".join(args).strip()
         parts = body.split(None, 1)
         head = parts[0].lower() if parts else ""
@@ -6305,7 +6305,7 @@ class TauTUI(App[None]):
         """Run the start/stop actions and print one ✅/❌ summary block.
         Stops run first so a restart (stop+start of the same name) can't race
         the cmdline scan — though the diff never produces such a pair."""
-        from frontends import slash_cmds
+        from frontends.shared import slash_cmds
         lines = []
         for name in stops:
             ok, detail = slash_cmds.stop_service(name)
@@ -6321,7 +6321,7 @@ class TauTUI(App[None]):
         """Shared by `/scheduler start ...` (CLI) and the confirmed picker.
         Launches every requested service via slash_cmds.start_service and
         prints a single ✅/❌ summary block."""
-        from frontends import slash_cmds
+        from frontends.shared import slash_cmds
         if not names:
             self._system("（未选择任何服务）"); return
         lines = [f"批量启动 {len(names)} 个服务："]
@@ -6360,7 +6360,7 @@ class TauTUI(App[None]):
                                          f"! {cmd}",
                                          kind="system"))
         import subprocess
-        from frontends.slash_cmds import detect_user_shell
+        from frontends.shared.slash_cmds import detect_user_shell
         shell_argv, shell_name = detect_user_shell()
         out = ''; rc = 0
         try:
@@ -6803,7 +6803,7 @@ class TauTUI(App[None]):
     _PLAN_LOST_GRACE_SEC = 1.5
 
     def _update_plan_state(self, sess: AgentSession, _stream_text: str = "") -> None:
-        import plan_state
+        import frontends.shared.plan_state as plan_state
         prev = sess.plan_items
         # Detect plan mode: `working['in_plan_mode']` (live) first, then
         # `restored_plan_path` (/continue, recovered from the structured
@@ -6838,7 +6838,7 @@ class TauTUI(App[None]):
         if sess and sess.plan_lost_since is not None:
             if time.time() - sess.plan_lost_since >= self._PLAN_LOST_GRACE_SEC:
                 sess.plan_items = []; sess.plan_lost_since = None; items = []
-        import plan_state
+        import frontends.shared.plan_state as plan_state
         msgs = sess.messages if sess else None
         base = sess.plan_scan_baseline if sess else 0
         # Plan-mode armed but no items yet → placeholder (covers the
@@ -6878,7 +6878,7 @@ class TauTUI(App[None]):
 
     def _render_planbar_placeholder(self, bar: Static, sess: AgentSession) -> None:
         # Placeholder for armed-but-empty plan mode (pre-first plan.md write).
-        import plan_state
+        import frontends.shared.plan_state as plan_state
         base = sess.plan_scan_baseline
         path = (plan_state._stashed_plan_path(sess.agent)
                 or sess.restored_plan_path
@@ -6933,7 +6933,7 @@ class TauTUI(App[None]):
 
     def _poll_plan_files(self) -> None:
         # Poll only the visible session — background sessions don't paint planbar.
-        import plan_state
+        import frontends.shared.plan_state as plan_state
         sess = self.sessions.get(self.current_id) if self.current_id is not None else None
         if sess is None: return
         if not plan_state.is_active(sess.agent, restored_path=sess.restored_plan_path):
@@ -7454,7 +7454,7 @@ class TauTUI(App[None]):
         the counters. Shared by spinner + done-card."""
         last_in = last_out = 0
         try:
-            import cost_tracker
+            import frontends.shared.cost_tracker as cost_tracker
             sess = self.sessions.get(self.current_id)
             tname = sess.thread.name if sess and sess.thread else f"tau-tui-agent-{self.current_id}"
             t = cost_tracker.get(tname)
@@ -7587,7 +7587,7 @@ class TauTUI(App[None]):
         the spinner's `↑ N · ↓ M` reflects *this* turn only."""
         m._stream_started_at = time.time()
         try:
-            import cost_tracker
+            import frontends.shared.cost_tracker as cost_tracker
             sess = self.sessions.get(self.current_id)
             tname = sess.thread.name if sess and sess.thread else f"tau-tui-agent-{self.current_id}"
             t = cost_tracker.get(tname)

@@ -2,7 +2,7 @@
 Pure functions + one `install(cls)` monkey-patch entry. No side effects at import.
 """
 import ast, atexit, glob, json, os, random, re, shutil, threading, time
-_LOG_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+_LOG_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
                         'temp', 'model_responses')
 _LOG_GLOB = os.path.join(_LOG_DIR, 'model_responses_*.txt')
 _BLOCK_RE = re.compile(r'^=== (Prompt|Response) ===.*?\n(.*?)(?=^=== (?:Prompt|Response) ===|\Z)',
@@ -512,7 +512,7 @@ def restore(agent, path):
         agent.abort()
         _replace_backend_history(agent, history)
         return f'✅ 已恢复 {len(pairs)} 轮完整对话（{name}）\n(已写入 backend.history，可直接继续)', True
-    from chatapp_common import _restore_native_history, _restore_text_pairs
+    from frontends.shared.chatapp_common import _restore_native_history, _restore_text_pairs
     summary = _restore_text_pairs(content) or _restore_native_history(content)
     if not summary: return f'❌ {name} 无法解析（非 native 且无摘要可提取）', False
     agent.abort()
@@ -1108,7 +1108,7 @@ def _load_history_into(agent, path, restore_wm=False):
         if restore_wm and hasattr(agent, 'history'):
             agent.history = _derive_hist_info(history)   # 续接恢复工作记忆(opt-in)
         return f'✅ 已恢复 {len(pairs)} 轮完整对话（{name}）', True
-    from chatapp_common import _restore_native_history, _restore_text_pairs
+    from frontends.shared.chatapp_common import _restore_native_history, _restore_text_pairs
     summary = _restore_text_pairs(content) or _restore_native_history(content)
     if not summary:
         return f'❌ {name} 无法解析（非 native 且无摘要可提取）', False

@@ -12,7 +12,7 @@ try:
 except:
     print("Please ask the agent install python-telegram-bot to use telegram module.")
     sys.exit(1)
-from chatapp_common import (
+from frontends.shared.chatapp_common import (
     FILE_HINT,
     HELP_TEXT,
     TELEGRAM_MENU_COMMANDS,
@@ -24,9 +24,9 @@ from chatapp_common import (
     require_runtime,
     split_text,
 )
-from continue_cmd import handle_frontend_command, reset_conversation
-from btw_cmd import handle_frontend_command as handle_btw_frontend_command
-from review_cmd import handle as handle_review_command
+from frontends.shared.continue_cmd import handle_frontend_command, reset_conversation
+from frontends.shared.btw_cmd import handle_frontend_command as handle_btw_frontend_command
+from frontends.shared.review_cmd import handle as handle_review_command
 from llmcore import taukeys
 
 agent = GeneraticAgent()
