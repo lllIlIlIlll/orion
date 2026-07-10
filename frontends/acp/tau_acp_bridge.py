@@ -3,7 +3,7 @@ import json
 import os
 import sys
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 # Must run BEFORE importing agentmain — it reconfigures stdout at import time,
 # and its submodules may print() during init.  We capture the raw binary stdout
