@@ -142,7 +142,7 @@ Dependencies are deliberately tiered: the agent core needs only `requests`, plus
 Then launch:
 
 ```bash
-python frontends/tui_v3.py   # Terminal UI (recommended)
+python frontends/tui/tui_v3.py   # Terminal UI (recommended)
 python launch.pyw            # Streamlit web UI
 ```
 
@@ -175,7 +175,7 @@ GLOBAL=1 bash -c "$(curl -fsSL https://raw.githubusercontent.com/lllIlIlIlll/ori
 A lightweight, scrollback-first terminal interface built on `prompt_toolkit` + `rich`. Supports multiple concurrent sessions and real-time streaming.
 
 ```bash
-python frontends/tui_v3.py
+python frontends/tui/tui_v3.py
 ```
 
 <details>
@@ -186,7 +186,7 @@ TUI rendering on Windows can be flaky depending on terminal + font. Common cause
 1. `prompt_toolkit` / `rich` are not on the latest version — `pip install -U prompt_toolkit rich` first.
 2. PowerShell / cmd ship with terminals that have rough Unicode + key-binding support. **Prefer Git Bash on Windows**, which is much better behaved.
 3. If it still looks broken, ask GA itself to fix it:
-   > *"My experience using `frontends/tui_v3.py` in PowerShell / cmd / Git Bash on Windows is very poor — lots of incompatibility. Please refer to Claude Code's best practices for the Windows terminal and fix all font and rendering incompatibilities."*
+   > *"My experience using `frontends/tui/tui_v3.py` in PowerShell / cmd / Git Bash on Windows is very poor — lots of incompatibility. Please refer to Claude Code's best practices for the Windows terminal and fix all font and rendering incompatibilities."*
 
 </details>
 
@@ -202,9 +202,9 @@ TAU also supports IM frontends such as Telegram, Discord, and Lark.
 
 | Platform | Command |
 | :--- | :--- |
-| Telegram | `python frontends/tgapp.py` |
-| Discord | `python frontends/dcapp.py` |
-| Lark / Feishu | `python frontends/fsapp.py` |
+| Telegram | `python frontends/bots/tgapp.py` |
+| Discord | `python frontends/bots/dcapp.py` |
+| Lark / Feishu | `python frontends/bots/fsapp.py` |
 
 > WeChat, QQ, WeCom and DingTalk are also supported — see the Chinese section below.
 > For detailed setup, ask TAU itself.
@@ -573,7 +573,7 @@ frontends/GenericAgent.exe
 基于 [Textual](https://github.com/Textualize/textual) 的轻量键盘驱动界面。支持多会话并发、实时流式输出，有终端就能跑。
 
 ```bash
-python frontends/tuiapp_v2.py
+python frontends/tui/tuiapp_v2.py
 ```
 
 <details>
@@ -582,7 +582,7 @@ python frontends/tuiapp_v2.py
 1. `textual` 版本太旧，先 `pip install -U textual`；
 2. PowerShell / cmd 自带终端对 Unicode 和键位的支持比较糟糕，**Windows 上推荐用 Git Bash**，体验明显更稳；
 3. 仍然显示异常时，可以让 GA 自己修一遍，参考 Prompt：
-   > *"我在 Windows 的 PowerShell / cmd / Git Bash 中使用 `frontends/tuiapp_v2.py` 体验非常差，出现了一堆不兼容问题。请参考 Claude Code 在 Windows 终端的最佳配置，把所有字体和显示不兼容的问题修一遍。"*
+   > *"我在 Windows 的 PowerShell / cmd / Git Bash 中使用 `frontends/tui/tuiapp_v2.py` 体验非常差，出现了一堆不兼容问题。请参考 Claude Code 在 Windows 终端的最佳配置，把所有字体和显示不兼容的问题修一遍。"*
 
 </details>
 
@@ -598,13 +598,13 @@ TAU 支持 Telegram、Discord、微信、QQ、飞书 / Lark、企业微信、钉
 
 | 平台 | 启动命令 |
 | :--- | :--- |
-| Telegram | `python frontends/tgapp.py` |
-| Discord | `python frontends/dcapp.py` |
-| 微信 | `python frontends/wechatapp.py` |
-| QQ | `python frontends/qqapp.py` |
-| 飞书 / Lark | `python frontends/fsapp.py` |
-| 企业微信 | `python frontends/wecomapp.py` |
-| 钉钉 | `python frontends/dingtalkapp.py` |
+| Telegram | `python frontends/bots/tgapp.py` |
+| Discord | `python frontends/bots/dcapp.py` |
+| 微信 | `python frontends/bots/wechatapp.py` |
+| QQ | `python frontends/bots/qqapp.py` |
+| 飞书 / Lark | `python frontends/bots/fsapp.py` |
+| 企业微信 | `python frontends/bots/wecomapp.py` |
+| 钉钉 | `python frontends/bots/dingtalkapp.py` |
 
 > 详细配置直接问 TAU。
 

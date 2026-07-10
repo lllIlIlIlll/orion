@@ -28,7 +28,7 @@
 
 ```
 任意前端 (TUI / Streamlit / wechat / desktop)
-   └─ frontends/review_cmd.py     ← 命令分发,剥 "/review" 前缀,注入 user_request
+   └─ frontends/shared/review_cmd.py     ← 命令分发,剥 "/review" 前缀,注入 user_request
        └─ memory/review_sop/review_inline_prompt.txt   ← 完整 in-session 协议
            └─ memory/code_review_principles.md         ← 15 条好代码原则
 ```
@@ -166,4 +166,4 @@ PASS / CONDITIONAL / FAIL
 ## 十、扩展点
 
 - **自定义评审条目**:编辑 `memory/code_review_principles.md`,reviewer 启动时整段注入
-- **触发更换**:要把 `/review` 改成别的命令,只动 `frontends/review_cmd.py` 的 `install()` 一处
+- **触发更换**:要把 `/review` 改成别的命令,只动 `frontends/shared/review_cmd.py` 的 `install()` 一处

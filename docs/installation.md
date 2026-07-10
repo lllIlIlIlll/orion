@@ -118,7 +118,7 @@ frontends/GenericAgent.exe
 A lightweight keyboard-driven interface built on [Textual](https://github.com/Textualize/textual). It supports multiple concurrent sessions and real-time streaming.
 
 ```bash
-python frontends/tuiapp_v2.py
+python frontends/tui/tuiapp_v2.py
 ```
 
 #### Streamlit UI
@@ -141,7 +141,7 @@ Then launch at least one frontend:
 ```bash
 python launch.pyw
 # or
-python frontends/tuiapp_v2.py
+python frontends/tui/tuiapp_v2.py
 ```
 
 ### Common gotchas
@@ -158,7 +158,7 @@ Some systems already use `ga` for another tool. Check first:
 type ga
 ```
 
-If it resolves to something unexpected, do not rely on the shortcut. Run GA from the install directory with `python launch.pyw` or `python frontends/tuiapp_v2.py`.
+If it resolves to something unexpected, do not rely on the shortcut. Run GA from the install directory with `python launch.pyw` or `python frontends/tui/tuiapp_v2.py`.
 
 #### Windows TUI rendering issues
 
@@ -167,7 +167,7 @@ TUI rendering on Windows depends on terminal, font, and `textual` version.
 1. Upgrade Textual first: `pip install -U textual`.
 2. Prefer **Git Bash on Windows** over classic PowerShell / cmd when Unicode or key bindings look broken.
 3. If it still looks wrong, ask GA itself to repair the terminal compatibility. Example prompt:
-   > *"My experience using `frontends/tuiapp_v2.py` in PowerShell / cmd / Git Bash on Windows is very poor — lots of incompatibility. Please refer to Claude Code's best practices for the Windows terminal and fix all font and rendering incompatibilities."*
+   > *"My experience using `frontends/tui/tuiapp_v2.py` in PowerShell / cmd / Git Bash on Windows is very poor — lots of incompatibility. Please refer to Claude Code's best practices for the Windows terminal and fix all font and rendering incompatibilities."*
 
 #### `pywebview` install fails on Linux
 
@@ -271,7 +271,7 @@ Then verify one frontend:
 ```bash
 python launch.pyw
 # or, for terminal-only environments:
-python frontends/tuiapp_v2.py
+python frontends/tui/tuiapp_v2.py
 ```
 
 ### Step 4: Verification and Next Steps
@@ -285,7 +285,7 @@ Read this document again and think through whether you have done everything corr
 
 #### Say 'Congratulations! 🎉' to the user
 
-Say to user: Congratulations! 🎉 You have successfully set up TAU! Double-click `frontends/TAU.exe` on Windows, or run `python frontends/tuiapp_v2.py` in your terminal to start using it.
+Say to user: Congratulations! 🎉 You have successfully set up TAU! Double-click `frontends/TAU.exe` on Windows, or run `python frontends/tui/tuiapp_v2.py` in your terminal to start using it.
 
 #### Report the concrete result
 

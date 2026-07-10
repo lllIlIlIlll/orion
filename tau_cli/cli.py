@@ -48,7 +48,7 @@ COMMANDS = {
     "gui": {
         "help": "启动桌面GUI (qtapp)",
         "desc": "启动基于 PyQt5 的完整桌面聊天界面（气泡代码高亮、文件拖拽、历史搜索）",
-        "cmd": ["python", "{FRONTENDS}/qtapp.py"],
+        "cmd": ["python", "{FRONTENDS}/desktop/qtapp.py"],
     },
     "configure": {
         "help": "运行初始配置向导 (configure_taukey.py)",
@@ -63,12 +63,12 @@ COMMANDS = {
     "tui": {
         "help": "启动终端 TUI (tuiapp)",
         "desc": "启动终端图形界面（Textual），适合纯终端环境或 SSH",
-        "cmd": ["python", "{FRONTENDS}/tuiapp.py"],
+        "cmd": ["python", "{FRONTENDS}/tui/tuiapp.py"],
     },
     "tui2": {
         "help": "启动终端 TUI v2 (tuiapp_v2)",
         "desc": "启动增强版终端图形界面（Textual v2），更多功能更好的体验",
-        "cmd": ["python", "{FRONTENDS}/tuiapp_v2.py"],
+        "cmd": ["python", "{FRONTENDS}/tui/tuiapp_v2.py"],
     },
     "cli": {
         "help": "启动 CLI 对话 (agentmain)",

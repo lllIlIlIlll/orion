@@ -333,12 +333,13 @@ def list_launchable_services() -> list[dict]:
     Sources (hub.pyw EXCLUDES = goal_mode.py / chatapp_common.py / tuiapp.py):
       • reflect/*.py   (not '_'-prefixed, not excluded)
           → cmd = [python, agentmain.py, --reflect, reflect/<f>]
-      • frontends/*app*.py (not excluded)
+      • frontends/{bots,tui,web,desktop,conductor,acp}/*app*.py (not excluded)
           → 'stapp' → `python -m streamlit run … --server.headless=true`
-            others   → `python frontends/<f>`
+            others   → `python frontends/<carrier>/<f>`
 
     Returns [{name, cmd, doc, kind}] where `name` is the hub-style path
-    ('reflect/foo.py' / 'frontends/bar.py') and doubles as the picker value.
+    ('reflect/foo.py' / 'frontends/<carrier>/bar.py') and doubles as the
+    picker value.
     """
     out: list[dict] = []
     refl = _ROOT / "reflect"
