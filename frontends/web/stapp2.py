@@ -6,7 +6,7 @@ try: sys.stdout.reconfigure(errors='replace')
 except: pass
 try: sys.stderr.reconfigure(errors='replace')
 except: pass
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 import streamlit as st
 try:
