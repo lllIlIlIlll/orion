@@ -1415,14 +1415,14 @@ def _align_md_renders(narrow_raw: str, wide_raw: str):
 from frontends.shared.at_complete import get_index, fuzzy_rank, find_at_token, format_pick, candidates_for, absolutize_mentions
 
 
-ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 if ROOT_DIR not in sys.path:
     sys.path.insert(0, ROOT_DIR)
 FRONTENDS_DIR = os.path.dirname(os.path.abspath(__file__))
 if FRONTENDS_DIR not in sys.path:
     sys.path.insert(0, FRONTENDS_DIR)
 
-_TASK_DIR_GLOB = os.path.join(FRONTENDS_DIR, '..', 'temp', '_tui_v2_*')
+_TASK_DIR_GLOB = os.path.join(FRONTENDS_DIR, '..', '..', 'temp', '_tui_v2_*')
 
 
 def _rmdir_if_empty(path: Optional[str]) -> None:
@@ -1571,7 +1571,7 @@ _THEME_CYCLE = ["tau-default", "nord", "gruvbox", "dracula", "tokyo-night", "tex
 # Lightweight JSON dropbox for cross-run UI state (theme, future toggles).
 # Lives under temp/ alongside model logs so it tracks the workspace.
 _SETTINGS_PATH = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "..", "temp", "tui_settings.json"
+    os.path.dirname(os.path.abspath(__file__)), "..", "..", "temp", "tui_settings.json"
 )
 
 def _load_settings() -> dict:
@@ -3818,7 +3818,7 @@ class TauTUI(App[None]):
         # empty `temp/_tui_v2_<pid>_<id>` behind for every session that never
         # used intervene; `consume_file` tolerates a missing dir.
         try:
-            agent.task_dir = os.path.join(FRONTENDS_DIR, '..', 'temp',
+            agent.task_dir = os.path.join(FRONTENDS_DIR, '..', '..', 'temp',
                                           f'_tui_v2_{os.getpid()}_{agent_id}')
         except Exception:
             pass
@@ -3837,7 +3837,7 @@ class TauTUI(App[None]):
         # 见 agentmain TauHandler(..., temp))。store 挂到 agent 上供全局
         # tool_before 钩子按 agent 路由。
         try:
-            temp_dir = os.path.normpath(os.path.join(FRONTENDS_DIR, '..', 'temp'))
+            temp_dir = os.path.normpath(os.path.join(FRONTENDS_DIR, '..', '..', 'temp'))
             log_path = getattr(agent, 'log_path', '') or f'sess_{os.getpid()}_{agent_id}'
             sess.store = RewindStore.for_log(temp_dir, log_path, temp_dir)
             agent._rw_store = sess.store
@@ -5648,7 +5648,7 @@ class TauTUI(App[None]):
 
     def _rw_rewind_root(self):
         """世界线树根目录(temp/.ga_rewind),供 continue_list 树感知发现"已回退至起点"的空会话。"""
-        return os.path.join(os.path.normpath(os.path.join(FRONTENDS_DIR, '..', 'temp')), '.ga_rewind')
+        return os.path.join(os.path.normpath(os.path.join(FRONTENDS_DIR, '..', '..', 'temp')), '.ga_rewind')
 
     def _cmd_continue(self, args, raw):
         sess = self.current
@@ -5747,7 +5747,7 @@ class TauTUI(App[None]):
         # 世界线树:重建 store 指向新 log_path;拷贝时再 resume_from 把源会话的树搬过来
         # (原地直接指向 X 那棵树,无需搬)。
         try:
-            temp_dir = os.path.normpath(os.path.join(FRONTENDS_DIR, '..', 'temp'))
+            temp_dir = os.path.normpath(os.path.join(FRONTENDS_DIR, '..', '..', 'temp'))
             sess.store = RewindStore.for_log(temp_dir, new_log, temp_dir)
             sess.agent._rw_store = sess.store
             if copy:

@@ -15,9 +15,8 @@ _IS_WINDOWS = os.name == 'nt'
 # Make `frontends/` parent (project root) importable so `from agentmain import …`
 # works whether this file is run as `python -m frontends.tui_v3` or directly
 # via `python frontends/tui_v3.py`.
-_proj_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-_front_dir = os.path.dirname(os.path.abspath(__file__))
-for _p in (_proj_root, _front_dir):
+_proj_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+for _p in (_proj_root,):
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
@@ -49,7 +48,7 @@ from frontends.shared import at_complete, workspace_cmd   # @ 补全 + /workspac
 # ════════════════════════════════════════════════════════════════════════════
 
 _SETTINGS_PATH = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "..", "temp", "tui_v3_settings.json"
+    os.path.dirname(os.path.abspath(__file__)), "..", "..", "temp", "tui_v3_settings.json"
 )
 
 _SUPPORTED = ('zh', 'en')
@@ -1999,7 +1998,7 @@ def _pet(el: float, frame: int) -> str:
 _BP_START = b'\x1b[200~'
 _BP_END = b'\x1b[201~'
 _SPIN = '⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
-_ROOT = os.path.realpath(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+_ROOT = os.path.realpath(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 
 def _rmdir_if_empty(path: str | None) -> None:
