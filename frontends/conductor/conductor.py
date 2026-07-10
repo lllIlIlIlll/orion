@@ -8,7 +8,7 @@ from fastapi.responses import FileResponse, PlainTextResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 if ROOT not in sys.path: sys.path.insert(0, ROOT)
 
 from agentmain import Tau
