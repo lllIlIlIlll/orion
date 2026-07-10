@@ -14,6 +14,7 @@ dependencies = [
     "bottle>=0.12",
     "simple-websocket-server>=0.4",
     "aiohttp>=3.9",
+    "streamlit>=1.59.1",
 ]
 
 [project.optional-dependencies]
@@ -45,7 +46,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 py-modules = []
-packages = ["ga_cli"]
+packages = ["tau_cli"]
 
 [project.scripts]
 tau = "tau_cli.cli:main"
