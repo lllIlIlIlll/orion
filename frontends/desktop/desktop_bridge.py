@@ -1801,7 +1801,7 @@ def create_app():
     app.router.add_post("/services/bridge/exit", bridge_exit_handler)
 
     # Serve static frontend (desktop/static/)
-    static_dir = APP_DIR / "desktop" / "static"
+    static_dir = APP_DIR / "static"
 
     async def index_handler(request):
         return web.FileResponse(

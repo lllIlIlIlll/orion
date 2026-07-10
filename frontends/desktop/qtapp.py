@@ -27,7 +27,7 @@ from PySide6.QtGui import (
     QPen, QPainterPath, QCursor, QFont, QIcon, QPixmap, QRegion,
 )
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from agentmain import Tau as GeneraticAgent
 from frontends.shared.chatapp_common import FILE_HINT, HELP_TEXT, clean_reply, build_done_text, format_restore
 
@@ -2287,7 +2287,7 @@ class ChatPanel(QWidget):
     def _refresh_sop(self):
         self._sop_list.clear()
         file_icon = _svg_icon("sop_file_item", _SVG_FILE, C["muted"])
-        for path in sorted(glob.glob(os.path.join(os.path.dirname(os.path.dirname(__file__)), "memory", "*.md"))):
+        for path in sorted(glob.glob(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "memory", "*.md"))):
             name = os.path.basename(path)
             size = os.path.getsize(path)
             it = QListWidgetItem(name)

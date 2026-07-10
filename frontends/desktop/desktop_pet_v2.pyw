@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 PORT = 41983
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJECT_DIR = os.path.dirname(SCRIPT_DIR)
+PROJECT_DIR = os.path.dirname(os.path.dirname(SCRIPT_DIR))
 SKINS_DIR = os.path.join(SCRIPT_DIR, 'skins')
 
 class SkinLoader:
