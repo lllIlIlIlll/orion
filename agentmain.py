@@ -83,7 +83,15 @@ class Tau:
                     mixin = MixinSession(llm_sessions, s['mixin_cfg'])
                     if isinstance(mixin._sessions[0], (NativeClaudeSession, NativeOAISession)): llm_sessions[i] = NativeToolClient(mixin)
                     else: llm_sessions[i] = ToolClient(mixin)
-                except Exception as e: print(f'\n\n\n[ERROR] Failed to init MixinSession with cfg {s["mixin_cfg"]}: {e}!!!\n\n')
+                except Exception as e:
+                    avail = [c.backend.name for c in llm_sessions if not isinstance(c, dict)]
+                    missing = [n for n in s['mixin_cfg'].get('llm_nos', []) if n not in avail]
+                    print(f'\n[ERROR] Failed to init MixinSession: {type(e).__name__}: {e}\n'
+                          f'  llm_nos={s["mixin_cfg"].get("llm_nos")} — names not found in taukey: {missing}\n'
+                          f'  available session names: {avail}\n')
+                    llm_sessions[i] = None
+        llm_sessions = [s for s in llm_sessions if s is not None]
+        if not llm_sessions: raise Exception('[ERROR] No valid LLM session configured — check .tau/taukey.py')
         self.llmclients = llm_sessions
         self.llmclient = self.llmclients[self.llm_no%len(self.llmclients)]
         if oldhistory: self.llmclient.backend.history = oldhistory
