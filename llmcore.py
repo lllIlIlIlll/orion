@@ -11,8 +11,9 @@ def _load_taukeys():
     # Try .tau/taukey.py first (the new canonical location).
     _taukey_file = os.path.join(_TAU_DIR, 'taukey.py')
     if os.path.exists(_taukey_file):
+        if _TAU_DIR not in sys.path: sys.path.insert(0, _TAU_DIR)
         try:
-            import taukey as _tk; importlib.reload(_tk)
+            import taukey; importlib.reload(taukey)
         except (ImportError, SyntaxError):
             pass
         else:
