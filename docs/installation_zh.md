@@ -4,8 +4,8 @@
 
 两类读者：
 
-- **[面向用户（For Humans）](#面向用户-for-humans)** —— 你自己安装 GA。
-- **[面向 LLM Agent（For LLM Agents）](#面向-llm-agent-for-llm-agents)** —— 你是 Claude Code、Codex 等编程 Agent，需要替人类用户安装 GA。请先读这一段，避免靠猜。
+- **[面向用户（For Humans）](#面向用户-for-humans)** —— 你自己安装 TAU。
+- **[面向 LLM Agent（For LLM Agents）](#面向-llm-agent-for-llm-agents)** —— 你是 Claude Code、Codex 等编程 Agent，需要替人类用户安装 TAU。请先读这一段，避免靠猜。
 
 > 最短安装命令见主 [README](../README.md#-快速开始)。这份文档补充平台差异、Key 配置、验证、排障，以及 Agent 自动安装时的安全规则。
 
@@ -18,9 +18,9 @@
 | 要求 | 说明 |
 |---|---|
 | **操作系统** | Windows 10/11、macOS 12+，或任意现代 Linux。 |
-| **Python** | 推荐 **Python 3.11 或 3.12**。**不要使用 Python 3.14**，它与 `pywebview` 及部分 GA 依赖不兼容。方法一的一键脚本会准备隔离运行环境，通常不需要手动装 Python。 |
+| **Python** | 推荐 **Python 3.11 或 3.12**。**不要使用 Python 3.14**，它与 `pywebview` 及部分 TAU 依赖不兼容。方法一的一键脚本会准备隔离运行环境，通常不需要手动装 Python。 |
 | **Git** | 推荐安装，方便升级和自我进化。 |
-| **LLM API Key** | GA 原生支持两类协议：**OpenAI 兼容接口** 和 **Anthropic Claude 原生接口**。GPT 系列、Claude、Kimi、MiniMax、DeepSeek、GLM、Qwen、通过 OAI 兼容网关接入的 Gemini 等，都可以在 `taukey.py` 中配置。 |
+| **LLM API Key** | TAU 原生支持两类协议：**OpenAI 兼容接口** 和 **Anthropic Claude 原生接口**。GPT 系列、Claude、Kimi、MiniMax、DeepSeek、GLM、Qwen、通过 OAI 兼容网关接入的 Gemini 等，都可以在 `taukey.py` 中配置。 |
 
 ### 方法一：一键安装（推荐）
 
@@ -29,19 +29,19 @@
 **Windows PowerShell**
 
 ```powershell
-powershell -ExecutionPolicy Bypass -c "irm http://fudankw.cn:9000/files/ga_install.ps1 | iex"
+powershell -ExecutionPolicy Bypass -c "irm http://fudankw.cn:9000/files/tau_install.ps1 | iex"
 ```
 
 **Linux / macOS**
 
 ```bash
-curl -fsSL http://fudankw.cn:9000/files/ga_install.sh | bash
+curl -fsSL http://fudankw.cn:9000/files/tau_install.sh | bash
 ```
 
 安装完成后，Windows 用户可双击：
 
 ```text
-apps/GenericAgent.exe
+apps/TAU.exe
 ```
 
 也可以进入项目目录运行：
@@ -50,16 +50,16 @@ apps/GenericAgent.exe
 python launch.pyw
 ```
 
-> TAU 更推荐由 Agent 在使用中自举环境，而不是预先手动装完整依赖。先把最小系统跑起来，需要什么工具再让 GA 自己安装。
+> TAU 更推荐由 Agent 在使用中自举环境，而不是预先手动装完整依赖。先把最小系统跑起来，需要什么工具再让 TAU 自己安装。
 
 #### 自定义安装路径
 
 ```bash
-INSTALL_DIR="$HOME/work/GenericAgent" bash -c "$(curl -fsSL http://fudankw.cn:9000/files/ga_install.sh)"
+INSTALL_DIR="$HOME/work/TAU" bash -c "$(curl -fsSL http://fudankw.cn:9000/files/tau_install.sh)"
 ```
 
 ```powershell
-$env:INSTALL_DIR="C:\dev\GenericAgent"; powershell -ExecutionPolicy Bypass -c "irm http://fudankw.cn:9000/files/ga_install.ps1 | iex"
+$env:INSTALL_DIR="C:\dev\TAU"; powershell -ExecutionPolicy Bypass -c "irm http://fudankw.cn:9000/files/tau_install.ps1 | iex"
 ```
 
 #### 强制重新安装
@@ -67,7 +67,7 @@ $env:INSTALL_DIR="C:\dev\GenericAgent"; powershell -ExecutionPolicy Bypass -c "i
 仅在明确想刷新已安装文件时使用。请先备份 `taukey.py`、`memory/`、`skills/` 和本地工作成果。
 
 ```bash
-FORCE=1 bash -c "$(curl -fsSL http://fudankw.cn:9000/files/ga_install.sh)"
+FORCE=1 bash -c "$(curl -fsSL http://fudankw.cn:9000/files/tau_install.sh)"
 ```
 
 ### 方法二：Python 安装（开发者）
@@ -75,8 +75,8 @@ FORCE=1 bash -c "$(curl -fsSL http://fudankw.cn:9000/files/ga_install.sh)"
 适合想要可编辑源码目录的开发者。
 
 ```bash
-git clone https://github.com/lllIlIlIlll/orion.git GenericAgent
-cd GenericAgent
+git clone https://github.com/lllIlIlIlll/orion.git TAU
+cd TAU
 uv venv
 uv pip install -e ".[ui]"        # 核心 + UI 依赖
 cp assets/taukey_template.py taukey.py     # 填入你的 LLM API Key
@@ -92,7 +92,7 @@ python launch.pyw
 3. 填入一个真实可用的模型服务商配置。**不要**把示例 Key 当真。
 4. 不确定字段含义时，先读 `assets/taukey_template.py` 里的注释。
 
-GA 支持：
+TAU 支持：
 
 - **OpenAI 兼容接口** —— Chat Completions / Responses 形态的接口。
 - **Anthropic Claude 原生接口** —— Claude Messages API。
@@ -110,7 +110,7 @@ python assets/configure_taukey.py
 一键安装自带桌面端，双击：
 
 ```text
-apps/GenericAgent.exe
+apps/TAU.exe
 ```
 
 #### 终端 UI
@@ -148,7 +148,7 @@ python apps/tui/tuiapp_v2.py
 
 #### 不支持 Python 3.14
 
-如果系统 `python --version` 显示 3.14，不要用它跑 GA。请走一键安装，或用 `uv` 创建 Python 3.11 / 3.12 环境。
+如果系统 `python --version` 显示 3.14，不要用它跑 TAU。请走一键安装，或用 `uv` 创建 Python 3.11 / 3.12 环境。
 
 #### `ga` 命令冲突
 
@@ -166,7 +166,7 @@ TUI 在 Windows 上依赖终端、字体和 `textual` 版本。
 
 1. 先升级 Textual：`pip install -U textual`。
 2. PowerShell / cmd 对 Unicode 和键位支持较弱，**Windows 上推荐用 Git Bash**。
-3. 仍然异常时，可以让 GA 自己修一遍。参考 Prompt：
+3. 仍然异常时，可以让 TAU 自己修一遍。参考 Prompt：
    > *"我在 Windows 的 PowerShell / cmd / Git Bash 中使用 `apps/tui/tuiapp_v2.py` 体验非常差，出现了一堆不兼容问题。请参考 Claude Code 在 Windows 终端的最佳配置，把所有字体和显示不兼容的问题修一遍。"*
 
 #### Linux 上 `pywebview` 安装失败
@@ -182,10 +182,10 @@ pip install pywebview
 
 ### 升级已有安装
 
-不要为了升级而删除一个可用的 GA 目录。里面可能有用户的 `taukey.py`、记忆、技能和本地成果。
+不要为了升级而删除一个可用的 TAU 目录。里面可能有用户的 `taukey.py`、记忆、技能和本地成果。
 
 ```bash
-cd ~/GenericAgent
+cd ~/TAU
 git fetch
 git pull
 uv pip install -e ".[ui]"
@@ -214,7 +214,7 @@ uv pip install -e ".[ui]"
 检查：
 
 1. 操作系统：`uname -a`、`$env:OS`，或 `python -c "import platform; print(platform.system())"`。
-2. 是否已安装：`~/GenericAgent/launch.pyw`、`%USERPROFILE%\GenericAgent\launch.pyw`，或 `.git` 目录。
+2. 是否已安装：`~/TAU/launch.pyw`、`%USERPROFILE%\TAU\launch.pyw`，或 `.git` 目录。
 3. Python 版本：开发者路径必须使用 3.11 或 3.12。
 4. Git 是否可用：`git --version`。
 5. API Key 是否准备好：没有就问用户，绝不要伪造。
@@ -226,20 +226,20 @@ uv pip install -e ".[ui]"
 **Windows PowerShell**
 
 ```powershell
-powershell -ExecutionPolicy Bypass -c "irm http://fudankw.cn:9000/files/ga_install.ps1 | iex"
+powershell -ExecutionPolicy Bypass -c "irm http://fudankw.cn:9000/files/tau_install.ps1 | iex"
 ```
 
 **Linux / macOS**
 
 ```bash
-curl -fsSL http://fudankw.cn:9000/files/ga_install.sh | bash
+curl -fsSL http://fudankw.cn:9000/files/tau_install.sh | bash
 ```
 
 如果用户明确要开发者源码安装：
 
 ```bash
-git clone https://github.com/lllIlIlIlll/orion.git GenericAgent
-cd GenericAgent
+git clone https://github.com/lllIlIlIlll/orion.git TAU
+cd TAU
 uv venv
 uv pip install -e ".[ui]"
 cp assets/taukey_template.py taukey.py
@@ -254,14 +254,14 @@ cp assets/taukey_template.py taukey.py
 
 建议提问：
 
-> 你希望 TAU 使用哪个 LLM？GA 支持 OpenAI 兼容接口和 Anthropic Claude 原生接口。你想配置哪家服务商，API Key 准备好了吗？
+> 你希望 TAU 使用哪个 LLM？TAU 支持 OpenAI 兼容接口和 Anthropic Claude 原生接口。你想配置哪家服务商，API Key 准备好了吗？
 
 ### 第 3 步：验证安装
 
 运行：
 
 ```bash
-cd ~/GenericAgent
+cd ~/TAU
 python -c "import agent_loop; print('OK')"
 git rev-parse --short HEAD
 ```
@@ -295,7 +295,7 @@ python apps/tui/tuiapp_v2.py
 2. Git commit hash。
 3. 已验证哪个前端。
 4. `taukey.py` 是否已配置，但不要泄露密钥。
-5. 下一步阅读：[Hello GenericAgent](https://datawhalechina.github.io/hello-generic-agent/) 和 [GETTING_STARTED.md](GETTING_STARTED.md)。
+5. 下一步阅读：[Hello TAU](https://datawhalechina.github.io/hello-generic-agent/) 和 [GETTING_STARTED.md](GETTING_STARTED.md)。
 
 #### 请求 Star ⭐
 
@@ -307,8 +307,8 @@ python apps/tui/tuiapp_v2.py
 
 ### 绝对不要做
 
-- 不要运行 `pip install genericagent`；GA 不是 PyPI 包。
-- 未经明确授权，不要删除 `~/GenericAgent` 或 `%USERPROFILE%\GenericAgent` 做“干净安装”。
+- 不要运行 `pip install tau`；TAU 不是 PyPI 包。
+- 未经明确授权，不要删除 `~/TAU` 或 `%USERPROFILE%\TAU` 做“干净安装”。
 - 不要伪造 API Key，也不要把示例 Key 当真。
 - 不要假设 `ga` 命令一定可用；先检查。
 - 不要依赖 `ga update`；按上面的 `git fetch`、`git pull` 和重装依赖流程做。

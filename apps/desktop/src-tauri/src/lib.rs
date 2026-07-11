@@ -24,7 +24,7 @@ fn project_root() -> PathBuf {
 /// Directory next to which a self-contained bundle keeps its runtime/ folder.
 /// Windows: the exe's folder. Linux: the .AppImage's folder ($APPIMAGE) when launched as an
 /// AppImage (current_exe would otherwise point inside the read-only squashfs mount).
-/// macOS portable package: the folder containing GenericAgent.app and runtime/.
+/// macOS portable package: the folder containing TAU.app and runtime/.
 fn bundle_anchor_dir() -> Option<PathBuf> {
     #[cfg(not(windows))]
     {
@@ -40,9 +40,9 @@ fn bundle_anchor_dir() -> Option<PathBuf> {
     #[cfg(target_os = "macos")]
     {
         // current_exe() inside a bundle is:
-        //   <package>/GenericAgent.app/Contents/MacOS/GenericAgent
+        //   <package>/TAU.app/Contents/MacOS/TAU
         // Prefer the standard macOS layout where runtime is embedded in the app:
-        //   GenericAgent.app/Contents/Resources/runtime/app/agentmain.py
+        //   TAU.app/Contents/Resources/runtime/app/agentmain.py
         // Fall back to the old portable layout for compatibility:
         //   <package>/runtime/app/agentmain.py
         let mut d = exe.parent();
@@ -199,7 +199,7 @@ fn write_shortcut_pref(enabled: bool) {
 fn ensure_desktop_shortcut() {
     let Ok(exe) = std::env::current_exe() else { return; };
     let Some(desktop) = dirs::desktop_dir() else { return; };
-    let lnk = desktop.join("GenericAgent.lnk");
+    let lnk = desktop.join("TAU.lnk");
     let work_dir = exe.parent().map(|p| p.to_path_buf()).unwrap_or_else(|| exe.clone());
 
     let exe_s = exe.to_string_lossy().replace('\'', "''");
@@ -232,14 +232,14 @@ fn ensure_desktop_shortcut() {
         .or_else(|| std::env::current_exe().ok()) else { return; };
     let exec = target.to_string_lossy().replace('"', "");
     // Linux .desktop Icon= needs an image file (or themed name), not the AppImage path. The CI
-    // ships GenericAgent.png next to the AppImage; fall back to a generic themed icon otherwise.
+    // ships TAU.png next to the AppImage; fall back to a generic themed icon otherwise.
     let icon = bundle_anchor_dir()
-        .map(|d| d.join("GenericAgent.png"))
+        .map(|d| d.join("TAU.png"))
         .filter(|p| p.exists())
         .map(|p| p.to_string_lossy().into_owned())
         .unwrap_or_else(|| "application-x-executable".to_string());
     let entry = format!(
-        "[Desktop Entry]\nType=Application\nName=GenericAgent\nComment=GenericAgent Desktop\n\
+        "[Desktop Entry]\nType=Application\nName=TAU\nComment=TAU Desktop\n\
          Exec=\"{exec}\"\nIcon={icon}\nTerminal=false\nCategories=Utility;Development;\n",
         exec = exec, icon = icon
     );
@@ -252,11 +252,11 @@ fn ensure_desktop_shortcut() {
     if let Some(home) = dirs::home_dir() {
         let apps = home.join(".local/share/applications");
         let _ = std::fs::create_dir_all(&apps);
-        write_desktop(&apps.join("GenericAgent.desktop"));
+        write_desktop(&apps.join("TAU.desktop"));
     }
     if let Some(desktop) = dirs::desktop_dir() {
         let _ = std::fs::create_dir_all(&desktop);
-        let f = desktop.join("GenericAgent.desktop");
+        let f = desktop.join("TAU.desktop");
         write_desktop(&f);
         // GNOME marks unknown launchers "untrusted"; flag ours so it runs on double-click. Best effort.
         let _ = Command::new("gio")
@@ -276,7 +276,7 @@ fn ensure_desktop_shortcut() {
         d = dir.parent();
     }
     let (Some(app), Some(desktop)) = (app, dirs::desktop_dir()) else { return; };
-    let link = desktop.join("GenericAgent.app");
+    let link = desktop.join("TAU.app");
     let _ = std::fs::remove_file(&link);
     let _ = std::os::unix::fs::symlink(&app, &link);
 }

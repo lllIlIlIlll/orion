@@ -1,21 +1,21 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# GenericAgent one-click portable deployer for macOS/Linux.
+# TAU one-click portable deployer for macOS/Linux.
 # Modes:
-#   Default/Mainland: download GenericAgent.zip + uv from user's VPS, set China PyPI mirror.
-#   GLOBAL=1: clone GenericAgent from GitHub; uv also from GitHub releases; no PyPI mirror.
+#   Default/Mainland: download TAU.zip + uv from user's VPS, set China PyPI mirror.
+#   GLOBAL=1: clone TAU from GitHub; uv also from GitHub releases; no PyPI mirror.
 # Portable components are installed under <INSTALL_DIR>/.portable:
 #   uv, Python installed by uv. On macOS/Linux git is expected from system package manager.
 
-INSTALL_DIR="${INSTALL_DIR:-$HOME/GenericAgent}"
+INSTALL_DIR="${INSTALL_DIR:-$HOME/TAU}"
 PYTHON_VERSION="${PYTHON_VERSION:-3.12}"
 FORCE="${FORCE:-0}"
 GLOBAL="${GLOBAL:-0}"
 
 REPO_URL="https://github.com/lllIlIlIlll/orion.git"
 VPS_BASE="http://47.101.182.29:9000"
-TAU_ZIP_URL="$VPS_BASE/files/GenericAgent.zip"
+TAU_ZIP_URL="$VPS_BASE/files/TAU.zip"
 MAINLAND_INDEX="https://pypi.tuna.tsinghua.edu.cn/simple"
 DEPS=("requests>=2.28" "beautifulsoup4>=4.12" "bottle>=0.12" "simple-websocket-server>=0.4" "streamlit>=1.28")
 
@@ -26,11 +26,11 @@ die(){ printf '\033[31m[error]\033[0m %s\n' "$*" >&2; exit 1; }
 usage(){ cat <<'EOF'
 Usage:
   bash install_portable_env.sh
-  INSTALL_DIR="$HOME/GenericAgent" PYTHON_VERSION=3.12 FORCE=1 bash install_portable_env.sh
+  INSTALL_DIR="$HOME/TAU" PYTHON_VERSION=3.12 FORCE=1 bash install_portable_env.sh
   GLOBAL=1 bash install_portable_env.sh
 
 Environment variables:
-  INSTALL_DIR     Install GenericAgent here. Default: ~/GenericAgent
+  INSTALL_DIR     Install TAU here. Default: ~/TAU
   PYTHON_VERSION  Python version installed by uv. Default: 3.12
   FORCE=1         Replace existing source files while preserving/reinstalling portable tools.
   GLOBAL=1        Clone from GitHub directly and do not set China PyPI mirror.
@@ -60,7 +60,7 @@ PORTABLE_ROOT="$TAU_DIR/.portable"
 BIN="$PORTABLE_ROOT/bin"
 CACHE="$PORTABLE_ROOT/cache"
 UV_TGZ="$CACHE/$uv_file"
-TAU_ZIP="$CACHE/GenericAgent.zip"
+TAU_ZIP="$CACHE/TAU.zip"
 UV_EXTRACT="$CACHE/uv-extract"
 TAU_EXTRACT="$CACHE/tau-extract"
 UV_EXE="$BIN/uv"
@@ -169,9 +169,9 @@ else
   say "git not found; continuing because mainland mode uses VPS zip. Install git later if needed."
 fi
 
-# Fetch/update GenericAgent source.
+# Fetch/update TAU source.
 if [[ "$GLOBAL" == "1" ]]; then
-  say "Cloning GenericAgent from GitHub"
+  say "Cloning TAU from GitHub"
   if [[ -n "$(find "$TAU_DIR" -mindepth 1 -maxdepth 1 ! -name .portable -print -quit)" ]]; then
     [[ "$FORCE" == "1" ]] || die "Install dir contains files. Re-run with FORCE=1 to replace source while preserving portable tools."
     remove_source_files
@@ -182,18 +182,18 @@ if [[ "$GLOBAL" == "1" ]]; then
   copy_contents "$TMP_CLONE" "$TAU_DIR"
   rm -rf "$TMP_CLONE"
 else
-  say "Downloading GenericAgent package from VPS"
+  say "Downloading TAU package from VPS"
   download "$TAU_ZIP_URL" "$TAU_ZIP"
   extract_zip_clean "$TAU_ZIP" "$TAU_EXTRACT"
-  SRC_DIR="$TAU_EXTRACT/GenericAgent"
+  SRC_DIR="$TAU_EXTRACT/TAU"
   [[ -d "$SRC_DIR" ]] || SRC_DIR="$TAU_EXTRACT"
   remove_source_files
   copy_contents "$SRC_DIR" "$TAU_DIR"
 fi
-ok "GenericAgent source ready: $TAU_DIR"
+ok "TAU source ready: $TAU_DIR"
 
 # Install basic dependencies and project in editable mode into portable Python.
-say "Installing GenericAgent dependencies via uv pip"
+say "Installing TAU dependencies via uv pip"
 install_args=(pip install --python "$PYTHON_EXE" --break-system-packages)
 if [[ "$GLOBAL" != "1" ]]; then install_args+=(--index-url "$MAINLAND_INDEX"); fi
 install_args+=("${DEPS[@]}")
@@ -227,22 +227,22 @@ fi
 if [[ "$GLOBAL" == "1" ]]; then
   cat > "$ENV_SH" <<EOF
 export PORTABLE_DEV_ROOT="$PORTABLE_ROOT"
-export GENERICAGENT_HOME="$TAU_DIR"
+export TAU_HOME="$TAU_DIR"
 export UV_PYTHON_INSTALL_DIR="$PORTABLE_ROOT/uv-python"
 export UV_CACHE_DIR="$PORTABLE_ROOT/uv-cache"
 export PATH="$BIN:$PYTHON_DIR:\$PATH"
-echo "Activated GenericAgent portable env: \$GENERICAGENT_HOME"
+echo "Activated TAU portable env: \$TAU_HOME"
 EOF
 else
   cat > "$ENV_SH" <<EOF
 export PORTABLE_DEV_ROOT="$PORTABLE_ROOT"
-export GENERICAGENT_HOME="$TAU_DIR"
+export TAU_HOME="$TAU_DIR"
 export UV_PYTHON_INSTALL_DIR="$PORTABLE_ROOT/uv-python"
 export UV_CACHE_DIR="$PORTABLE_ROOT/uv-cache"
 export UV_DEFAULT_INDEX="$MAINLAND_INDEX"
 export PIP_INDEX_URL="$MAINLAND_INDEX"
 export PATH="$BIN:$PYTHON_DIR:\$PATH"
-echo "Activated GenericAgent portable env: \$GENERICAGENT_HOME"
+echo "Activated TAU portable env: \$TAU_HOME"
 EOF
 fi
 
@@ -267,7 +267,7 @@ echo ""
 if [[ "$GLOBAL" == "1" ]]; then
   cat <<EOF
 ╔═══════════════════════════════════════════════╗
-║  ✅ GenericAgent installed successfully!       ║
+║  ✅ TAU installed successfully!       ║
 ╠═══════════════════════════════════════════════╣
 ║  📁 Location: $TAU_DIR
 ║  🔑 Config: edit taukey.py (copied from template)
@@ -277,7 +277,7 @@ EOF
 else
   cat <<EOF
 ╔═══════════════════════════════════════════════╗
-║  ✅ GenericAgent 安装完成！                    ║
+║  ✅ TAU 安装完成！                    ║
 ╠═══════════════════════════════════════════════╣
 ║  📁 安装目录: $TAU_DIR
 ║  🔑 配置密钥: tau configure

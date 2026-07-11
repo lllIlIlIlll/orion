@@ -45,7 +45,7 @@ def get_system_prompt():
     return prompt
 
 # SDK:
-# agent = GenericAgent(); threading.Thread(target=agent.run, daemon=True).start()
+# agent = TAU(); threading.Thread(target=agent.run, daemon=True).start()
 # output1_queue = agent.put_task(prompt1)
 # output2_queue = agent.put_task(prompt2)
 class Tau:

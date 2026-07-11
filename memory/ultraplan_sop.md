@@ -1,4 +1,4 @@
-# GA UltraPlan SOP
+# TAU UltraPlan SOP
 ## 1. Protocol: start and continue
 ### What this is
 UltraPlan is Python-scripted multi-agent orchestration. The main agent designs phases, prompts, fan-out/fan-in, and stop/continue decisions; subagents do task-facing work.
@@ -7,9 +7,9 @@ Start UltraPlan only when the user explicitly says `ultraplan`, `UltraPlan`, or 
 ### First move
 Once opted in, the next substantive action is writing and running the first script.
 Before the first `plan(...)`, do not inspect source, tests, logs, imports, file listings, pages, or APIs for the task itself.
-Allowed pre-launch work: record objective/constraints, confirm cwd is GA `temp/`, write the minimal script.
+Allowed pre-launch work: record objective/constraints, confirm cwd is TAU `temp/`, write the minimal script.
 ### File and cwd contract
-Scripts are plain Python files under GA `temp/`; run them with cwd = `temp/`.
+Scripts are plain Python files under TAU `temp/`; run them with cwd = `temp/`.
 Reference repo files from `temp/`, e.g. `../assets/...`; never place UltraPlan scripts in the repo code tree.
 Every script starts with the real API contract and a shared artifact directory:
 ```python

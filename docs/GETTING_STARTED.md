@@ -53,20 +53,20 @@ python3 --version
 **Windows PowerShell**
 
 ```powershell
-powershell -ExecutionPolicy Bypass -c "irm http://fudankw.cn:9000/files/ga_install.ps1 | iex"
+powershell -ExecutionPolicy Bypass -c "irm http://fudankw.cn:9000/files/tau_install.ps1 | iex"
 ```
 
 **Linux / macOS**
 
 ```bash
-curl -fsSL http://fudankw.cn:9000/files/ga_install.sh | bash
+curl -fsSL http://fudankw.cn:9000/files/tau_install.sh | bash
 ```
 
 或者手动 clone（开发者）：
 
 ```bash
-git clone https://github.com/lllIlIlIlll/orion.git GenericAgent
-cd GenericAgent
+git clone https://github.com/lllIlIlIlll/orion.git TAU
+cd TAU
 uv venv && uv pip install -e ".[ui]"
 ```
 
@@ -191,7 +191,7 @@ Agent 会自己读代码、找出需要的包、全部装好。
 
 | 前端 | 启动命令 | 说明 |
 |------|---------|------|
-| **桌面端** | 双击 `apps/GenericAgent.exe`（Windows 一键安装自带） | 真原生窗口，零终端依赖 |
+| **桌面端** | 双击 `apps/TAU.exe`（Windows 一键安装自带） | 真原生窗口，零终端依赖 |
 | **TUI v3** | `python apps/tui/tui_v3.py` | 基于块的滚屏回看、resize 重排、每终端独立配色，跨终端体验一致 |
 | **TUI v2** | `python apps/tui/tuiapp_v2.py` | Textual 键盘驱动界面，图片粘贴折叠、`/llm`/`/export`/`/continue` 选择器 |
 | **Streamlit / 悬浮窗** | `python launch.pyw` | 浏览器中打开的 Streamlit UI，附带桌面悬浮窗 |

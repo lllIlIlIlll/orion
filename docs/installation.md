@@ -4,8 +4,8 @@ This is the detailed installation guide for **TAU**.
 
 Two audiences:
 
-- **[For Humans](#for-humans)** — you are installing GA for yourself.
-- **[For LLM Agents](#for-llm-agents)** — you are a coding agent such as Claude Code, or Codex installing GA for a human user. Read that section first so you do not guess.
+- **[For Humans](#for-humans)** — you are installing TAU for yourself.
+- **[For LLM Agents](#for-llm-agents)** — you are a coding agent such as Claude Code, or Codex installing TAU for a human user. Read that section first so you do not guess.
 
 > The shortest install commands live in the main [README](../README.md#-quick-start). This guide adds platform notes, key setup, verification, troubleshooting, and agent-safe rules.
 
@@ -18,9 +18,9 @@ Two audiences:
 | Requirement | Notes |
 |---|---|
 | **OS** | Windows 10/11, macOS 12+, or a modern Linux distribution. |
-| **Python** | Use **Python 3.11 or 3.12**. **Do not use Python 3.14** — it is incompatible with `pywebview` and a few GA dependencies. The one-line installer ships an isolated Python environment, so manual Python setup is usually unnecessary. |
+| **Python** | Use **Python 3.11 or 3.12**. **Do not use Python 3.14** — it is incompatible with `pywebview` and a few TAU dependencies. The one-line installer ships an isolated Python environment, so manual Python setup is usually unnecessary. |
 | **Git** | Recommended for updates and self-evolution. |
-| **LLM API key** | GA speaks two native protocols: **OpenAI-compatible** APIs and **Anthropic Claude native** APIs. GPT-family models, Claude, Kimi, MiniMax, DeepSeek, GLM, Qwen, Gemini through OAI-compatible gateways, and similar providers can be configured through `taukey.py`. |
+| **LLM API key** | TAU speaks two native protocols: **OpenAI-compatible** APIs and **Anthropic Claude native** APIs. GPT-family models, Claude, Kimi, MiniMax, DeepSeek, GLM, Qwen, Gemini through OAI-compatible gateways, and similar providers can be configured through `taukey.py`. |
 
 ### Method 1: One-line install (recommended)
 
@@ -29,19 +29,19 @@ This is the easiest path. It prepares an isolated runtime, downloads TAU, instal
 **Windows PowerShell**
 
 ```powershell
-powershell -ExecutionPolicy Bypass -c "$env:GLOBAL=1; irm http://fudankw.cn:9000/files/ga_install.ps1 | iex"
+powershell -ExecutionPolicy Bypass -c "$env:GLOBAL=1; irm http://fudankw.cn:9000/files/tau_install.ps1 | iex"
 ```
 
 **Linux / macOS**
 
 ```bash
-GLOBAL=1 bash -c "$(curl -fsSL http://fudankw.cn:9000/files/ga_install.sh)"
+GLOBAL=1 bash -c "$(curl -fsSL http://fudankw.cn:9000/files/tau_install.sh)"
 ```
 
 After installation, launch the desktop app from:
 
 ```text
-apps/GenericAgent.exe
+apps/TAU.exe
 ```
 
 Or run from the project directory:
@@ -50,16 +50,16 @@ Or run from the project directory:
 python launch.pyw
 ```
 
-> TAU is meant to grow its environment through the Agent itself, not by pre-installing every possible package. Start small, then let GA install task-specific tools when it actually needs them.
+> TAU is meant to grow its environment through the Agent itself, not by pre-installing every possible package. Start small, then let TAU install task-specific tools when it actually needs them.
 
 #### Custom install location
 
 ```bash
-INSTALL_DIR="$HOME/work/GenericAgent" GLOBAL=1 bash -c "$(curl -fsSL http://fudankw.cn:9000/files/ga_install.sh)"
+INSTALL_DIR="$HOME/work/TAU" GLOBAL=1 bash -c "$(curl -fsSL http://fudankw.cn:9000/files/tau_install.sh)"
 ```
 
 ```powershell
-$env:INSTALL_DIR="C:\dev\GenericAgent"; powershell -ExecutionPolicy Bypass -c "$env:GLOBAL=1; irm http://fudankw.cn:9000/files/ga_install.ps1 | iex"
+$env:INSTALL_DIR="C:\dev\TAU"; powershell -ExecutionPolicy Bypass -c "$env:GLOBAL=1; irm http://fudankw.cn:9000/files/tau_install.ps1 | iex"
 ```
 
 #### Force reinstall
@@ -67,7 +67,7 @@ $env:INSTALL_DIR="C:\dev\GenericAgent"; powershell -ExecutionPolicy Bypass -c "$
 Use this only when you know you want to refresh the installed files. Back up `taukey.py`, `memory/`, `skills/`, and any local work first.
 
 ```bash
-FORCE=1 GLOBAL=1 bash -c "$(curl -fsSL http://fudankw.cn:9000/files/ga_install.sh)"
+FORCE=1 GLOBAL=1 bash -c "$(curl -fsSL http://fudankw.cn:9000/files/tau_install.sh)"
 ```
 
 ### Method 2: Python install (for developers)
@@ -75,8 +75,8 @@ FORCE=1 GLOBAL=1 bash -c "$(curl -fsSL http://fudankw.cn:9000/files/ga_install.s
 Use this when you want a normal editable checkout.
 
 ```bash
-git clone https://github.com/lllIlIlIlll/orion.git GenericAgent
-cd GenericAgent
+git clone https://github.com/lllIlIlIlll/orion.git TAU
+cd TAU
 uv venv
 uv pip install -e ".[ui]"        # Core + UI dependencies
 cp assets/taukey_template.py taukey.py     # Fill in your LLM API key
@@ -92,7 +92,7 @@ Full guide: [GETTING_STARTED.md](GETTING_STARTED.md)
 3. Fill in one provider. Do **not** paste example keys as real keys.
 4. If you are unsure about the fields, read the comments in `assets/taukey_template.py` first.
 
-GA supports:
+TAU supports:
 
 - **OpenAI-compatible** endpoints — Chat Completions / Responses shaped APIs.
 - **Anthropic Claude native** — Claude Messages API.
@@ -110,7 +110,7 @@ python assets/configure_taukey.py
 For one-line installs on Windows, double-click:
 
 ```text
-apps/GenericAgent.exe
+apps/TAU.exe
 ```
 
 #### Terminal UI
@@ -148,7 +148,7 @@ python apps/tui/tuiapp_v2.py
 
 #### Python 3.14 is not supported
 
-If your system `python --version` reports 3.14, do not use it for GA. Use the one-line installer, or create a Python 3.11 / 3.12 environment with `uv`.
+If your system `python --version` reports 3.14, do not use it for TAU. Use the one-line installer, or create a Python 3.11 / 3.12 environment with `uv`.
 
 #### `ga` command conflict
 
@@ -158,7 +158,7 @@ Some systems already use `ga` for another tool. Check first:
 type ga
 ```
 
-If it resolves to something unexpected, do not rely on the shortcut. Run GA from the install directory with `python launch.pyw` or `python apps/tui/tuiapp_v2.py`.
+If it resolves to something unexpected, do not rely on the shortcut. Run TAU from the install directory with `python launch.pyw` or `python apps/tui/tuiapp_v2.py`.
 
 #### Windows TUI rendering issues
 
@@ -166,7 +166,7 @@ TUI rendering on Windows depends on terminal, font, and `textual` version.
 
 1. Upgrade Textual first: `pip install -U textual`.
 2. Prefer **Git Bash on Windows** over classic PowerShell / cmd when Unicode or key bindings look broken.
-3. If it still looks wrong, ask GA itself to repair the terminal compatibility. Example prompt:
+3. If it still looks wrong, ask TAU itself to repair the terminal compatibility. Example prompt:
    > *"My experience using `apps/tui/tuiapp_v2.py` in PowerShell / cmd / Git Bash on Windows is very poor — lots of incompatibility. Please refer to Claude Code's best practices for the Windows terminal and fix all font and rendering incompatibilities."*
 
 #### `pywebview` install fails on Linux
@@ -182,10 +182,10 @@ On headless servers, prefer the TUI or run Streamlit in browser mode instead of 
 
 ### Update an existing install
 
-Do not delete a working GA directory just to update it. It may contain the user's `taukey.py`, memory, skills, and local work.
+Do not delete a working TAU directory just to update it. It may contain the user's `taukey.py`, memory, skills, and local work.
 
 ```bash
-cd ~/GenericAgent
+cd ~/TAU
 git fetch
 git pull
 uv pip install -e ".[ui]"
@@ -214,7 +214,7 @@ You are installing **TAU** for a human user. Be direct, verify each step, and av
 Check:
 
 1. OS: `uname -a`, `$env:OS`, or `python -c "import platform; print(platform.system())"`.
-2. Existing install: `~/GenericAgent/launch.pyw`, `%USERPROFILE%\GenericAgent\launch.pyw`, or a `.git` directory.
+2. Existing install: `~/TAU/launch.pyw`, `%USERPROFILE%\TAU\launch.pyw`, or a `.git` directory.
 3. Python version: must be 3.11 or 3.12 if you use the developer path.
 4. Git availability: `git --version`.
 5. API key readiness: ask the user if no key is available. Never invent one.
@@ -226,20 +226,20 @@ Default to the one-line installer unless the user already has a checkout.
 **Windows PowerShell**
 
 ```powershell
-powershell -ExecutionPolicy Bypass -c "$env:GLOBAL=1; irm http://fudankw.cn:9000/files/ga_install.ps1 | iex"
+powershell -ExecutionPolicy Bypass -c "$env:GLOBAL=1; irm http://fudankw.cn:9000/files/tau_install.ps1 | iex"
 ```
 
 **Linux / macOS**
 
 ```bash
-GLOBAL=1 bash -c "$(curl -fsSL http://fudankw.cn:9000/files/ga_install.sh)"
+GLOBAL=1 bash -c "$(curl -fsSL http://fudankw.cn:9000/files/tau_install.sh)"
 ```
 
 If the user explicitly wants a developer checkout:
 
 ```bash
-git clone https://github.com/lllIlIlIlll/orion.git GenericAgent
-cd GenericAgent
+git clone https://github.com/lllIlIlIlll/orion.git TAU
+cd TAU
 uv venv
 uv pip install -e ".[ui]"
 cp assets/taukey_template.py taukey.py
@@ -254,14 +254,14 @@ cp assets/taukey_template.py taukey.py
 
 Suggested question:
 
-> Which LLM should TAU use? GA supports OpenAI-compatible endpoints and Anthropic Claude native APIs. Which provider do you want to configure, and do you already have an API key?
+> Which LLM should TAU use? TAU supports OpenAI-compatible endpoints and Anthropic Claude native APIs. Which provider do you want to configure, and do you already have an API key?
 
 ### Step 3: Verify setup
 
 Run:
 
 ```bash
-cd ~/GenericAgent
+cd ~/TAU
 python -c "import agent_loop; print('OK')"
 git rev-parse --short HEAD
 ```
@@ -279,7 +279,7 @@ python apps/tui/tuiapp_v2.py
 Read this document again and think through whether you have done everything correctly:
 
 - You inspected the OS, existing install, Python version, Git, and key readiness before acting.
-- You used the correct GA install command for this English guide, including `GLOBAL=1` where shown.
+- You used the correct TAU install command for this English guide, including `GLOBAL=1` where shown.
 - You configured only real user-provided keys and did not reveal secrets.
 - You verified import, Git commit hash, and at least one frontend.
 
@@ -295,7 +295,7 @@ Tell the user:
 2. Git commit hash.
 3. Which frontend you verified.
 4. Whether `taukey.py` is configured, without revealing secrets.
-5. Recommended next reading: [Hello GenericAgent](https://datawhalechina.github.io/hello-generic-agent/) and [GETTING_STARTED.md](GETTING_STARTED.md).
+5. Recommended next reading: [Hello TAU](https://datawhalechina.github.io/hello-generic-agent/) and [GETTING_STARTED.md](GETTING_STARTED.md).
 
 #### Ask for a Star ⭐
 
@@ -307,8 +307,8 @@ Only open or run anything related to starring the repository if the user explici
 
 ### Never do these
 
-- Do **not** run `pip install genericagent`; GA is not a PyPI package.
-- Do **not** delete `~/GenericAgent` or `%USERPROFILE%\GenericAgent` for a "clean install" without explicit user approval.
+- Do **not** run `pip install tau`; TAU is not a PyPI package.
+- Do **not** delete `~/TAU` or `%USERPROFILE%\TAU` for a "clean install" without explicit user approval.
 - Do **not** fabricate API keys or treat sample keys as real.
 - Do **not** assume `ga` is a valid shell command; check first.
 - Do **not** rely on `ga update`; use `git fetch`, `git pull`, and reinstall dependencies as shown above.

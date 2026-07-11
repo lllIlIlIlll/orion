@@ -2,15 +2,15 @@
 
 <#!
 
-GenericAgent one-click portable deployer for Windows.
+TAU one-click portable deployer for Windows.
 
 
 
 Modes:
 
-  Default/Mainland: download GenericAgent.zip + uv + PortableGit from user's VPS, set China PyPI mirror.
+  Default/Mainland: download TAU.zip + uv + PortableGit from user's VPS, set China PyPI mirror.
 
-  GLOBAL=1: clone GenericAgent from GitHub; uv and PortableGit also come from GitHub releases; no PyPI mirror.
+  GLOBAL=1: clone TAU from GitHub; uv and PortableGit also come from GitHub releases; no PyPI mirror.
 
 
 
@@ -22,7 +22,7 @@ Portable components are installed under <InstallDir>\.portable:
 
 param(
 
-    [string]$InstallDir = "$env:USERPROFILE\GenericAgent",
+    [string]$InstallDir = "$env:USERPROFILE\TAU",
 
     [string]$PythonVersion = "3.12",
 
@@ -54,7 +54,7 @@ $RepoUrl = "https://github.com/lllIlIlIlll/orion.git"
 
 $VpsBase = "http://47.101.182.29:9000"
 
-$GaZipUrl = "$VpsBase/files/GenericAgent.zip"
+$TauZipUrl = "$VpsBase/files/TAU.zip"
 
 $UvUrl = "$VpsBase/uv/uv-x86_64-pc-windows-msvc.zip"
 
@@ -74,9 +74,9 @@ if ($GlobalMode) {
 
 
 
-$GaDir = [IO.Path]::GetFullPath($InstallDir)
+$TauDir = [IO.Path]::GetFullPath($InstallDir)
 
-$PortableRoot = Join-Path $GaDir ".portable"
+$PortableRoot = Join-Path $TauDir ".portable"
 
 $Bin = Join-Path $PortableRoot "bin"
 
@@ -86,13 +86,13 @@ $Tools = Join-Path $PortableRoot "tools"
 
 $UvZip = Join-Path $Cache "uv-x86_64-pc-windows-msvc.zip"
 
-$GaZip = Join-Path $Cache "GenericAgent.zip"
+$TauZip = Join-Path $Cache "TAU.zip"
 
 $GitExeArchive = Join-Path $Cache "PortableGit-2.54.0-64-bit.7z.exe"
 
 $UvExtract = Join-Path $Cache "uv-extract"
 
-$GaExtract = Join-Path $Cache "tau-extract"
+$TauExtract = Join-Path $Cache "tau-extract"
 
 $GitDir = Join-Path $Tools "PortableGit"
 
@@ -100,9 +100,9 @@ $UvExe = Join-Path $Bin "uv.exe"
 
 $GitExe = Join-Path $GitDir "bin\git.exe"
 
-$EnvCmd = Join-Path $GaDir "env.cmd"
+$EnvCmd = Join-Path $TauDir "env.cmd"
 
-$EnvPs1 = Join-Path $GaDir "env.ps1"
+$EnvPs1 = Join-Path $TauDir "env.ps1"
 
 
 
@@ -170,15 +170,15 @@ function Copy-DirectoryContents($Src, $Dst) {
 
 
 
-Say "Install dir: $GaDir"
+Say "Install dir: $TauDir"
 
 Say "Mode: $(if ($GlobalMode) { 'GLOBAL=1 / GitHub clone' } else { 'Mainland / VPS zip' })"
 
 
 
-if ((Test-Path $GaDir) -and $Force) { Remove-Item -Recurse -Force $GaDir }
+if ((Test-Path $TauDir) -and $Force) { Remove-Item -Recurse -Force $TauDir }
 
-New-Item -ItemType Directory -Force -Path $GaDir,$PortableRoot,$Bin,$Cache,$Tools | Out-Null
+New-Item -ItemType Directory -Force -Path $TauDir,$PortableRoot,$Bin,$Cache,$Tools | Out-Null
 
 
 
@@ -289,13 +289,13 @@ $env:PATH = "$Bin;$PythonDir;$PythonDir\Scripts;$GitBin;$GitUsrBin;$env:PATH"
 
 
 
-# Fetch/update GenericAgent source.
+# Fetch/update TAU source.
 
 if ($GlobalMode) {
 
-    Say "Cloning GenericAgent from GitHub"
+    Say "Cloning TAU from GitHub"
 
-    $items = @(Get-ChildItem -LiteralPath $GaDir -Force -ErrorAction SilentlyContinue | Where-Object { $_.Name -ne ".portable" })
+    $items = @(Get-ChildItem -LiteralPath $TauDir -Force -ErrorAction SilentlyContinue | Where-Object { $_.Name -ne ".portable" })
 
     if ($items.Count -gt 0) {
 
@@ -313,37 +313,37 @@ if ($GlobalMode) {
 
     if ($ec -ne 0) { Die "git clone failed" }
 
-    Copy-DirectoryContents $TmpClone $GaDir
+    Copy-DirectoryContents $TmpClone $TauDir
 
     Remove-Item -Recurse -Force $TmpClone
 
 } else {
 
-    Say "Downloading GenericAgent package from VPS"
+    Say "Downloading TAU package from VPS"
 
-    Download-File $GaZipUrl $GaZip
+    Download-File $TauZipUrl $TauZip
 
-    Expand-ZipClean $GaZip $GaExtract
+    Expand-ZipClean $TauZip $TauExtract
 
-    $SrcDir = Join-Path $GaExtract "GenericAgent"
+    $SrcDir = Join-Path $TauExtract "TAU"
 
-    if (!(Test-Path $SrcDir)) { $SrcDir = $GaExtract }
+    if (!(Test-Path $SrcDir)) { $SrcDir = $TauExtract }
 
-    $items = @(Get-ChildItem -LiteralPath $GaDir -Force -ErrorAction SilentlyContinue | Where-Object { $_.Name -ne ".portable" })
+    $items = @(Get-ChildItem -LiteralPath $TauDir -Force -ErrorAction SilentlyContinue | Where-Object { $_.Name -ne ".portable" })
 
     if ($items.Count -gt 0) { $items | Remove-Item -Recurse -Force }
 
-    Copy-DirectoryContents $SrcDir $GaDir
+    Copy-DirectoryContents $SrcDir $TauDir
 
 }
 
-Ok "GenericAgent source ready: $GaDir"
+Ok "TAU source ready: $TauDir"
 
 
 
 # Install basic dependencies and project in editable mode into portable Python.
 
-Say "Installing GenericAgent dependencies via uv pip"
+Say "Installing TAU dependencies via uv pip"
 
 $installArgs = @("pip", "install", "--break-system-packages", "--python", $PythonExe)
 
@@ -357,13 +357,13 @@ if ($ec -ne 0) { Die "dependency install failed" }
 
 
 
-if (Test-Path (Join-Path $GaDir "pyproject.toml")) {
+if (Test-Path (Join-Path $TauDir "pyproject.toml")) {
 
     $projectArgs = @("pip", "install", "--break-system-packages", "--python", $PythonExe)
 
     if (!$GlobalMode) { $projectArgs += @("--index-url", $MainlandIndex) }
 
-    $projectArgs += @("-e", $GaDir)
+    $projectArgs += @("-e", $TauDir)
 
     $ec = Invoke-Native { & $UvExe @projectArgs }
 
@@ -411,7 +411,7 @@ if ($GlobalMode) {
 
 set "PORTABLE_DEV_ROOT=$PortableRoot"
 
-set "GENERICAGENT_HOME=$GaDir"
+set "TAU_HOME=$TauDir"
 
 set "UV_PYTHON_INSTALL_DIR=$PortableRoot\uv-python"
 
@@ -419,7 +419,7 @@ set "UV_CACHE_DIR=$PortableRoot\uv-cache"
 
 set "PATH=$Bin;$PythonDir;$PythonDir\Scripts;$GitBin;$GitUsrBin;%PATH%"
 
-echo Activated GenericAgent portable env: %GENERICAGENT_HOME%
+echo Activated TAU portable env: %TAU_HOME%
 
 "@ | Set-Content -Path $EnvCmd -Encoding ASCII
 
@@ -429,7 +429,7 @@ echo Activated GenericAgent portable env: %GENERICAGENT_HOME%
 
 `$env:PORTABLE_DEV_ROOT = "$PortableRoot"
 
-`$env:GENERICAGENT_HOME = "$GaDir"
+`$env:TAU_HOME = "$TauDir"
 
 `$env:UV_PYTHON_INSTALL_DIR = "$PortableRoot\uv-python"
 
@@ -437,7 +437,7 @@ echo Activated GenericAgent portable env: %GENERICAGENT_HOME%
 
 `$env:PATH = "$Bin;$PythonDir;$PythonDir\Scripts;$GitBin;$GitUsrBin;`$env:PATH"
 
-Write-Host "Activated GenericAgent portable env: `$env:GENERICAGENT_HOME" -ForegroundColor Green
+Write-Host "Activated TAU portable env: `$env:TAU_HOME" -ForegroundColor Green
 
 "@ | Set-Content -Path $EnvPs1 -Encoding UTF8
 
@@ -449,7 +449,7 @@ Write-Host "Activated GenericAgent portable env: `$env:GENERICAGENT_HOME" -Foreg
 
 set "PORTABLE_DEV_ROOT=$PortableRoot"
 
-set "GENERICAGENT_HOME=$GaDir"
+set "TAU_HOME=$TauDir"
 
 set "UV_PYTHON_INSTALL_DIR=$PortableRoot\uv-python"
 
@@ -461,7 +461,7 @@ set "PIP_INDEX_URL=$MainlandIndex"
 
 set "PATH=$Bin;$PythonDir;$PythonDir\Scripts;$GitBin;$GitUsrBin;%PATH%"
 
-echo Activated GenericAgent portable env: %GENERICAGENT_HOME%
+echo Activated TAU portable env: %TAU_HOME%
 
 "@ | Set-Content -Path $EnvCmd -Encoding ASCII
 
@@ -471,7 +471,7 @@ echo Activated GenericAgent portable env: %GENERICAGENT_HOME%
 
 `$env:PORTABLE_DEV_ROOT = "$PortableRoot"
 
-`$env:GENERICAGENT_HOME = "$GaDir"
+`$env:TAU_HOME = "$TauDir"
 
 `$env:UV_PYTHON_INSTALL_DIR = "$PortableRoot\uv-python"
 
@@ -483,7 +483,7 @@ echo Activated GenericAgent portable env: %GENERICAGENT_HOME%
 
 `$env:PATH = "$Bin;$PythonDir;$PythonDir\Scripts;$GitBin;$GitUsrBin;`$env:PATH"
 
-Write-Host "Activated GenericAgent portable env: `$env:GENERICAGENT_HOME" -ForegroundColor Green
+Write-Host "Activated TAU portable env: `$env:TAU_HOME" -ForegroundColor Green
 
 "@ | Set-Content -Path $EnvPs1 -Encoding UTF8
 
@@ -507,11 +507,11 @@ Write-Host ""
 
 # Copy taukey template if taukey.py does not exist (GLOBAL mode only)
 
-$TaukeyDst = Join-Path $GaDir "taukey.py"
+$TaukeyDst = Join-Path $TauDir "taukey.py"
 
 if ($GlobalMode -and !(Test-Path $TaukeyDst)) {
 
-    $TaukeyTpl = Join-Path $GaDir "assets\taukey_template_en.py"
+    $TaukeyTpl = Join-Path $TauDir "assets\taukey_template_en.py"
 
     if (Test-Path $TaukeyTpl) {
 
@@ -535,11 +535,11 @@ if ($GlobalMode) {
 
 ╔═══════════════════════════════════════════════╗
 
-║  ✅ GenericAgent installed successfully!       ║
+║  ✅ TAU installed successfully!       ║
 
 ╠═══════════════════════════════════════════════╣
 
-║  📁 Location: $GaDir
+║  📁 Location: $TauDir
 
 ║  🔑 Config: edit taukey.py (copied from template)
 
@@ -555,11 +555,11 @@ if ($GlobalMode) {
 
 ╔═══════════════════════════════════════════════╗
 
-║  [OK] GenericAgent 安装完成！                 ║
+║  [OK] TAU 安装完成！                 ║
 
 ╠═══════════════════════════════════════════════╣
 
-║  安装目录: $GaDir
+║  安装目录: $TauDir
 
 ║  配置密钥: tau configure
 

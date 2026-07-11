@@ -1,6 +1,6 @@
 @echo off
 chcp 65001 >nul
-:: ga-cli-install.cmd - 将 GenericAgent 命令注册到系统 PATH
+:: ga-cli-install.cmd - 将 TAU 命令注册到系统 PATH
 :: 运行一次后，即可在任意位置敲 ga <command>
 :: 建议以管理员身份运行
 
@@ -9,7 +9,7 @@ set "TARGET_DIR=%CD%"
 
 echo.
 echo  ╔══════════════════════════════════════════╗
-echo  ║      GenericAgent 命令行安装向导         ║
+echo  ║      TAU 命令行安装向导         ║
 echo  ╚══════════════════════════════════════════╝
 echo.
 echo  项目目录: %TARGET_DIR%

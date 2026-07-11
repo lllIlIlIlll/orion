@@ -12,7 +12,7 @@
 
   <a href="https://gaagent.ai"><img src="https://img.shields.io/badge/Official_Website-gaagent.ai-00A67E?style=flat-square" alt="Official Website"/></a>
   <a href="https://arxiv.org/abs/2604.17091"><img src="https://img.shields.io/badge/Technical_Report-PDF-EA4335?style=flat-square&logo=adobeacrobatreader&logoColor=white" alt="Technical Report"/></a>
-  <a href="https://github.com/JinyiHan99/GA-Technical-Report"><img src="https://img.shields.io/badge/Code_%26_Data-Reproduction-181717?style=flat-square&logo=github" alt="Reproduction Repo"/></a>
+  <a href="https://github.com/JinyiHan99/TAU-Technical-Report"><img src="https://img.shields.io/badge/Code_%26_Data-Reproduction-181717?style=flat-square&logo=github" alt="Reproduction Repo"/></a>
   <a href="https://datawhalechina.github.io/hello-generic-agent/"><img src="https://img.shields.io/badge/Tutorial-Datawhale-blue?style=flat-square" alt="Tutorial"/></a>
   <a href="https://fudankw.cn/sophub"><img src="https://img.shields.io/badge/Skill_Hub-Sophub-purple?style=flat-square" alt="Sophub"/></a>
 </p>
@@ -153,13 +153,13 @@ Sets up a self-contained directory with an isolated Python environment, Git, and
 **Windows PowerShell**
 
 ```powershell
-powershell -ExecutionPolicy Bypass -c "$env:GLOBAL=1; irm https://raw.githubusercontent.com/lllIlIlIlll/orion/main/assets/ga_install.ps1 | iex"
+powershell -ExecutionPolicy Bypass -c "$env:GLOBAL=1; irm https://raw.githubusercontent.com/lllIlIlIlll/orion/main/assets/tau_install.ps1 | iex"
 ```
 
 **Linux / macOS**
 
 ```bash
-GLOBAL=1 bash -c "$(curl -fsSL https://raw.githubusercontent.com/lllIlIlIlll/orion/main/assets/ga_install.sh)"
+GLOBAL=1 bash -c "$(curl -fsSL https://raw.githubusercontent.com/lllIlIlIlll/orion/main/assets/tau_install.sh)"
 ```
 
 > 💡 TAU grows its environment **through the Agent itself** — don't pre-install everything. See [Unlocking Advanced Capabilities](#-unlocking-advanced-capabilities) below.
@@ -347,7 +347,7 @@ After a few weeks, your agent instance will have a skill tree no one else in the
 
 ## 📈 Evaluation
 
-> 📂 Full evaluation datasets and results: [**JinyiHan99/GA-Technical-Report**](https://github.com/JinyiHan99/GA-Technical-Report/tree/main)
+> 📂 Full evaluation datasets and results: [**JinyiHan99/TAU-Technical-Report**](https://github.com/JinyiHan99/TAU-Technical-Report/tree/main)
 
 We evaluate TAU across **five dimensions**:
 
@@ -540,13 +540,13 @@ curl -fsSL https://raw.githubusercontent.com/lllIlIlIlll/orion/refs/heads/main/d
 **Windows PowerShell**
 
 ```powershell
-powershell -ExecutionPolicy Bypass -c "irm http://fudankw.cn:9000/files/ga_install.ps1 | iex"
+powershell -ExecutionPolicy Bypass -c "irm http://fudankw.cn:9000/files/tau_install.ps1 | iex"
 ```
 
 **Linux / macOS**
 
 ```bash
-curl -fsSL http://fudankw.cn:9000/files/ga_install.sh | bash
+curl -fsSL http://fudankw.cn:9000/files/tau_install.sh | bash
 ```
 
 安装完成后启动：
@@ -736,7 +736,7 @@ TAU 通过 **分层记忆 × 最小工具集 × 自主执行循环** 完成复�
 
 ## 📈 评测
 
-> 📂 完整的评测数据集以及评测结果见：[**JinyiHan99/GA-Technical-Report**](https://github.com/JinyiHan99/GA-Technical-Report/tree/main)
+> 📂 完整的评测数据集以及评测结果见：[**JinyiHan99/TAU-Technical-Report**](https://github.com/JinyiHan99/TAU-Technical-Report/tree/main)
 
 我们从 **五大维度** 评测 TAU：
 
