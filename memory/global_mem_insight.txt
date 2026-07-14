@@ -1,0 +1,34 @@
+# [Global Memory Insight]
+Read L2 or ls ../memory/ for L3 when needed
+L0(META-SOP): memory_management_sop
+L2: global_mem
+L3: memory_cleanup_sop(memory cleanup) | ui_detect.py | ocr_utils.py | subagent | web_setup_sop | plan_sop
+| procmem_scanner | keychain | ljqCtrl_sop+.py | tmwebdriver_sop | autonomous_operation_sop | scheduled_task_sop | vision_sop | adb_ui.py
+| macljqCtrl.py(R9) | macljqCtrl_sop.md(R9)
+L4: L4_raw_sessions/ historical sessions
+
+# L2 状态 (R13 瘦身)
+- global_mem.txt: 41 → 22 行 (-47%); 模块索引(一句话) + 沙箱约束 + 历史摘要 + 闭环链路
+- 改 L2 必须用 repr 双锚点 Python 切片法, file_patch 易触发脏字符坑
+Browser special ops: tmwebdriver_sop(file upload/image search/PDF blob/physical coords/HttpOnly Cookie/autofill bypass/cross-origin iframe/CDP/cross-tab)
+Keyboard/Mouse: ljqCtrl_sop(no pyautogui/activate first) | **macljqCtrl_sop(macOS, Quartz+AX)**(R9)
+UI/Screenshot/Vision: computer_use.md | vision_sop | window screenshot use ljqCtrl | **e2e_vision_decide_click.py**(R9 闭环 demo)
+Scheduling: scheduled_task_sop | Autonomous: autonomous_operation_sop | watchdog/reflect: agentmain --reflect
+Mobile: adb_ui.py
+
+# 闭环链路 (R9 验证)
+vision_api.ask_vision
+    ↓ JSON
+ai_agent.decide_and_locate  (memory/ai_agent.py)
+    ↓ center=(x,y)
+macljqCtrl.Click (memory/macljqCtrl.py, macOS) 或 ljqCtrl.Click (win)
+
+# 健康可观测闭环 (R15→R20 SOP 化)
+helper.complete_task  (双 hook: R15 health_check → health_log.txt, R17 health_audit → audit_log.txt)
+    ↓
+temp/health_pre_check.py  (读 audit_log 末块, exit=10 fix / 0 normal)
+    ↓ 决策
+SOP 强制 (memory/autonomous_operation_sop/task_planning.md "🚦 起手第一步")
+
+# 📋 健康操作文档层 (R23)
+temp/HEALTH.md  (110行一页纸: 5W1H + ASCII 流程图 + 4 调用签名 + exit code 决策表 + 入口对照 + 防坑沉淀; 被动 → 主动 联动 quick-start, 冷启 60 秒读懂)

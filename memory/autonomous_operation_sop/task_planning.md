@@ -1,11 +1,14 @@
 # 任务规划模式
 
-- **有TODO**：cwd下 `TODO.txt` 有待执行条目 → 直接跳到「执行流程」
-
 价值公式：**「AI训练数据无法覆盖」×「对未来协作有持久收益」**。核心产出是记忆——有价值的发现整理为记忆更新提案纳入报告。
 
 ## 流程入口：
-- **无TODO → 进入任务规划模式**（本轮不执行任务，专注规划）：
+- **🚦 起手第一步（强制）**：`cd temp && .auv_venv/bin/python health_pre_check.py`
+  - 读 `autonomous_reports/audit_log.txt` 末块, 决策本轮模式
+  - exit=10 (🚨 ALERT) → **优先修健康** (L1/L2 FAIL 层), 不消耗 TODO 配额, 修完跑 health_check → hook 自动归档 → 再跑 pre_check 验证
+  - exit=0 (✅ HEALTHY / ⚠️ WARNING) → 正常进入下方流程
+  - 设计: 让 R15→R18 可观测闭环真起作用, 危险信号不会被新 TODO 淹没
+- **有TODO**：cwd下 `TODO.txt` 有待执行条目 → 直接跳到「执行流程」
   0. update_working_checkpoint: `规划模式：产出TODO后必须经过subagent评审，不允许自评审，禁止执行任何TODO，等待下次自主行动进入执行模式`
   1. ⚠️ **批判性读history.txt**：99%历史任务是**低价值的**，读取目的是**识别失败模式并避免**，而非寻找模仿对象
      - 识别低价值模式：浅层验证、无假设巡检、重复探索、泛采集、知名工具基础用法

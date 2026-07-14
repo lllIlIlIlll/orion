@@ -119,6 +119,46 @@ def complete_task(taskname: str, historyline: str, report_path: str) -> str:
         return f"[ERROR] 写入 history 失败: {e}（报告已回滚）"
 
     # ── 3. 返回改 TODO 指令 ──
+    # ── 2.5 R16 钩子: 每次归档后自动跑 R15 记忆健康检查 ──
+    # ── 输出进 health_log.txt (append-only), 不影响本函数返回值 ──
+    try:
+        import subprocess
+        hc_script = _TEMP_DIR / "memory_health_check.py"
+        health_log = _REPORTS_DIR / "health_log.txt"
+        if hc_script.exists():
+            ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            cmd = ["python3", str(hc_script)]
+            r = subprocess.run(cmd, capture_output=True, text=True, timeout=30, cwd=str(_TEMP_DIR))
+            with open(health_log, "a", encoding="utf-8") as _f:
+                _f.write(f"\n===== {ts} post-R{rnum} =====\n")
+                _f.write(f"exit={r.returncode}\n")
+                _f.write(r.stdout if r.stdout else r.stderr)
+                _f.write("\n")
+    except Exception as _e:
+        # 健康检查失败不应破坏归档主流程, 静默记录
+        try:
+            with open(_REPORTS_DIR / "health_log.txt", "a", encoding="utf-8") as _f:
+                _f.write(f"\n[hook-error R{rnum}] {_e}\n")
+        except: pass
+
+    # ── 2.6 R18 钩子: 每次归档后自动跑 R17 health_log 巡检 ──
+    # ── 输入 health_log.txt, 输出 audit_log.txt (append-only), exit 0/1/2 ──
+    try:
+        _au_script = _TEMP_DIR / "health_log_audit.py"
+        _au_log = _REPORTS_DIR / "audit_log.txt"
+        if _au_script.exists():
+            _ts2 = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            _au = subprocess.run(["python3", str(_au_script)], capture_output=True, text=True, timeout=30, cwd=str(_TEMP_DIR))
+            with open(_au_log, "a", encoding="utf-8") as _af:
+                _af.write(f"\n===== {_ts2} post-R{rnum} audit (exit={_au.returncode}) =====\n")
+                _af.write(_au.stdout if _au.stdout else _au.stderr)
+                _af.write("\n")
+    except Exception as _ae:
+        try:
+            with open(_REPORTS_DIR / "audit_log.txt", "a", encoding="utf-8") as _af:
+                _af.write(f"\n[audit-hook-error R{rnum}] {_ae}\n")
+        except: pass
+
     return (
         f"✅ 完成！报告已保存: {dest_name}\n"
         f"历史已记录: {line}\n"

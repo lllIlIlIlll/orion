@@ -28,5 +28,19 @@ build/
 # Claude Code local settings (personal, not shared)
 .claude/settings.local.json
 
+# Local agent/skill symlinks (point into .venv, machine-specific)
+.agents/
+.claude/skills/
+
 # Real API key file (keep templates: assets/taukey_template*.py, ignore real .tau/)
 .tau/
+
+# Runtime working data (agent workdir, scheduler output, backups)
+temp/
+sche_tasks/
+*.bak
+
+# L4 session archive data (keep tools/SOPs, ignore generated artifacts)
+memory/L4_raw_sessions/*.zip
+memory/L4_raw_sessions/all_histories.txt
+memory/file_access_stats.json

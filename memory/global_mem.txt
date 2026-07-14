@@ -1,0 +1,23 @@
+# [Global Memory - L2]
+# (事实档；扩展/修改直接 patch 此档, 再同步 L1)
+
+## 代码模块索引 (一句话; 详查 SOP/源)
+
+- ai_agent.py: 5 路径决策; decide_and_locate 返回 9 字段 (见 ai_agent_sop)
+- vision_api.py: ask_vision -> str JSON; backend=native_claude_config_0
+- ui_detect.py: detect -> list[dict]; bbox=[x1,y1,x2,y2] LIST
+- macljqCtrl.py: Quartz+Cocoa+AX; 9 API 兼容 ljqCtrl_sop.md
+- tmwebdriver / adb_ui / ocr_utils / keychain / procmem_scanner: 见各自 SOP
+
+## 沙箱约束
+- communication_dir 写入被拒
+- 报告归档路径: `temp/autonomous_reports/R{N}_*.md`
+- TODO.txt 路径: `temp/TODO.txt` (root 下不存在)
+- 历史归档: `memory/L4_raw_sessions/all_histories.txt` (append 模式)
+- 沙箱: Quartz Click/Press True, Screenshot=None, ActivateApp=False(锁屏)
+
+## 历史会话 (摘要; 详查 L4)
+- R1-R8: 沙盒/UI检测/vision/ai_agent/macOS 控制等见 L4_raw_sessions
+
+## 闭环链路
+- vision_api.ask_vision → ai_agent.decide_and_locate → macljqCtrl.Click

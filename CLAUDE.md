@@ -67,7 +67,7 @@ apps/*  &  reflect/*         ← 前端（人机界面）& 反射脚本（自驱
 |---|---|---|
 | `native` + `claude` | `NativeClaudeSession` | API 原生 tool 字段（**推荐**） |
 | `native` + `oai` | `NativeOAISession` | API 原生 tool 字段 |
-| `mixin` | `MixinSession` | 多 session 故障转移（成员必须都是 native） |
+| `mixin` | `MixinSession` | 多 session 故障转移（成员须同组：全 native 或全非 native） |
 | `claude` / `oai`（无 `native`） | `ClaudeSession` / `LLMSession` | 文本协议工具（**deprecated**） |
 
 `ToolClient` / `NativeToolClient` 把 Session 包成统一的 `client.chat()` 接口。`resolve_client(cfg_name)` 是按名字查 session 的入口。`apibase` 有自动补全规则（见 `taukey_template.py` 注释）。改 LLM 层时务必保持「新协议 = 加新 Session 子类」，不要在现有 Session 里堆 if-else。
@@ -77,6 +77,8 @@ apps/*  &  reflect/*         ← 前端（人机界面）& 反射脚本（自驱
 `TauHandler(BaseHandler)` 实现全部 `do_*` 工具（`do_code_run` / `do_file_read` / `do_file_patch` / `do_file_write` / `do_web_scan` / `do_web_execute_js` / `do_ask_user` / `do_no_tool` / `do_start_long_term_update` / `do_update_working_checkpoint`）。工具 schema 在 `assets/tools_schema.json`（Linux/macOS 走 bash，Windows 走 powershell——加载时自动替换）；GLM/MiniMax/Kimi 走 `tools_schema_cn.json`。
 
 模块顶部还有框架内处处复用的物理工具函数：`code_run`（子进程执行器，cwd 默认 `temp/`）、`file_read` / `file_patch` / `smart_format` / `consume_file` / `get_global_memory` 等。
+
+**web 工具底层在两个根级模块**：`TMWebDriver.py`（WebSocket + bottle 服务，注入**真实浏览器**保留登录态，`tau.py` 内懒加载 `from TMWebDriver import TMWebDriver`）+ `simphtml.py`（页面 HTML 精简与 `execute_js_rich`，向页面注入 `optHTML` / `createEnhancedDOMCopy` JS 产出 token 高效快照）。`do_web_scan` / `do_web_execute_js` 都经此路径；改浏览器侧逻辑先读 [memory/tmwebdriver_sop.md](memory/tmwebdriver_sop.md)。
 
 ### 4. `agentmain.py` — `Tau` 编排器
 
