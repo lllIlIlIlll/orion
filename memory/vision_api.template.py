@@ -116,5 +116,23 @@ def _call_openai_compat(b64, prompt, timeout, *, apibase, apikey, model, proxy=N
     resp.raise_for_status()
     return resp.json()['choices'][0]['message']['content']
 
+# 共享内部实现
+_DIR = os.path.dirname(os.path.abspath(__file__))
+_IMPL_PATH = os.path.join(_DIR, 'vision_api.py')
+if os.path.exists(_IMPL_PATH):
+    # 让 template 也能调用改造后的 ask_vision_smart / BackendClient
+    with open(_IMPL_PATH, 'r', encoding='utf-8') as _f:
+        _IMPL_SRC = _f.read()
+    _NS = {'__name__': 'vision_api_inline', '__file__': _IMPL_PATH}
+    exec(compile(_IMPL_SRC, _IMPL_PATH, 'exec'), _NS)
+    for _name, _obj in _NS.items():
+        if not _name.startswith('_') or _name in {
+            'ask_vision_smart', '_call_with_retry', '_try_with_fallback',
+            '_estimate_cost', '_BACKEND_COST_HINT', '_BACKEND_FACTORIES',
+            'DEFAULT_BACKEND_CHAIN', 'RETRY_BACKOFF',
+            'BackendClient', 'ClaudeBackend', 'OpenAICompatBackend',
+        }:
+            globals()[_name] = _obj
+
 if __name__ == '__main__':
     pass

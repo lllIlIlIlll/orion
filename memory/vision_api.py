@@ -116,5 +116,196 @@ def _call_openai_compat(b64, prompt, timeout, *, apibase, apikey, model, proxy=N
     resp.raise_for_status()
     return resp.json()['choices'][0]['message']['content']
 
+# ===================== R28: 多后端路由/重试/降级/cost 估算 =====================
+
+# 默认 auto 路由时的优先级与 cost (USD / 1K tokens, 大致, 用于排序)
+# 数字越小越便宜
+_BACKEND_COST_HINT = {
+    'modelscope': 0.0,    # ModelScope 部分模型免费
+    'openai':     0.01,   # GPT-4o-mini 级别
+    'claude':     0.015,  # Claude Haiku 级别
+}
+
+# auto 模式时，preferred chain (按 cost 升序; 同 cost 时顺序在前优先)
+DEFAULT_BACKEND_CHAIN = ['modelscope', 'openai', 'claude']
+
+# 重试参数
+RETRY_BACKOFF = [0, 2, 5]   # 第一次立即, 之后等 2s, 5s
+
+
+def _estimate_cost(backend, b64_size, prompt_len):
+    """粗略估算一次请求 cost ($USD). 仅用于排序/统计,非计费."""
+    b = backend.lower()
+    base = _BACKEND_COST_HINT.get(b, 0.01)
+    # 假定平均输出 200 tokens, 输入 = image_kb + prompt_kb
+    in_tok = (b64_size / 1024) * 0.3 + (prompt_len / 4)
+    out_tok = 200
+    cost = (in_tok + out_tok) / 1000 * base
+    return round(cost, 6)
+
+
+def _call_with_retry(call_fn, timeout):
+    """带退避重试的 HTTP 调用. 捕获 Timeout/RequestException; 返回最终响应对象.
+
+    call_fn(timeout) -> requests.Response
+    raise_for_status() 由调用方负责.
+    """
+    import requests as _req
+    last_exc = None
+    for delay in RETRY_BACKOFF:
+        if delay:
+            import time; time.sleep(delay)
+        try:
+            resp = call_fn(timeout)
+            # 5xx 当作可重试
+            if getattr(resp, 'status_code', 200) >= 500:
+                last_exc = _req.exceptions.HTTPError(f"Server error {resp.status_code}")
+                continue
+            return resp
+        except (_req.exceptions.Timeout, _req.exceptions.ConnectionError, _req.exceptions.HTTPError) as e:
+            last_exc = e
+            continue
+    raise last_exc  # type: ignore[misc]
+
+
+class BackendClient:
+    """轻量基类: 描述能力与代价, 子类实现 call(b64, prompt, timeout)."""
+    name = 'base'
+
+    def __init__(self, name):
+        self.name = name
+
+    def call(self, b64, prompt, timeout):
+        raise NotImplementedError
+
+    def cost_hint(self):
+        return _BACKEND_COST_HINT.get(self.name, 0.01)
+
+
+class ClaudeBackend(BackendClient):
+    def __init__(self):
+        super().__init__('claude')
+
+    def call(self, b64, prompt, timeout, max_tokens=1024):
+        mk = _load_config()
+        cfg = getattr(mk, CLAUDE_CONFIG_KEY)
+        def _do(t):
+            return requests.post(
+                cfg['apibase'] + '/v1/messages',
+                json={'model': cfg['model'], 'max_tokens': max_tokens, 'messages': [{
+                    'role': 'user',
+                    'content': [
+                        {'type': 'image', 'source': {'type': 'base64', 'media_type': 'image/jpeg', 'data': b64}},
+                        {'type': 'text', 'text': prompt}
+                    ]
+                }]},
+                headers={'x-api-key': cfg['apikey'], 'anthropic-version': '2023-06-01', 'content-type': 'application/json'},
+                timeout=t
+            )
+        resp = _call_with_retry(_do, timeout)
+        resp.raise_for_status()
+        return resp.json()['content'][0]['text']
+
+
+class OpenAICompatBackend(BackendClient):
+    def __init__(self, name, apibase, apikey, model, proxy=None):
+        super().__init__(name)
+        self.apibase = apibase
+        self.apikey = apikey
+        self.model = model
+        self.proxy = proxy
+
+    def call(self, b64, prompt, timeout):
+        proxies = {'https': self.proxy, 'http': self.proxy} if self.proxy else None
+        def _do(t):
+            return requests.post(
+                self.apibase.rstrip('/') + '/v1/chat/completions',
+                json={'model': self.model, 'messages': [{
+                    'role': 'user',
+                    'content': [
+                        {'type': 'text', 'text': prompt},
+                        {'type': 'image_url', 'image_url': {'url': f'data:image/jpeg;base64,{b64}'}}
+                    ]
+                }]},
+                headers={'Authorization': f"Bearer {self.apikey}", 'Content-Type': 'application/json'},
+                proxies=proxies, timeout=t
+            )
+        resp = _call_with_retry(_do, timeout)
+        resp.raise_for_status()
+        return resp.json()['choices'][0]['message']['content']
+
+
+def _make_openai_backend():
+    mk = _load_config()
+    cfg = getattr(mk, OPENAI_CONFIG_KEY)
+    return OpenAICompatBackend('openai', cfg['apibase'], cfg['apikey'], cfg['model'], cfg.get('proxy'))
+
+
+def _make_modelscope_backend():
+    return OpenAICompatBackend('modelscope', MODELSCOPE_API_BASE, MODELSCOPE_API_KEY, MODELSCOPE_MODEL, None)
+
+
+_BACKEND_FACTORIES = {
+    'claude':     ClaudeBackend,
+    'openai':     _make_openai_backend,
+    'modelscope': _make_modelscope_backend,
+}
+
+
+def _get_backend(name):
+    """根据名字返回一个 BackendClient 实例 (工厂模式)."""
+    factory = _BACKEND_FACTORIES.get(name)
+    if not factory:
+        raise ValueError(f"未知 backend '{name}'，可选: {list(_BACKEND_FACTORIES)}")
+    return factory() if isinstance(factory, type) else factory()
+
+
+def _try_with_fallback(b64, prompt, timeout, chain):
+    """依次尝试 chain 内 backend, 失败回退. 返回 (text, backend_used, attempts).
+
+    raises 最后一次的非 HttpException, 若都因临时错误失败, 抛 RuntimeError 汇总.
+    """
+    import requests as _req
+    attempts = []
+    last_exc = None
+    for name in chain:
+        try:
+            client = _get_backend(name)
+            text = client.call(b64, prompt, timeout)
+            attempts.append({'backend': name, 'ok': True})
+            return text, name, attempts
+        except (_req.exceptions.RequestException, KeyError, ValueError) as e:
+            attempts.append({'backend': name, 'ok': False, 'err': type(e).__name__})
+            last_exc = e
+            continue
+    raise RuntimeError(f"所有 backend 均失败 chain={chain} attempts={attempts}; last={last_exc}")
+
+
+# 兼容入口: backend='auto' 使用 cost 排序自动选, 失败链式降级
+def ask_vision_smart(image_input, prompt="详细描述这张图片的内容", timeout=60, max_pixels=1440000,
+                      prefer=None, fallbacks=None):
+    """R28 智能入口: prefer 指定首选, fallbacks 为降级链 (默认 DEFAULT_BACKEND_CHAIN)."""
+    try:
+        b64 = _prepare_image(image_input, max_pixels)
+    except Exception as e:
+        return f"Error: 图片处理失败 - {type(e).__name__}: {e}"
+    b64_size = len(b64)
+    # 构造链: [prefer] + fallbacks (去重保序)
+    if prefer is None:
+        prefer = DEFAULT_BACKEND_CHAIN[0]
+    chain = [prefer]
+    fb = fallbacks or DEFAULT_BACKEND_CHAIN
+    for n in fb:
+        if n not in chain:
+            chain.append(n)
+    cost = _estimate_cost(prefer, b64_size, len(prompt))
+    try:
+        text, used, attempts = _try_with_fallback(b64, prompt, timeout, chain)
+        print(f"  💰 估算 cost ${cost} | 实际使用 backend={used} | chain 尝试 {attempts}")
+        return text
+    except RuntimeError as e:
+        return f"Error: {e}"
+
+
 if __name__ == '__main__':
     pass
